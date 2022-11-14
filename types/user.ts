@@ -1,9 +1,9 @@
 import Repository from "../utils/firebase/firestore/repository";
-import db from "../utils/firebase/firestore/firestore";
 
 export interface User {
+  id: string;
   firstName: string;
   lastName: string;
 }
 
-export const userRepo = new Repository<User>(db, "users");
+export const userRepo = new Repository<User>("users");
