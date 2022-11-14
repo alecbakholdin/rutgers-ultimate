@@ -8,7 +8,7 @@ import XsPages from "./XsPages";
 import MdPages from "./MdPages";
 import ProfileButton from "./ProfileButton";
 
-const pages = ["Products", "Pricing", "Blog"];
+const pages = ["Products", "Events"];
 const settings = ["Logout"];
 
 function NavBar() {

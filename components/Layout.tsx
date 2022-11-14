@@ -1,7 +1,7 @@
 import React from "react";
 import NavBar from "./NavBar";
 
-export default function Layout(props: {
+export default function Layut(props: {
   children: React.ReactNode;
 }): React.ReactElement {
   return (
