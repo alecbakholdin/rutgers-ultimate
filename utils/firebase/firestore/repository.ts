@@ -19,7 +19,7 @@ export default class Repository<T> {
     return getDoc(this.docRef(id));
   }
 
-  docRef(id: string): DocumentReference<T> {
+  private docRef(id: string): DocumentReference<T> {
     return doc(this.collection, id);
   }
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import NavBar from "./NavBar";
+import CopyRight from "./CopyRight";
 
 export default function Layut(props: {
   children: React.ReactNode;
@@ -8,6 +9,7 @@ export default function Layut(props: {
     <>
       <NavBar />
       <main>{props.children}</main>
+      <CopyRight />
     </>
   );
 }

@@ -11,7 +11,7 @@ import ProfileButton from "./ProfileButton";
 const pages = ["Products", "Events"];
 const settings = ["Logout"];
 
-function NavBar() {
+export default function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -41,5 +41,3 @@ function NavBar() {
     </AppBar>
   );
 }
-
-export default NavBar;
