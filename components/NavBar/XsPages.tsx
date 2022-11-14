@@ -42,9 +42,9 @@ export default function XsPages(props: {
           display: { xs: "block", md: "none" },
         }}
       >
-        {props.pages.map((page) => (
-          <MenuItem key={page} onClick={props.handleCloseNavMenu}>
-            <Typography textAlign="center">{page}</Typography>
+        {props.pages.map((name) => (
+          <MenuItem key={name} onClick={props.handleCloseNavMenu}>
+            <Typography textAlign="center">{name}</Typography>
           </MenuItem>
         ))}
       </Menu>

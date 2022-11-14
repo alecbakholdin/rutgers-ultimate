@@ -9,7 +9,6 @@ import MdPages from "./MdPages";
 import ProfileButton from "./ProfileButton";
 
 const pages = ["Products", "Events"];
-const settings = ["Logout"];
 
 export default function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -35,7 +34,7 @@ export default function NavBar() {
           <XsPages pages={pages} {...navMenuProps} />
           <XsTitle />
           <MdPages pages={pages} {...navMenuProps} />
-          <ProfileButton settings={settings} />
+          <ProfileButton />
         </Toolbar>
       </Container>
     </AppBar>

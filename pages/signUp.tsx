@@ -8,8 +8,11 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { useAuth } from "../hooks/useAuth";
 
 export default function SignUp() {
+  const { loading, signUp } = useAuth();
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -17,6 +20,7 @@ export default function SignUp() {
       email: data.get("email"),
       password: data.get("password"),
     });
+    signUp(data.get("email") as string, data.get("password") as string);
   };
 
   return (

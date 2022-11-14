@@ -6,10 +6,13 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import { useAuth } from "../../hooks/useAuth";
+import Link from "next/link";
 
-export default function ProfileButton(props: {
-  settings: string[];
-}): React.ReactElement {
+export default function ProfileButton(): React.ReactElement {
+  const { user, signOut } = useAuth();
+  const loggedIn = Boolean(user);
+
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
@@ -22,13 +25,27 @@ export default function ProfileButton(props: {
     setAnchorElUser(null);
   };
 
+  const actions = [
+    {
+      name: "Sign Out",
+      action: signOut,
+    },
+  ];
+
   return (
     <Box sx={{ flexGrow: 0 }}>
-      <Tooltip title="Open settings">
-        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-        </IconButton>
-      </Tooltip>
+      {loggedIn && user ? (
+        <Tooltip title="Open settings">
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+            <Avatar />
+          </IconButton>
+        </Tooltip>
+      ) : (
+        <Link href={"/signIn"}>
+          <Typography>SIGN IN</Typography>
+        </Link>
+      )}
+
       <Menu
         sx={{ mt: "45px" }}
         id="menu-appbar"
@@ -45,9 +62,15 @@ export default function ProfileButton(props: {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        {props.settings.map((setting) => (
-          <MenuItem key={setting} onClick={handleCloseUserMenu}>
-            <Typography textAlign="center">{setting}</Typography>
+        {actions.map(({ name, action }) => (
+          <MenuItem
+            key={name}
+            onClick={() => {
+              handleCloseUserMenu();
+              action();
+            }}
+          >
+            <Typography textAlign="center">{name}</Typography>
           </MenuItem>
         ))}
       </Menu>
