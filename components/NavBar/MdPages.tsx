@@ -1,6 +1,7 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Link from "next/link";
 
 export default function MdPages(props: {
   pages: string[];
@@ -14,7 +15,7 @@ export default function MdPages(props: {
           onClick={props.handleCloseNavMenu}
           sx={{ my: 2, color: "white", display: "block" }}
         >
-          {page}
+          <Link href={`/${page.toLowerCase()}`}>{page}</Link>
         </Button>
       ))}
     </Box>

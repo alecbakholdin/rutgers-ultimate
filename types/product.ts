@@ -8,6 +8,8 @@ export interface ProductVariant {
 export interface Product {
   id: string;
   name: string;
+  price: number;
+  image: string;
 }
 
 class ProductRepository extends Repository<Product> {
