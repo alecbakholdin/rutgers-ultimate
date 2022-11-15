@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -11,9 +12,16 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useAuth } from "../hooks/useAuth";
+import { useRouter } from "next/router";
 
 export default function SignIn() {
   const { loading, user, signIn } = useAuth();
+  let router = useRouter();
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
