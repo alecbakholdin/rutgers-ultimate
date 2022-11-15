@@ -11,7 +11,7 @@ export default function CopyRight(): React.ReactElement {
       sx={{ mt: 5 }}
     >
       {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
+      <Link color="inherit" href="https://rutgersultimate.com/">
         Machine Ultimate
       </Link>{" "}
       {new Date().getFullYear()}
