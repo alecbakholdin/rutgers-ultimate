@@ -1,9 +1,6 @@
-import Repository from "../utils/firebase/firestore/repository";
-
 export interface User {
   id: string;
-  firstName: string;
-  lastName: string;
+  email: string | null;
+  token: string;
+  verified: boolean;
 }
-
-export const userRepo = new Repository<User>("users");

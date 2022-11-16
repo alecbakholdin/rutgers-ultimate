@@ -1,7 +1,5 @@
-// Import the functions you need from the SDKs you nee
-// https://firebase.google.com/docs/web/setup#available-libraries
-
 import { initializeApp } from "firebase/app";
+import { getAuth } from "@firebase/auth";
 
 const config = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -11,4 +9,8 @@ const config = {
   messagingSenderId: process.env.NEXT_PUBLIC_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_APP_ID,
 };
-export default initializeApp(config);
+
+const app = initializeApp(config);
+const auth = getAuth(app);
+
+export { auth };

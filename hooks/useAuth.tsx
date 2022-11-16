@@ -10,6 +10,7 @@ import {
 interface AuthUser {
   uid: string;
   email: string;
+  verified: boolean;
 }
 
 interface AuthContextInterface {
@@ -23,6 +24,7 @@ interface AuthContextInterface {
 const formatAuthUser = (user: FirebaseUser): AuthUser => ({
   uid: user.uid,
   email: user.email!,
+  verified: user.emailVerified,
 });
 
 const signIn = (email: string, password: string): Promise<UserCredential> =>
