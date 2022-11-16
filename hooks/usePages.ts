@@ -12,8 +12,8 @@ export function usePages() {
   const [signOut] = useSignOut(auth);
   const defaultMainPages: Page[] = [
     {
-      name: "Products",
-      href: "/products",
+      name: "Store",
+      href: "/store",
     },
   ];
   const defaultUserPages: Page[] = [
@@ -30,17 +30,6 @@ export function usePages() {
   useEffect(() => {
     const newMainPages: Page[] = [...defaultMainPages];
     const newUserPages: Page[] = [...defaultUserPages];
-    if (
-      user &&
-      !loading &&
-      user.emailVerified &&
-      user.email?.endsWith("rutgers.edu")
-    ) {
-      newMainPages.push({
-        name: "Student Store",
-        href: "/studentStore",
-      });
-    }
     setMainPages(newMainPages);
     setUserPages(newUserPages);
   }, [user, loading]);

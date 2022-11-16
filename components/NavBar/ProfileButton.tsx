@@ -32,9 +32,11 @@ export default function ProfileButton(): React.ReactElement {
         <IconButton onClick={handleOpenUserMenu}>
           <Avatar
             alt={user?.email ?? undefined}
-            src={user?.photoURL ?? undefined}
-            sx={{ backgroundColor: "white" }}
-          />
+            /*src={user?.photoURL ?? undefined}
+            sx={{ backgroundColor: user?.photoURL && "white" }}*/
+          >
+            {user?.email?.slice(0, 1).toUpperCase()}
+          </Avatar>
         </IconButton>
       </Tooltip>
       <Menu

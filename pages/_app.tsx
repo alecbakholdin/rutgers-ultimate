@@ -4,14 +4,17 @@ import "firebaseui/dist/firebaseui.css";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "../config/theme";
 import NavBar from "../components/NavBar";
+import NonSSRWrapper from "../components/NonSSRWrapper";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
-      <NavBar />
-      <main>
-        <Component {...pageProps} />
-      </main>
+      <NonSSRWrapper>
+        <NavBar />
+        <main>
+          <Component {...pageProps} />
+        </main>
+      </NonSSRWrapper>
     </ThemeProvider>
   );
 }
