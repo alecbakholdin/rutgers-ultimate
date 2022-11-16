@@ -10,6 +10,7 @@ export interface Product {
   id: string;
   name: string;
   price: number;
+  teamPrice: number;
   image?: string;
   ref: DocumentReference<Product>;
 }

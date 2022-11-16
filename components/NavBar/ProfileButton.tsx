@@ -24,7 +24,6 @@ export default function ProfileButton(): React.ReactElement {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  console.log(user?.photoURL);
 
   return (
     <Box sx={{ flexGrow: 0, display: user ? "block" : "none" }}>

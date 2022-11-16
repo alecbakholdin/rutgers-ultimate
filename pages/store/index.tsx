@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Box, Container, Grid } from "@mui/material";
-import { productCollection } from "../types/product";
-import SearchBar from "../components/SearchBar";
+import { productCollection } from "../../types/product";
+import SearchBar from "../../components/SearchBar";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import ProductCard from "../components/ProductCard";
+import ProductCard from "../../components/ProductCard";
 
 export default function Store(): React.ReactElement {
   const [products] = useCollectionData(productCollection);
