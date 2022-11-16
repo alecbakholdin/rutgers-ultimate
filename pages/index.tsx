@@ -1,10 +1,18 @@
-import styles from "../styles/Home.module.css";
-import { Button } from "@mui/material";
+import { Container, Typography } from "@mui/material";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/products");
+  }, []);
+
   return (
-    <div className={styles.container}>
-      <Button onClick={async () => {}}>Click me</Button>
-    </div>
+    <Container maxWidth={"lg"}>
+      <Typography variant={"h3"} textAlign={"center"}>
+        Nothing to see here.
+      </Typography>
+    </Container>
   );
 }

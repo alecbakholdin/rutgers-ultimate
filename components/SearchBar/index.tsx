@@ -3,12 +3,17 @@ import { Container, IconButton, Stack, TextField } from "@mui/material";
 import { Search } from "@mui/icons-material";
 
 export default function SearchBar(props: {
+  label?: string;
   onSubmit?: (value: string) => void;
+  onChange?: (value: string) => void;
 }): React.ReactElement {
   const [searchValue, setSearchValue] = useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
+    if (props.onChange) {
+      props.onChange(e.target.value);
+    }
   };
 
   const handleSubmit = () => {
@@ -27,15 +32,17 @@ export default function SearchBar(props: {
     <Container sx={{ padding: 2 }}>
       <Stack direction={"row"} spacing={1}>
         <TextField
-          label={"Search"}
+          label={props.label ?? "Search"}
           onKeyDown={handleKeyDown}
           onChange={handleChange}
           value={searchValue}
           fullWidth
         />
-        <IconButton sx={{ minWidth: 55 }} onClick={handleSubmit}>
-          <Search />
-        </IconButton>
+        {props.onSubmit && (
+          <IconButton sx={{ minWidth: 55 }} onClick={handleSubmit}>
+            <Search />
+          </IconButton>
+        )}
       </Stack>
     </Container>
   );

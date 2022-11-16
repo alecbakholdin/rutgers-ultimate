@@ -6,8 +6,10 @@ import {
   DocumentReference,
   getDoc,
   getDocs,
+  Query,
   query,
   setDoc,
+  where,
 } from "@firebase/firestore";
 import db from "./firestore";
 
@@ -30,13 +32,22 @@ export default class Repository<T> {
   }
 
   async getAll(): Promise<T[]> {
-    const q = query(this.collection);
+    return this.getDocs(query(this.collection));
+  }
+
+  async searchIds(match: string): Promise<T[]> {
+    const w1 = where("Document ID", ">=", match);
+    const w2 = where("Document ID", "<=", match + "\uf8ff");
+    return this.getDocs(query(this.collection, w1, w2));
+  }
+
+  async getDocs(q: Query<T>): Promise<T[]> {
     const docs = await getDocs(q);
-    const products: T[] = [];
+    const values: T[] = [];
     docs.forEach((doc) => {
-      products.push({ id: doc.id, ...doc.data() });
+      values.push({ id: doc.id, ...doc.data() });
     });
-    return products;
+    return values;
   }
 
   async addWithGeneratedId(doc: T): Promise<DocumentReference<T>> {
