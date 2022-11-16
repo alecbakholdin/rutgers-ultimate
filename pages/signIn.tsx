@@ -1,5 +1,5 @@
 import React from "react";
-import { uiConfig } from "../config/firebaseAuthUI.config";
+import { uiConfig } from "../config/firebaseAuthUI";
 import { auth } from "../app/firebaseApp";
 import StyledFirebaseAuth from "../components/StyledFirebaseAuth";
 

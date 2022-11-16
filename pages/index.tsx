@@ -7,6 +7,7 @@ export default function Home() {
   const [signOut, signOutLoading, signOutError] = useSignOut(auth);
   return (
     <Container maxWidth={"lg"}>
+      {user?.email}
       <Button onClick={() => signOut()}>Sign Out</Button>
     </Container>
   );
