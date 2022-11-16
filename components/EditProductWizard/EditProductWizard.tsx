@@ -104,11 +104,11 @@ export default function EditProductWizard(): React.ReactElement {
             <Grid item xs={6}>
               <Stack direction={"row"} alignItems={"center"}>
                 <Button onClick={handleSubmit}>SUBMIT CHANGES</Button>
-                <Typography>
+                <Typography color={"primary"}>
                   {editStatus === "pending" ? (
                     <PendingOutlined />
                   ) : editStatus === "loading" ? (
-                    <CircularProgress size={15} color={"error"} />
+                    <CircularProgress size={15} />
                   ) : editStatus === "done" ? (
                     <Check />
                   ) : (
