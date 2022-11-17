@@ -12,8 +12,9 @@ export function getFirestoreConverter<
 >(): FirestoreDataConverter<T> {
   return {
     toFirestore(modelObject: WithFieldValue<T>): DocumentData {
+      const { id, ref, ...object } = modelObject;
       return {
-        ...modelObject,
+        ...object,
       };
     },
     fromFirestore(

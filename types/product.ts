@@ -1,6 +1,7 @@
 import {
   collection,
   CollectionReference,
+  doc,
   DocumentReference,
 } from "@firebase/firestore";
 import { firestore } from "../app/firebaseApp";
@@ -19,3 +20,16 @@ export const productCollection: CollectionReference<Product> = collection(
   firestore,
   "products"
 ).withConverter(getFirestoreConverter<Product>());
+
+export interface ProductVariant {
+  id: string;
+  ref: DocumentReference<ProductVariant>;
+  order: number;
+}
+
+export const variantCollection = (
+  productId: string
+): CollectionReference<ProductVariant> =>
+  collection(doc(productCollection, productId), "variants").withConverter(
+    getFirestoreConverter<ProductVariant>()
+  );

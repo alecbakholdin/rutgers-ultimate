@@ -6,7 +6,7 @@ import CreateProductWizard from "../../components/CreateProductWizard";
 
 export default function ManageStore(): React.ReactElement {
   return (
-    <Container maxWidth={"lg"} sx={{ marginTop: 5 }}>
+    <Container maxWidth={"lg"} sx={{ marginTop: 5, marginBottom: 5 }}>
       <Stack justifyContent={"center"} spacing={2}>
         <Typography variant={"h4"} textAlign={"center"}>
           Manage Store
