@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import { productCollection } from "../../types/product";
+import { productCollection } from "types/product";
 
 export default function ProductSearchAutocomplete(props: {
   onChange?: (productId: string | null) => void;

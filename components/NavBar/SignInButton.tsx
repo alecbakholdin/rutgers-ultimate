@@ -1,8 +1,8 @@
 import React from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../app/firebaseApp";
+import { auth } from "config/firebaseApp";
 import NavBarPageLink from "./NavBarPageLink";
-import { Page } from "../../hooks/usePages";
+import { Page } from "hooks/usePages";
 import { Box } from "@mui/material";
 
 export default function SignInButton(): React.ReactElement {

@@ -3,10 +3,10 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { Product } from "../../types/product";
+import { Product } from "types/product";
 import styles from "./ProductCard.module.scss";
 import { Link } from "@mui/material";
-import { currencyFormat } from "../../config/currencyUtils";
+import { currencyFormat } from "config/currencyUtils";
 
 export default function ProductCard(props: { product: Product }) {
   return (

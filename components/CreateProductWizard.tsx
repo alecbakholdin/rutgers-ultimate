@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { Check } from "@mui/icons-material";
 import { doc, setDoc, WithFieldValue } from "@firebase/firestore";
-import { Product, productCollection } from "../types/product";
+import { Product, productCollection } from "types/product";
 
 export default function CreateProductWizard(): React.ReactElement {
   const [editStatus, setEditStatus] = useState<"loading" | "done" | null>(null);

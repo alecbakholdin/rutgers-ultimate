@@ -1,12 +1,13 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { useDocumentData } from "react-firebase-hooks/firestore";
-import { productCollection } from "../../types/product";
+import { productCollection } from "types/product";
 import { doc } from "@firebase/firestore";
 import { Container, Grid, Stack, Typography } from "@mui/material";
-import { currencyFormat } from "../../config/currencyUtils";
+import { currencyFormat } from "config/currencyUtils";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../app/firebaseApp";
+import { auth } from "config/firebaseApp";
+import ProductAddToCart from "components/ProductAddToCart";
 
 export default function ProductPage(): React.ReactElement {
   const [user] = useAuthState(auth);
@@ -22,13 +23,16 @@ export default function ProductPage(): React.ReactElement {
         <Grid item xs={8} sm={4}>
           <img src={product?.image} width={"100%"} alt={product?.name} />
         </Grid>
-        <Grid item xs={12} sm={8}>
+        <Grid item xs={8}>
           <Stack>
             <Typography variant={"h4"}>{product?.name}</Typography>
             <Typography variant={"h6"}>
               {currencyFormat(product?.price ?? 0)}
             </Typography>
           </Stack>
+        </Grid>
+        <Grid item xs={12}>
+          {product && <ProductAddToCart product={product} />}
         </Grid>
       </Grid>
     </Container>

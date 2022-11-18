@@ -1,9 +1,9 @@
 import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
-import { auth } from "../app/firebaseApp";
+import { auth } from "config/firebaseApp";
 import { useEffect, useState } from "react";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { doc } from "@firebase/firestore";
-import { userDataCollection } from "../types/userData";
+import { userDataCollection } from "types/userData";
 
 export interface Page {
   name: string;

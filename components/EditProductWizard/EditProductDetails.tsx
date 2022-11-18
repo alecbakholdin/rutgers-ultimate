@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid, TextField, Typography } from "@mui/material";
 import CurrencyTextField from "./CurrencyTextField";
-import { Product } from "../../types/product";
+import { Product } from "types/product";
 
 export default function EditProductDetails(props: {
   edits: Product | null;

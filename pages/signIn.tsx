@@ -1,7 +1,7 @@
 import React from "react";
-import { uiConfig } from "../config/firebaseAuthUI";
-import { auth } from "../app/firebaseApp";
-import StyledFirebaseAuth from "../components/StyledFirebaseAuth";
+import { uiConfig } from "config/firebaseAuthUI";
+import { auth } from "config/firebaseApp";
+import StyledFirebaseAuth from "components/StyledFirebaseAuth";
 
 export default function SignIn(): React.ReactElement {
   return (

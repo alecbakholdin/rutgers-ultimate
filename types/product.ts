@@ -4,8 +4,9 @@ import {
   doc,
   DocumentReference,
 } from "@firebase/firestore";
-import { firestore } from "../app/firebaseApp";
-import { getFirestoreConverter } from "../config/firestoreConverter";
+import { firestore } from "config/firebaseApp";
+import { getFirestoreConverter } from "config/firestoreConverter";
+import { useMemo } from "react";
 
 export interface Product {
   id: string;
@@ -33,3 +34,9 @@ export const variantCollection = (
   collection(doc(productCollection, productId), "variants").withConverter(
     getFirestoreConverter<ProductVariant>()
   );
+
+export function useVariantCollection(product: Product) {
+  return useMemo(() => {
+    return variantCollection(product.id);
+  }, [product.id]);
+}

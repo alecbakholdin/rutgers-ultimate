@@ -1,8 +1,8 @@
 import React from "react";
 import { Container, Stack } from "@mui/material";
-import EditProductWizard from "../../components/EditProductWizard/EditProductWizard";
+import EditProductWizard from "components/EditProductWizard/EditProductWizard";
 import Typography from "@mui/material/Typography";
-import CreateProductWizard from "../../components/CreateProductWizard";
+import CreateProductWizard from "components/CreateProductWizard";
 
 export default function ManageStore(): React.ReactElement {
   return (

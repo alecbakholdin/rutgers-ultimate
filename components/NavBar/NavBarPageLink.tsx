@@ -1,5 +1,5 @@
 import React from "react";
-import { Page } from "../../hooks/usePages";
+import { Page } from "hooks/usePages";
 import { Typography } from "@mui/material";
 
 export default function NavBarPageLink({

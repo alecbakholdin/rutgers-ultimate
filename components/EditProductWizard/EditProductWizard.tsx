@@ -16,7 +16,7 @@ import {
   productCollection,
   ProductVariant,
   variantCollection,
-} from "../../types/product";
+} from "types/product";
 import { deleteDoc, doc, setDoc } from "@firebase/firestore";
 import ProductSearchAutocomplete from "./ProductSearchAutocomplete";
 import { Check, PendingOutlined } from "@mui/icons-material";

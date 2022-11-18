@@ -4,7 +4,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Box from "@mui/material/Box";
-import { usePages } from "../../hooks/usePages";
+import { usePages } from "hooks/usePages";
 import NavBarPageLink from "./NavBarPageLink";
 
 export default function XsPages(props: {
