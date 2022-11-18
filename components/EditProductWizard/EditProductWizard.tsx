@@ -4,11 +4,9 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CircularProgress,
   Container,
   Grid,
   Stack,
-  Typography,
 } from "@mui/material";
 import { useCollectionData, useDocument } from "react-firebase-hooks/firestore";
 import {
@@ -19,14 +17,12 @@ import {
 } from "types/product";
 import { deleteDoc, doc, setDoc } from "@firebase/firestore";
 import ProductSearchAutocomplete from "./ProductSearchAutocomplete";
-import { Check, PendingOutlined } from "@mui/icons-material";
 import EditProductDetails from "./EditProductDetails";
 import EditProductVariants from "./EditProductVariants";
+import LoadingButton, { LoadingStatus } from "components/LoadingButton";
 
 export default function EditProductWizard(): React.ReactElement {
-  const [editStatus, setEditStatus] = useState<
-    "pending" | "loading" | "nothing" | "error" | "done"
-  >("nothing");
+  const [editStatus, setEditStatus] = useState<LoadingStatus | null>(null);
 
   const [productId, setProductId] = useState<string | null>(null);
 
@@ -36,7 +32,7 @@ export default function EditProductWizard(): React.ReactElement {
   const [edits, setEdits] = useState<Product | null>(null);
   useEffect(() => {
     if (!productLoading) {
-      setEditStatus("nothing");
+      setEditStatus(null);
       setEdits(product?.data() ?? null);
     }
   }, [product, productLoading]);
@@ -47,10 +43,13 @@ export default function EditProductWizard(): React.ReactElement {
   };
 
   // manage variants
-  const query = useMemo(() => {
-    return productId ? variantCollection(productId) : null;
-  }, [productId]);
-  const [variants, variantsLoading] = useCollectionData<ProductVariant>(query);
+  const variantCollectionMemo = useMemo(
+    () => (productId ? variantCollection(productId) : null),
+    [productId]
+  );
+  const [variants, variantsLoading] = useCollectionData<ProductVariant>(
+    variantCollectionMemo
+  );
   const [updatedVariants, setUpdatedVariants] = useState<ProductVariant[]>([]);
   const handleSetVariants = (variants: ProductVariant[]) => {
     setEditStatus("pending");
@@ -59,8 +58,25 @@ export default function EditProductWizard(): React.ReactElement {
   useEffect(() => {
     if (variants && !variantsLoading) {
       setUpdatedVariants(variants);
+    } else if (variantsLoading) {
+      setUpdatedVariants([]);
     }
   }, [variantsLoading]);
+
+  const handleDelete = async () => {
+    if (!docReference) {
+      return;
+    }
+    setEditStatus("loading");
+    if (variants) {
+      for (const variant of variants) {
+        await deleteDoc(variant.ref);
+      }
+    }
+    await deleteDoc(docReference);
+    setEditStatus("success");
+    setProductId(null);
+  };
 
   const handleSubmit = () => {
     if (docReference && edits && editStatus == "pending") {
@@ -73,19 +89,20 @@ export default function EditProductWizard(): React.ReactElement {
               (old) => !updatedVariants.find((update) => old.id == update.id)
             )
             .forEach(
-              async (toDelete) => await deleteDoc(doc(query!, toDelete.id))
+              async (toDelete) =>
+                await deleteDoc(doc(variantCollectionMemo!, toDelete.id))
             );
         })
         .then(() => {
           // adding new variants and updating
           updatedVariants.forEach(async (v, i) => {
-            await setDoc(doc(query!, v.id), {
+            await setDoc(doc(variantCollectionMemo!, v.id), {
               id: v.id,
               order: i,
             } as ProductVariant);
           });
         })
-        .then(() => setEditStatus("done"))
+        .then(() => setEditStatus("success"))
         .catch((e) => {
           setEditStatus("error");
           console.error(e);
@@ -109,24 +126,21 @@ export default function EditProductWizard(): React.ReactElement {
               <EditProductVariants
                 variants={updatedVariants}
                 setVariants={handleSetVariants}
+                variantsLoading={variantsLoading}
                 disabled={!Boolean(productId) || variantsLoading}
               />
             </Grid>
             <Grid item xs={6}>
               <Stack direction={"row"} alignItems={"center"}>
-                <Button onClick={handleSubmit}>SUBMIT CHANGES</Button>
-                <Typography color={"primary"}>
-                  {editStatus === "pending" ? (
-                    <PendingOutlined />
-                  ) : editStatus === "loading" ? (
-                    <CircularProgress size={15} />
-                  ) : editStatus === "done" ? (
-                    <Check />
-                  ) : (
-                    <></>
-                  )}
-                </Typography>
+                <LoadingButton onClick={handleSubmit} status={editStatus}>
+                  SUBMIT CHANGES
+                </LoadingButton>
               </Stack>
+            </Grid>
+            <Grid item xs={6} container justifyContent={"right"}>
+              <Button onClick={handleDelete} disabled={!Boolean(productId)}>
+                DELETE ITEM
+              </Button>
             </Grid>
           </Grid>
         </CardContent>

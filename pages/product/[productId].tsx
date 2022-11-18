@@ -36,7 +36,7 @@ export default function ProductPage(): React.ReactElement {
           {product && <ProductAddToCart product={product} />}
         </Grid>
         <Grid item xs={12}>
-          {product && <ProductCartSummary product={product} />}
+          {product && <ProductCartSummary productId={product.id} />}
         </Grid>
       </Grid>
     </Container>

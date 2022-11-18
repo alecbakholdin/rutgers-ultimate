@@ -6,9 +6,9 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import { Check, Error } from "@mui/icons-material";
+import { Check, Error, PendingOutlined as Pending } from "@mui/icons-material";
 
-export type LoadingStatus = "loading" | "success" | "error";
+export type LoadingStatus = "pending" | "loading" | "success" | "error";
 
 export default function LoadingButton(
   props: ButtonProps & { status?: LoadingStatus | null }
@@ -24,6 +24,7 @@ export default function LoadingButton(
           {status === "loading" && (
             <CircularProgress size={15} sx={{ verticalAlign: "middle" }} />
           )}
+          {status === "loading" && <Pending sx={{ verticalAlign: "middle" }} />}
           {status === "success" && <Check sx={{ verticalAlign: "middle" }} />}
           {status === "error" && <Error sx={{ verticalAlign: "middle" }} />}
         </Typography>
