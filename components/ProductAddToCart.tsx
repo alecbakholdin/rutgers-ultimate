@@ -14,8 +14,7 @@ import {
 import { Product, ProductVariant, useVariantCollection } from "types/product";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { useCart } from "types/userData";
-import LoadingButton, { LoadingStatus } from "LoadingButton";
-import ProductCartSummary from "./ProductCartSummary";
+import LoadingButton, { LoadingStatus } from "components/LoadingButton";
 
 export default function ProductAddToCart({
   product,
@@ -54,7 +53,7 @@ export default function ProductAddToCart({
 
   return (
     <Card>
-      <CardHeader title={"Product Cart"} />
+      <CardHeader title={"Add to Cart"} />
       <CardContent>
         <Grid container spacing={1}>
           <Grid item xs={12} md={6}>
@@ -62,7 +61,7 @@ export default function ProductAddToCart({
               <InputLabel>Variant</InputLabel>
               <Select
                 label={"Variant"}
-                value={selectedVariant?.id}
+                value={selectedVariant?.id ?? ""}
                 onChange={handleChangeVariant}
               >
                 {variants
@@ -88,9 +87,6 @@ export default function ProductAddToCart({
             <LoadingButton status={addToCartStatus} onClick={handleSubmit}>
               ADD TO CART
             </LoadingButton>
-          </Grid>
-          <Grid item xs={12}>
-            <ProductCartSummary product={product} />
           </Grid>
         </Grid>
       </CardContent>

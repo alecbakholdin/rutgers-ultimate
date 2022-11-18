@@ -8,6 +8,7 @@ import { currencyFormat } from "config/currencyUtils";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "config/firebaseApp";
 import ProductAddToCart from "components/ProductAddToCart";
+import ProductCartSummary from "components/ProductCartSummary";
 
 export default function ProductPage(): React.ReactElement {
   const [user] = useAuthState(auth);
@@ -27,12 +28,15 @@ export default function ProductPage(): React.ReactElement {
           <Stack>
             <Typography variant={"h4"}>{product?.name}</Typography>
             <Typography variant={"h6"}>
-              {currencyFormat(product?.price ?? 0)}
+              {currencyFormat(product?.price)}
             </Typography>
           </Stack>
         </Grid>
         <Grid item xs={12}>
           {product && <ProductAddToCart product={product} />}
+        </Grid>
+        <Grid item xs={12}>
+          {product && <ProductCartSummary product={product} />}
         </Grid>
       </Grid>
     </Container>
