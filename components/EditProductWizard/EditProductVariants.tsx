@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useState } from "react";
 import { ProductVariant } from "types/product";
 import { Chip, Grid, Stack, Typography } from "@mui/material";
-import BetterTextField from "BetterTextField";
+import BetterTextField from "components/BetterTextField";
 import IconButton from "@mui/material/IconButton";
 import { Add } from "@mui/icons-material";
 
