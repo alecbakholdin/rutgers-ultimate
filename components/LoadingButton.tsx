@@ -24,7 +24,7 @@ export default function LoadingButton(
           {status === "loading" && (
             <CircularProgress size={15} sx={{ verticalAlign: "middle" }} />
           )}
-          {status === "loading" && <Pending sx={{ verticalAlign: "middle" }} />}
+          {status === "pending" && <Pending sx={{ verticalAlign: "middle" }} />}
           {status === "success" && <Check sx={{ verticalAlign: "middle" }} />}
           {status === "error" && <Error sx={{ verticalAlign: "middle" }} />}
         </Typography>

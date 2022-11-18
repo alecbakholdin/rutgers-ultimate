@@ -7,6 +7,7 @@ import {
 import { firestore } from "config/firebaseApp";
 import { getFirestoreConverter } from "config/firestoreConverter";
 import { useMemo } from "react";
+import { useCollectionData } from "react-firebase-hooks/firestore";
 
 export interface Product {
   id: string;
@@ -39,4 +40,9 @@ export function useVariantCollection(product: Product) {
   return useMemo(() => {
     return variantCollection(product.id);
   }, [product.id]);
+}
+
+export function useVariants(product: Product) {
+  const variantQuery = useVariantCollection(product);
+  return useCollectionData(variantQuery);
 }

@@ -78,35 +78,32 @@ export default function EditProductWizard(): React.ReactElement {
     setProductId(null);
   };
 
-  const handleSubmit = () => {
-    if (docReference && edits && editStatus == "pending") {
+  const handleSubmit = async () => {
+    if (docReference && edits) {
       setEditStatus("loading");
-      setDoc(docReference, edits)
-        .then(() => {
-          // deleting old variants
-          variants
-            ?.filter(
-              (old) => !updatedVariants.find((update) => old.id == update.id)
-            )
-            .forEach(
-              async (toDelete) =>
-                await deleteDoc(doc(variantCollectionMemo!, toDelete.id))
-            );
-        })
-        .then(() => {
-          // adding new variants and updating
-          updatedVariants.forEach(async (v, i) => {
-            await setDoc(doc(variantCollectionMemo!, v.id), {
-              id: v.id,
-              order: i,
-            } as ProductVariant);
-          });
-        })
-        .then(() => setEditStatus("success"))
-        .catch((e) => {
-          setEditStatus("error");
-          console.error(e);
-        });
+      await setDoc(docReference, edits);
+
+      if (variantCollectionMemo) {
+        // delete docs that are no longer present in updatedVariants
+        const toDeleteDocs =
+          (await variants?.filter(
+            (old) => !updatedVariants.find((update) => old.id == update.id)
+          )) ?? [];
+        for (const toDelete of toDeleteDocs) {
+          await deleteDoc(doc(variantCollectionMemo, toDelete.id));
+        }
+
+        // update docs with new order
+        for (let i = 0; i < updatedVariants.length; i++) {
+          const update = {
+            id: updatedVariants[i].id,
+            order: i,
+          } as ProductVariant;
+          await setDoc(doc(variantCollectionMemo, update.id), update);
+        }
+      }
+
+      setEditStatus("success");
     }
   };
 
