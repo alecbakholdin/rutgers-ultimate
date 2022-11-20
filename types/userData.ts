@@ -145,6 +145,13 @@ export function useCart() {
     } as CartItem);
   };
 
+  const clearCart = async () => {
+    if (!cart) return;
+    for (const cartItem of cart) {
+      await updateCartQuantity(cartItem, 0);
+    }
+  };
+
   return {
     cart,
     cartLoading,
@@ -155,5 +162,6 @@ export function useCart() {
     addToCart,
     updateCartQuantity,
     getItemPrice,
+    clearCart,
   };
 }

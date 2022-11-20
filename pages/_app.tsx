@@ -5,17 +5,20 @@ import { Box, ThemeProvider } from "@mui/material";
 import { theme } from "config/theme";
 import NavBar from "components/NavBar";
 import NonSSRWrapper from "components/NonSSRWrapper";
+import { SnackbarProvider } from "notistack";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
-      <NonSSRWrapper>
-        <NavBar />
-        <main>
-          <Component {...pageProps} />
-        </main>
-        <Box height={50} />
-      </NonSSRWrapper>
+      <SnackbarProvider>
+        <NonSSRWrapper>
+          <NavBar />
+          <main>
+            <Component {...pageProps} />
+          </main>
+          <Box height={50} />
+        </NonSSRWrapper>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }
