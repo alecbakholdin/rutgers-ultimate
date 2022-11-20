@@ -105,7 +105,7 @@ export default function ProductAddToCart({
             />
           </Grid>
           {canHaveName && (
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={canHaveName && canHaveNumber ? 6 : 12}>
               <TextField
                 fullWidth
                 label={"Name (case-sensitive)"}
@@ -115,7 +115,7 @@ export default function ProductAddToCart({
             </Grid>
           )}
           {canHaveNumber && (
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={canHaveName && canHaveNumber ? 6 : 12}>
               <TextField
                 fullWidth
                 label={"Number"}

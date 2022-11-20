@@ -53,7 +53,9 @@ export default function Checkout(): React.ReactElement {
     if (totalCost === 0) {
       enqueueSnackbar("You don't have anything in your cart!", {
         variant: "error",
+        autoHideDuration: 1500,
       });
+      return;
     }
     const fields: (keyof OrderInfo)[] = [
       "venmo",
@@ -66,7 +68,10 @@ export default function Checkout(): React.ReactElement {
     ];
     for (const key of fields) {
       if (!orderInfo[key]) {
-        enqueueSnackbar(`Missing field '${key}'`, { variant: "error" });
+        enqueueSnackbar(`Missing field '${key}'`, {
+          variant: "error",
+          autoHideDuration: 1500,
+        });
         return;
       }
     }
