@@ -5,18 +5,15 @@ import { productCollection } from "types/product";
 import { doc } from "@firebase/firestore";
 import { Container, Grid, Stack, Typography } from "@mui/material";
 import { currencyFormat } from "config/currencyUtils";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "config/firebaseApp";
 import ProductAddToCart from "components/ProductAddToCart";
 import ProductCartSummary from "components/ProductCartSummary";
+import { useCart } from "types/userData";
 
 export default function ProductPage(): React.ReactElement {
-  const [user] = useAuthState(auth);
+  const { getItemPrice } = useCart();
   const router = useRouter();
   const { productId } = router.query;
-  const [product, loading, error] = useDocumentData(
-    doc(productCollection, `${productId}`)
-  );
+  const [product] = useDocumentData(doc(productCollection, `${productId}`));
 
   return (
     <Container maxWidth={"md"} sx={{ paddingTop: 5 }}>
@@ -28,7 +25,7 @@ export default function ProductPage(): React.ReactElement {
           <Stack>
             <Typography variant={"h4"}>{product?.name}</Typography>
             <Typography variant={"h6"}>
-              {currencyFormat(product?.price)}
+              {currencyFormat(product && getItemPrice(product))}
             </Typography>
           </Stack>
         </Grid>

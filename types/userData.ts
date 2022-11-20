@@ -4,18 +4,23 @@ import {
   deleteDoc,
   doc,
   DocumentReference,
+  FirestoreError,
   updateDoc,
 } from "@firebase/firestore";
 import { auth, firestore } from "config/firebaseApp";
 import { getFirestoreConverter } from "config/firestoreConverter";
-import { ProductVariant } from "./product";
+import { Product, ProductVariant } from "./product";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useMemo } from "react";
-import { useCollectionData } from "react-firebase-hooks/firestore";
+import {
+  useCollectionData,
+  useDocumentData,
+} from "react-firebase-hooks/firestore";
 
 export interface UserData {
   id: string;
-  isAdmin: true;
+  isAdmin: boolean;
+  isTeam?: boolean;
 }
 
 export interface CartItem {
@@ -31,8 +36,25 @@ export const userDataCollection = collection(
   "userData"
 ).withConverter(getFirestoreConverter<UserData>());
 
+export function useUserData(): [
+  UserData | undefined,
+  boolean,
+  FirestoreError | undefined
+] {
+  const [user] = useAuthState(auth);
+  const [userData, userDataLoading, userDataError] = useDocumentData(
+    user?.uid ? doc(userDataCollection, user.uid) : null
+  );
+  return [
+    userData && { isTeam: user?.email?.endsWith("rutgers.edu"), ...userData },
+    userDataLoading,
+    userDataError,
+  ];
+}
+
 export function useCart() {
   const [user, userLoading] = useAuthState(auth);
+  const [userData] = useUserData();
   const cartCollection = useMemo(() => {
     if (user && !userLoading) {
       return collection(
@@ -88,10 +110,16 @@ export function useCart() {
     } as CartItem);
   };
 
+  const getItemPrice = (product: Product) => {
+    const useTeamPrice = Boolean(userData?.isTeam && product.teamPrice);
+    return useTeamPrice ? product.teamPrice : product.price;
+  };
+
   return {
     cart,
     cartLoading,
     addToCart,
     updateCartQuantity,
+    getItemPrice,
   };
 }

@@ -23,7 +23,7 @@ export default function ProductCartSummary({
   product: Product;
   useProductName?: boolean;
 }): React.ReactElement {
-  const { cart, updateCartQuantity } = useCart();
+  const { cart, updateCartQuantity, getItemPrice } = useCart();
   const [variants] = useVariants(product);
 
   const productCartItems = cart?.filter(
@@ -45,7 +45,7 @@ export default function ProductCartSummary({
   };
   const totalQty =
     productCartItems?.reduce((t, item) => t + item.quantity, 0) ?? 0;
-  const totalPrice = product.price ? product.price * totalQty : 0;
+  const totalPrice = getItemPrice(product) * totalQty;
 
   const sizeCol = {
     xs: 2,
@@ -146,9 +146,7 @@ export default function ProductCartSummary({
                 </Grid>
                 <Grid item container justifyContent={"right"} {...priceCol}>
                   <Typography>
-                    {currencyFormat(
-                      product.price && product.price * cartItem.quantity
-                    )}
+                    {currencyFormat(getItemPrice(product) * cartItem.quantity)}
                   </Typography>
                 </Grid>
               </>

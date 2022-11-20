@@ -7,22 +7,26 @@ import { Product } from "types/product";
 import styles from "components/ProductCard/ProductCard.module.scss";
 import { Link } from "@mui/material";
 import { currencyFormat } from "config/currencyUtils";
+import { useUserData } from "types/userData";
 
-export default function ProductCard(props: { product: Product }) {
+export default function ProductCard({
+  product: { id, teamPrice, price, image, name },
+}: {
+  product: Product;
+}) {
+  const [userData] = useUserData();
+  const priceToDisplay = userData?.isTeam && teamPrice ? teamPrice : price;
+
   return (
-    <Link href={`/product/${props.product.id}`} sx={{ textDecoration: "none" }}>
+    <Link href={`/product/${id}`} sx={{ textDecoration: "none" }}>
       <Card className={styles.root}>
-        <CardMedia
-          className={styles.media}
-          component="img"
-          image={props.product.image}
-        />
+        <CardMedia className={styles.media} component="img" image={image} />
         <CardContent className={styles.title}>
           <Typography gutterBottom variant="h5" component="div">
-            {props.product.name}
+            {name}
           </Typography>
           <Typography gutterBottom variant="body1" component={"span"}>
-            {currencyFormat(props.product.price)}
+            {currencyFormat(priceToDisplay)}
           </Typography>
         </CardContent>
       </Card>
