@@ -5,17 +5,20 @@ import {
   doc,
   DocumentReference,
   FirestoreError,
+  query,
   updateDoc,
+  where,
 } from "@firebase/firestore";
 import { auth, firestore } from "config/firebaseApp";
 import { getFirestoreConverter } from "config/firestoreConverter";
-import { Product, ProductVariant } from "./product";
+import { Product, productCollection, ProductVariant } from "./product";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useMemo } from "react";
 import {
   useCollectionData,
   useDocumentData,
 } from "react-firebase-hooks/firestore";
+import { distinctEntries } from "config/arrayUtils";
 
 export interface UserData {
   id: string;
@@ -64,6 +67,38 @@ export function useCart() {
     }
   }, [user, userLoading]);
   const [cart, cartLoading] = useCollectionData(cartCollection);
+
+  const productRefs = distinctEntries<DocumentReference<Product>>(
+    cart?.map(
+      (item) => item.variantRef.parent.parent as DocumentReference<Product>
+    ),
+    (docRef) => docRef.id
+  );
+  const productIdsInCart: string[] = productRefs.map((product) => product.id);
+  const productQuery = useMemo(
+    () =>
+      Boolean(productIdsInCart && productIdsInCart.length)
+        ? query(productCollection, where("__name__", "in", productIdsInCart))
+        : null,
+    [productIdsInCart]
+  );
+  const [productsInCart] = useCollectionData(productQuery);
+  const productsInCartById: { [id: string]: Product } = Object.fromEntries(
+    productsInCart?.map((p) => [p.id, p]) ?? []
+  );
+
+  const getItemPrice = (product: Product) => {
+    const useTeamPrice = Boolean(userData?.isTeam && product.teamPrice);
+    return useTeamPrice ? product.teamPrice : product.price;
+  };
+  const totalCost = cart?.reduce((total, next) => {
+    const product = productsInCartById[next.variantRef.parent.parent!.id];
+    if (!product) {
+      return total;
+    }
+    return total + getItemPrice(product) * next.quantity;
+  }, 0);
+
   const updateCartQuantity = async (cartItem: CartItem, quantity: number) => {
     if (!user || !cartCollection) {
       throw new Error("User is not authenticated. Please log in first");
@@ -110,14 +145,13 @@ export function useCart() {
     } as CartItem);
   };
 
-  const getItemPrice = (product: Product) => {
-    const useTeamPrice = Boolean(userData?.isTeam && product.teamPrice);
-    return useTeamPrice ? product.teamPrice : product.price;
-  };
-
   return {
     cart,
     cartLoading,
+    productIdsInCart,
+    productsInCart,
+    productsInCartById,
+    totalCost,
     addToCart,
     updateCartQuantity,
     getItemPrice,

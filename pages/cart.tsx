@@ -1,38 +1,26 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useCart } from "types/userData";
-import { Product, productCollection } from "types/product";
-import { DocumentReference, query, where } from "@firebase/firestore";
-import { Container, Grid, Typography } from "@mui/material";
+import {
+  Button,
+  Container,
+  Grid,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
 import ProductCartSummary from "components/ProductCartSummary";
-import { distinctEntries } from "config/arrayUtils";
-import { useCollectionData } from "react-firebase-hooks/firestore";
+import { currencyFormat } from "config/currencyUtils";
 
 export default function Cart(): React.ReactElement {
-  const { cart } = useCart();
-
-  const productRefs = distinctEntries<DocumentReference<Product>>(
-    cart?.map(
-      (item) => item.variantRef.parent.parent as DocumentReference<Product>
-    ),
-    (docRef) => docRef.id
-  );
-  const productIds: string[] = productRefs.map((product) => product.id);
-  const productQuery = useMemo(
-    () =>
-      Boolean(productIds && productIds.length)
-        ? query(productCollection, where("__name__", "in", productIds))
-        : null,
-    [productIds]
-  );
-  const [products, loading, error] = useCollectionData(productQuery);
+  const { productsInCart, totalCost } = useCart();
 
   return (
     <Container maxWidth={"md"}>
       <Grid container spacing={2} sx={{ paddingTop: 2 }}>
-        <Grid item>
+        <Grid item xs={12}>
           <Typography variant={"h4"}>Cart</Typography>
         </Grid>
-        {products?.map((product) => (
+        {productsInCart?.map((product) => (
           <Grid item key={product.id} xs={12}>
             <ProductCartSummary
               key={product.id}
@@ -41,6 +29,23 @@ export default function Cart(): React.ReactElement {
             />
           </Grid>
         ))}
+        <Grid item xs={6} container alignItems={"center"}>
+          <Button>
+            <Link href={"/checkout"} sx={{ textDecoration: "none" }}>
+              <Typography variant={"h6"}>Checkout</Typography>
+            </Link>
+          </Button>
+        </Grid>
+        <Grid item xs={6} container justifyContent={"right"}>
+          <TextField
+            value={currencyFormat(totalCost)}
+            label={"Total"}
+            inputProps={{ min: 0, style: { textAlign: "center" } }}
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </Grid>
       </Grid>
     </Container>
   );
