@@ -15,6 +15,7 @@ import { Product, ProductVariant, useVariantCollection } from "types/product";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { useCart } from "types/userData";
 import LoadingButton, { LoadingStatus } from "components/LoadingButton";
+import { useSnackbar } from "notistack";
 
 export default function ProductAddToCart({
   product,
@@ -38,7 +39,7 @@ export default function ProductAddToCart({
     }
   };
   const [quantity, setQuantity] = useState<number>(0);
-  const handleChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeQuantity = (e: SelectChangeEvent) => {
     setAddToCartStatus(null);
     setQuantity(parseInt(e.target.value));
   };
@@ -62,13 +63,27 @@ export default function ProductAddToCart({
     }
   };
 
-  const handleSubmit = () => {
-    if (selectedVariant && quantity > 0) {
-      setAddToCartStatus("loading");
-      addToCart(selectedVariant.ref, quantity, name, number).then(() => {
-        setAddToCartStatus("success");
+  const { enqueueSnackbar } = useSnackbar();
+  const handleSubmit = async () => {
+    if (!selectedVariant) {
+      enqueueSnackbar("Please select a variant", {
+        autoHideDuration: 1500,
+        variant: "error",
       });
+      return;
     }
+    if (quantity === 0) {
+      enqueueSnackbar("Please select a quantity greater than 0", {
+        autoHideDuration: 1500,
+        variant: "error",
+      });
+      return;
+    }
+
+    setAddToCartStatus("loading");
+    await addToCart(selectedVariant.ref, quantity, name, number);
+
+    setAddToCartStatus("success");
   };
   const { canHaveName, canHaveNumber } = product;
 
@@ -96,13 +111,20 @@ export default function ProductAddToCart({
             </FormControl>
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
-              value={quantity}
-              onChange={handleChangeQuantity}
-              label={"Quantity"}
-              fullWidth
-              type={"number"}
-            />
+            <FormControl fullWidth>
+              <InputLabel>Quantity</InputLabel>
+              <Select
+                label={"Quantity"}
+                value={quantity.toString()}
+                onChange={handleChangeQuantity}
+              >
+                {Array.from({ length: 6 }, (_, i) => i + 1).map((num) => (
+                  <MenuItem key={num - 1} value={(num - 1).toString()}>
+                    {num - 1}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           {canHaveName && (
             <Grid item xs={12} md={canHaveName && canHaveNumber ? 6 : 12}>
