@@ -7,6 +7,7 @@ import {
   Divider,
   Grid,
   IconButton,
+  Link,
   TextField,
   Typography,
 } from "@mui/material";
@@ -45,10 +46,29 @@ export default function ProductCartSummary({
     productCartItems?.reduce((t, item) => t + item.quantity, 0) ?? 0;
   const totalPrice = product.price ? product.price * totalQty : 0;
 
+  const sizeCol = {
+    xs: 2,
+  };
+  const qtyCol = {
+    xs: 6,
+    sm: 5,
+    md: 4,
+    lg: 3,
+  };
+  const priceCol = {
+    xs: 2,
+  };
+
   return (
     <Card sx={{ ...(!productCartItems?.length && { display: "none" }) }}>
       <CardHeader
-        title={useProductName ? product.name : "Product Quantities"}
+        title={
+          useProductName ? (
+            <Link href={`/product/${product.id}`}>{product.name}</Link>
+          ) : (
+            "Product Quantities"
+          )
+        }
       />
       <CardContent>
         <Grid
@@ -69,7 +89,7 @@ export default function ProductCartSummary({
                 <Grid key={`${cartItem.id} divider`} item xs={12}>
                   <Divider />
                 </Grid>
-                <Grid key={cartItem.id} item xs={2}>
+                <Grid key={cartItem.id} item {...sizeCol}>
                   <Typography variant={"h5"}>
                     {cartItem.variantRef.id}
                   </Typography>
@@ -77,7 +97,7 @@ export default function ProductCartSummary({
                 <Grid
                   key={`${cartItem.id}-quantity`}
                   item
-                  xs={3}
+                  {...qtyCol}
                   container
                   wrap={"nowrap"}
                   alignItems={"center"}
@@ -103,7 +123,7 @@ export default function ProductCartSummary({
                     </IconButton>
                   </Grid>
                 </Grid>
-                <Grid item xs={2} container justifyContent={"right"}>
+                <Grid item container justifyContent={"right"} {...priceCol}>
                   <Typography>
                     {currencyFormat(
                       product.price && product.price * cartItem.quantity
@@ -118,8 +138,8 @@ export default function ProductCartSummary({
               <Grid item key={"total-divider"} xs={12}>
                 <Divider />
               </Grid>
-              <Grid item xs={2} key={"total-whitespace"} />
-              <Grid item xs={3} key={"total-qty"}>
+              <Grid item key={"total-whitespace"} {...sizeCol} />
+              <Grid item key={"total-qty"} {...qtyCol}>
                 <TextField
                   value={totalQty}
                   label="Total"
@@ -134,9 +154,9 @@ export default function ProductCartSummary({
               <Grid
                 item
                 key={"total-price"}
-                xs={2}
                 container
                 justifyContent={"right"}
+                {...priceCol}
               >
                 <Typography>{currencyFormat(totalPrice)}</Typography>
               </Grid>
