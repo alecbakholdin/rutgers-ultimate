@@ -1,4 +1,4 @@
-import { Container, Grid, Typography } from "@mui/material";
+import { Container, Grid, Link, Typography } from "@mui/material";
 import FeedbackForm from "components/FeedbackForm";
 
 export default function Home() {
@@ -11,10 +11,14 @@ export default function Home() {
           </Typography>
           <Typography variant={"body1"}>
             This is the home page of Rutgers Ultimate. It&apos;s currently still
-            in early days, but the store is set up to take orders by Venmo
-            request, so please check that out. Look forward to more changes in
-            the future, and if you have any feedback on the website or discover
-            any bugs, please use the form below to let me know!
+            in early days, but{" "}
+            <Link href={"/store"} sx={{ textDecoration: "none" }}>
+              the store
+            </Link>{" "}
+            is set up to take orders by Venmo request, so please check that out.
+            Look forward to more changes in the future, and if you have any
+            feedback on the website or discover any bugs, please use the form
+            below to let me know!
           </Typography>
         </Grid>
         <Grid item xs={12}>
