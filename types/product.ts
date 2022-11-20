@@ -15,6 +15,8 @@ export interface Product {
   price: number;
   teamPrice: number;
   image?: string;
+  canHaveName: boolean;
+  canHaveNumber: boolean;
   ref: DocumentReference<Product>;
 }
 

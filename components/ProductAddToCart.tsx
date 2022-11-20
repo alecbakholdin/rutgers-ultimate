@@ -42,14 +42,35 @@ export default function ProductAddToCart({
     setAddToCartStatus(null);
     setQuantity(parseInt(e.target.value));
   };
+  const [name, setName] = useState<string | undefined>(undefined);
+  const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAddToCartStatus(null);
+    if (e.target.value.trim().length === 0) {
+      setName(undefined);
+    } else {
+      setName(e.target.value);
+    }
+  };
+  const [number, setNumber] = useState<number | undefined>(undefined);
+  const handleChangeNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAddToCartStatus(null);
+    if (e.target.value.trim().length === 0 || isNaN(parseInt(e.target.value))) {
+      setNumber(undefined);
+    } else {
+      const val = parseInt(e.target.value.slice(0, 2));
+      setNumber(Math.min(99, Math.max(0, val)));
+    }
+  };
+
   const handleSubmit = () => {
     if (selectedVariant && quantity > 0) {
       setAddToCartStatus("loading");
-      addToCart(selectedVariant.ref, quantity).then(() => {
+      addToCart(selectedVariant.ref, quantity, name, number).then(() => {
         setAddToCartStatus("success");
       });
     }
   };
+  const { canHaveName, canHaveNumber } = product;
 
   return (
     <Card>
@@ -83,7 +104,28 @@ export default function ProductAddToCart({
               type={"number"}
             />
           </Grid>
-          <Grid item xs={6}>
+          {canHaveName && (
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label={"Name (case-sensitive)"}
+                value={name}
+                onChange={handleChangeName}
+              />
+            </Grid>
+          )}
+          {canHaveNumber && (
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label={"Number"}
+                type={"tel"}
+                value={number === undefined ? "" : number}
+                onChange={handleChangeNumber}
+              />
+            </Grid>
+          )}
+          <Grid item xs={12}>
             <LoadingButton status={addToCartStatus} onClick={handleSubmit}>
               ADD TO CART
             </LoadingButton>

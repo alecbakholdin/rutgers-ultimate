@@ -22,6 +22,8 @@ export interface CartItem {
   id: string;
   variantRef: DocumentReference<ProductVariant>;
   quantity: number;
+  name: string;
+  number: number;
 }
 
 export const userDataCollection = collection(
@@ -50,7 +52,6 @@ export function useCart() {
       return deleteDoc(docReference);
     }
 
-    console.log("updating with ", quantity);
     return updateDoc(docReference, {
       quantity,
     } as CartItem);
@@ -58,7 +59,9 @@ export function useCart() {
 
   const addToCart = async (
     variantRef: DocumentReference<ProductVariant>,
-    quantity: number
+    quantity: number,
+    name?: string,
+    number?: number
   ) => {
     if (!user || !cartCollection) {
       throw new Error("User is not authenticated. Please log in first");
@@ -66,10 +69,12 @@ export function useCart() {
 
     // update quantity if item already is in the cart
     const existingItem = cart?.find(
-      (item) => item.variantRef.path === variantRef.path
+      (item) =>
+        item.variantRef.path === variantRef.path &&
+        item.name === name &&
+        item.number === number
     );
 
-    const cartItemId = [variantRef.id, variantRef.parent.parent!.id];
     if (existingItem) {
       return updateCartQuantity(existingItem, existingItem.quantity + quantity);
     }
@@ -78,6 +83,8 @@ export function useCart() {
     return addDoc<CartItem>(cartCollection, {
       variantRef,
       quantity,
+      ...(name !== undefined && { name }),
+      ...(number !== undefined && { number }),
     } as CartItem);
   };
 

@@ -8,6 +8,7 @@ import {
   Grid,
   IconButton,
   Link,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -58,7 +59,7 @@ export default function ProductCartSummary({
   const priceCol = {
     xs: 2,
   };
-
+  console.log(cart);
   return (
     <Card sx={{ ...(!productCartItems?.length && { display: "none" }) }}>
       <CardHeader
@@ -90,9 +91,29 @@ export default function ProductCartSummary({
                   <Divider />
                 </Grid>
                 <Grid key={cartItem.id} item {...sizeCol}>
-                  <Typography variant={"h5"}>
-                    {cartItem.variantRef.id}
-                  </Typography>
+                  <Stack>
+                    <Typography key={"id"} variant={"h5"}>
+                      {cartItem.variantRef.id}
+                    </Typography>
+                    {cartItem.name !== undefined && (
+                      <Typography
+                        key={"item-name"}
+                        color={"neutral"}
+                        variant={"caption"}
+                      >
+                        -Name: {cartItem.name}
+                      </Typography>
+                    )}
+                    {cartItem.number !== undefined && (
+                      <Typography
+                        key={"item-number"}
+                        color={"neutral"}
+                        variant={"caption"}
+                      >
+                        -Number: {cartItem.number}
+                      </Typography>
+                    )}
+                  </Stack>
                 </Grid>
                 <Grid
                   key={`${cartItem.id}-quantity`}
