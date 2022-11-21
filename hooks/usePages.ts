@@ -14,6 +14,10 @@ export interface Page {
 export function usePages() {
   const defaultMainPages: Page[] = [
     {
+      name: "Home",
+      href: "/",
+    },
+    {
       name: "Store",
       href: "/store",
     },

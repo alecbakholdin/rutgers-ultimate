@@ -1,14 +1,13 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
+import Link from "next/link";
 
 export default function XsTitle(): React.ReactElement {
   return (
-    <>
+    <Link href={"/"} passHref>
       <Typography
         variant="h5"
         noWrap
-        component="a"
-        href=""
         sx={{
           mr: 2,
           display: { xs: "flex", md: "none" },
@@ -22,6 +21,6 @@ export default function XsTitle(): React.ReactElement {
       >
         MACHINE
       </Typography>
-    </>
+    </Link>
   );
 }
