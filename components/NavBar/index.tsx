@@ -7,10 +7,9 @@ import XsTitle from "./XsTitle";
 import XsPages from "./XsPages";
 import MdPages from "./MdPages";
 import ProfileButton from "./ProfileButton";
+import SignInButton from "./SignInButton";
 
-const pages = ["Products", "Events"];
-
-export default function NavBar() {
+function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -31,12 +30,15 @@ export default function NavBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <MdTitle />
-          <XsPages pages={pages} {...navMenuProps} />
+          <XsPages {...navMenuProps} />
           <XsTitle />
-          <MdPages pages={pages} {...navMenuProps} />
+          <MdPages {...navMenuProps} />
           <ProfileButton />
+          <SignInButton />
         </Toolbar>
       </Container>
     </AppBar>
   );
 }
+
+export default NavBar;

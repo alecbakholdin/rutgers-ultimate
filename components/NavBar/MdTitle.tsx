@@ -1,11 +1,9 @@
 import React from "react";
-import AdbIcon from "@mui/icons-material/Adb";
 import Typography from "@mui/material/Typography";
 
 export default function MdTitle(): React.ReactElement {
   return (
     <>
-      <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
       <Typography
         variant="h6"
         noWrap

@@ -1,21 +1,22 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Link from "next/link";
+import { usePages } from "hooks/usePages";
+import NavBarPageLink from "./NavBarPageLink";
 
 export default function MdPages(props: {
-  pages: string[];
   handleCloseNavMenu: () => void;
 }): React.ReactElement {
+  const { mainPages } = usePages();
   return (
     <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-      {props.pages.map((page) => (
+      {mainPages.map((page) => (
         <Button
-          key={page}
+          key={page.name}
           onClick={props.handleCloseNavMenu}
           sx={{ my: 2, color: "white", display: "block" }}
         >
-          <Link href={`/${page.toLowerCase()}`}>{page}</Link>
+          <NavBarPageLink page={page} />
         </Button>
       ))}
     </Box>

@@ -3,15 +3,17 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import { usePages } from "hooks/usePages";
+import NavBarPageLink from "./NavBarPageLink";
 
 export default function XsPages(props: {
-  pages: string[];
   anchorElNav: HTMLElement | null;
   handleOpenNavMenu: (event: React.MouseEvent<HTMLElement>) => void;
   handleCloseNavMenu: () => void;
 }): React.ReactElement {
+  const { mainPages } = usePages();
+
   return (
     <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
       <IconButton
@@ -42,9 +44,9 @@ export default function XsPages(props: {
           display: { xs: "block", md: "none" },
         }}
       >
-        {props.pages.map((name) => (
-          <MenuItem key={name} onClick={props.handleCloseNavMenu}>
-            <Typography textAlign="center">{name}</Typography>
+        {mainPages.map((page) => (
+          <MenuItem key={page.name} onClick={props.handleCloseNavMenu}>
+            <NavBarPageLink page={page} />
           </MenuItem>
         ))}
       </Menu>

@@ -4,18 +4,22 @@ import IconButton from "@mui/material/IconButton";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { useAuth } from "../../hooks/useAuth";
-import Link from "next/link";
+import { usePages } from "hooks/usePages";
+import NavBarPageLink from "./NavBarPageLink";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "config/firebaseApp";
+import { Link, Stack, Typography } from "@mui/material";
+import { ShoppingCart } from "@mui/icons-material";
+import { useCart } from "types/userData";
 
 export default function ProfileButton(): React.ReactElement {
-  const { user, signOut } = useAuth();
-  const loggedIn = Boolean(user);
-
+  const [user] = useAuthState(auth);
+  const { cart } = useCart();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
+  const { userPages } = usePages();
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -25,27 +29,26 @@ export default function ProfileButton(): React.ReactElement {
     setAnchorElUser(null);
   };
 
-  const actions = [
-    {
-      name: "Sign Out",
-      action: signOut,
-    },
-  ];
-
   return (
-    <Box sx={{ flexGrow: 0 }}>
-      {loggedIn && user ? (
+    <Box sx={{ flexGrow: 0, display: user ? "block" : "none" }}>
+      <Stack direction={"row"} alignItems={"center"} spacing={1}>
+        <Link href={"/cart"}>
+          <Typography color={"primary.contrastText"}>
+            <ShoppingCart sx={{ verticalAlign: "middle" }} />
+          </Typography>
+        </Link>
         <Tooltip title="Open settings">
-          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-            <Avatar />
+          <IconButton onClick={handleOpenUserMenu}>
+            <Avatar
+              alt={user?.email ?? undefined}
+              /*src={user?.photoURL ?? undefined}
+            sx={{ backgroundColor: user?.photoURL && "white" }}*/
+            >
+              {user?.email?.slice(0, 1).toUpperCase()}
+            </Avatar>
           </IconButton>
         </Tooltip>
-      ) : (
-        <Link href={"/signIn"}>
-          <Typography>SIGN IN</Typography>
-        </Link>
-      )}
-
+      </Stack>
       <Menu
         sx={{ mt: "45px" }}
         id="menu-appbar"
@@ -62,15 +65,9 @@ export default function ProfileButton(): React.ReactElement {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        {actions.map(({ name, action }) => (
-          <MenuItem
-            key={name}
-            onClick={() => {
-              handleCloseUserMenu();
-              action();
-            }}
-          >
-            <Typography textAlign="center">{name}</Typography>
+        {userPages.map((page) => (
+          <MenuItem key={page.name} onClick={handleCloseUserMenu}>
+            <NavBarPageLink page={page} />
           </MenuItem>
         ))}
       </Menu>
