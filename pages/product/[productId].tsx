@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { useDocumentData } from "react-firebase-hooks/firestore";
+import { useDocumentDataOnce } from "react-firebase-hooks/firestore";
 import { productCollection } from "types/product";
 import { doc } from "@firebase/firestore";
 import { Container, Grid, Stack, Typography } from "@mui/material";
@@ -13,7 +13,7 @@ export default function ProductPage(): React.ReactElement {
   const { getItemPrice } = useCart();
   const router = useRouter();
   const { productId } = router.query;
-  const [product] = useDocumentData(doc(productCollection, `${productId}`));
+  const [product] = useDocumentDataOnce(doc(productCollection, `${productId}`));
 
   return (
     <Container maxWidth={"md"} sx={{ paddingTop: 5 }}>

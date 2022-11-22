@@ -23,6 +23,7 @@ import { distinctEntries } from "config/arrayUtils";
 export interface UserData {
   id: string;
   isAdmin: boolean;
+  email?: string;
   isTeam?: boolean;
 }
 

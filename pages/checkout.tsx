@@ -17,6 +17,7 @@ import { useSnackbar } from "notistack";
 import LoadingButton, { LoadingStatus } from "components/LoadingButton";
 import { addDoc } from "@firebase/firestore";
 import { orderCollection } from "types/order";
+import { useRouter } from "next/router";
 
 interface OrderInfo {
   venmo?: string;
@@ -30,6 +31,7 @@ interface OrderInfo {
 
 export default function Checkout(): React.ReactElement {
   const { cart, totalCost, clearCart } = useCart();
+  const router = useRouter();
   const [user] = useAuthState(auth);
   const [orderInfo, setOrderInfo] = useState<OrderInfo>({});
   const { enqueueSnackbar } = useSnackbar();
@@ -83,6 +85,7 @@ export default function Checkout(): React.ReactElement {
     await clearCart();
     setSubmitStatus("success");
     setOrderInfo({});
+    await router.push("/thankyou");
   };
 
   return (
