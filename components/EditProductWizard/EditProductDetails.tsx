@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import CurrencyTextField from "./CurrencyTextField";
 import { Product } from "types/product";
+import ListEditor from "components/ListEditor";
 
 export default function EditProductDetails(props: {
   edits: Product | null;
@@ -57,6 +58,22 @@ export default function EditProductDetails(props: {
           value={edits?.teamPrice || 0}
           onChange={(e) =>
             handleEdit({ teamPrice: parseFloat(e.target.value) })
+          }
+        />
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <ListEditor
+          items={edits?.sizes}
+          label={"Sizes"}
+          setItems={(sizes: string[]) => handleEdit({ sizes })}
+        />
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <ListEditor
+          items={edits?.colors?.map((color) => color.name)}
+          label={"Colors"}
+          setItems={(colors: string[]) =>
+            handleEdit({ colors: colors.map((name) => ({ name })) })
           }
         />
       </Grid>
