@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, Grid, GridProps } from "@mui/material";
 import { Product } from "types/product";
-import { CartItem, UserCartItem, useUserData2 } from "types/userData";
+import { UserCartItem, useUserData2 } from "types/userData";
 import LoadingButton, { LoadingStatus } from "components/LoadingButton";
 import NumberSelect from "components/NumberSelect";
 import StringSelect from "components/StringSelect";
@@ -21,7 +21,7 @@ export default function ProductAddToCart({
   const handleStringUpdate = (key: keyof UserCartItem) => (val: string) =>
     setCartItem({ ...cartItem, [key]: val });
   const handleIntUpdate =
-    (key: keyof CartItem, maxLen?: number) => (val: number) => {
+    (key: keyof UserCartItem, maxLen?: number) => (val: number) => {
       const numVal = isNaN(val)
         ? undefined
         : maxLen !== undefined
@@ -110,7 +110,7 @@ export default function ProductAddToCart({
           <Grid {...gridPropsForField("canHaveNumber")}>
             <BetterTextField
               label={"Number"}
-              value={cartItem.number ?? null}
+              value={cartItem.number ?? ""}
               onChange={(e) =>
                 handleIntUpdate("number", 2)(parseInt(e.target.value))
               }
@@ -120,7 +120,7 @@ export default function ProductAddToCart({
           </Grid>
           <Grid item xs={12} md={mdSizeForQuantity()}>
             <NumberSelect
-              label={"quantity"}
+              label={"Quantity"}
               value={cartItem.quantity}
               onChange={handleIntUpdate("quantity")}
             />

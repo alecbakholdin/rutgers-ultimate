@@ -24,7 +24,7 @@ export default function NumberSelect({
 }): React.ReactElement {
   return (
     <FormControl fullWidth>
-      <InputLabel>Quantity</InputLabel>
+      <InputLabel disabled={selectProps?.disabled}>{label}</InputLabel>
       <Select
         label={label}
         value={value === undefined ? "" : value.toString()}

@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React from "react";
 import { Product } from "types/product";
 import {
   Card,
@@ -28,10 +28,6 @@ export default function ProductCartSummary({
 
   const productCartItems =
     cartItems?.filter((item) => item.productId === product.id) ?? [];
-  const handleSet =
-    (cartItem: UserCartItem) => async (e: ChangeEvent<HTMLInputElement>) => {
-      await addToCartItem(cartItem, parseInt(e.target.value));
-    };
   const handleRemoveOne = (cartItem: UserCartItem) => async () => {
     await addToCartItem(cartItem, -1);
   };
@@ -91,7 +87,7 @@ export default function ProductCartSummary({
                       -Name: {cartItem.name}
                     </Typography>
                   )}
-                  {cartItem.number !== undefined && (
+                  {cartItem.number !== undefined && cartItem.number !== null && (
                     <Typography
                       key={"item-number"}
                       color={"neutral"}
@@ -109,21 +105,26 @@ export default function ProductCartSummary({
                 container
                 wrap={"nowrap"}
                 alignItems={"center"}
+                justifyContent={"center"}
               >
                 <Grid key={"remove-button"} item>
                   <IconButton onClick={handleRemoveOne(cartItem)}>
                     <Remove />
                   </IconButton>
                 </Grid>
-                <Grid key={"qty-field"} item xs={8} flexGrow={1}>
-                  <TextField
-                    value={cartItem.quantity}
-                    onChange={handleSet(cartItem)}
-                    label={"Quantity"}
-                    type={"tel"}
-                    inputProps={{ min: 0, style: { textAlign: "center" } }}
-                    fullWidth
-                  />
+                <Grid
+                  key={"qty-field"}
+                  item
+                  sx={{
+                    backgroundColor: "#EEEEEE",
+                    margin: 1,
+                    padding: 2,
+                    paddingRight: 3,
+                    paddingLeft: 3,
+                    borderRadius: 10,
+                  }}
+                >
+                  <Typography variant={"h6"}>{cartItem.quantity}</Typography>
                 </Grid>
                 <Grid key={"add-button"} item>
                   <IconButton onClick={handleAddOne(cartItem)}>
@@ -133,7 +134,13 @@ export default function ProductCartSummary({
               </Grid>
               <Grid item container justifyContent={"right"} {...priceCol}>
                 <Typography>
-                  {currencyFormat(getItemPrice(product) * cartItem.quantity)}
+                  {currencyFormat(
+                    (getItemPrice(product) +
+                      (cartItem.number !== undefined && cartItem.number !== null
+                        ? 3
+                        : 0)) *
+                      cartItem.quantity
+                  )}
                 </Typography>
               </Grid>
             </>

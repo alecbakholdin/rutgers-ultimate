@@ -10,6 +10,7 @@ import {
 import CurrencyTextField from "./CurrencyTextField";
 import { Product } from "types/product";
 import ListEditor from "components/ListEditor";
+import NumberSelect from "components/NumberSelect";
 
 export default function EditProductDetails(props: {
   edits: Product | null;
@@ -19,10 +20,22 @@ export default function EditProductDetails(props: {
   const { edits, handleEdit } = props;
   const disabled = !Boolean(edits);
 
+  const handleImageCountChange = (qty: number) => {
+    if (!edits) return;
+    const images = Array.from(
+      { length: qty },
+      (_, i) => `https://bakholdin.com/machine-pics/${edits.id}/${i}.jpg`
+    );
+    handleEdit({ images });
+  };
+
   return (
     <Grid container spacing={1}>
       <Grid item>
         <Typography variant={"h5"}>Product Details</Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <TextField value={edits?.id || ""} label={"ID"} disabled fullWidth />
       </Grid>
       <Grid item xs={12}>
         <TextField
@@ -33,16 +46,7 @@ export default function EditProductDetails(props: {
           fullWidth
         />
       </Grid>
-      <Grid item xs={12}>
-        <TextField
-          label={"Image URL"}
-          disabled={disabled}
-          fullWidth
-          value={edits?.image || ""}
-          onChange={(e) => handleEdit({ image: e.target.value })}
-        />
-      </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={12} md={4}>
         <CurrencyTextField
           label={"Price"}
           disabled={disabled}
@@ -51,7 +55,7 @@ export default function EditProductDetails(props: {
           onChange={(e) => handleEdit({ price: parseFloat(e.target.value) })}
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={12} md={4}>
         <CurrencyTextField
           label={"Team Price"}
           disabled={disabled}
@@ -62,14 +66,22 @@ export default function EditProductDetails(props: {
           }
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={4}>
+        <NumberSelect
+          label={"Image Count"}
+          value={edits?.images?.length ?? 0}
+          onChange={handleImageCountChange}
+          selectProps={{ disabled }}
+        />
+      </Grid>
+      <Grid item xs={12} md={4}>
         <ListEditor
           items={edits?.sizes}
           label={"Sizes"}
           setItems={(sizes: string[]) => handleEdit({ sizes })}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={4}>
         <ListEditor
           items={edits?.colors?.map((color) => color.name)}
           label={"Colors"}
@@ -78,7 +90,7 @@ export default function EditProductDetails(props: {
           }
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} md={4}>
         <FormGroup row>
           <FormControlLabel
             control={

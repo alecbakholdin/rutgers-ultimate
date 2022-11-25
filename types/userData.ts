@@ -1,13 +1,7 @@
-import {
-  collection,
-  doc,
-  DocumentReference,
-  FirestoreError,
-  setDoc,
-} from "@firebase/firestore";
+import { collection, doc, FirestoreError, setDoc } from "@firebase/firestore";
 import { auth, firestore } from "config/firebaseApp";
 import { getFirestoreConverter } from "config/firestoreConverter";
-import { Product, ProductVariant, useProductData } from "./product";
+import { Product, useProductData } from "./product";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { distinctEntries } from "config/arrayUtils";
@@ -27,14 +21,6 @@ export interface UserData {
   email?: string | null;
   isTeam?: boolean;
   cartItems: UserCartItem[];
-}
-
-export interface CartItem {
-  id: string;
-  variantRef: DocumentReference<ProductVariant>;
-  quantity: number;
-  name?: string;
-  number?: number;
 }
 
 export const userDataCollection = collection(
@@ -172,8 +158,4 @@ export function useUserData2() {
     getCartItemKey,
     clearCart,
   };
-}
-
-export function useCart(): any {
-  return { getItemPrice: (product: Product) => product.price };
 }

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore";
 import { productCollection } from "types/product";
 import { doc } from "@firebase/firestore";
-import { Container, Grid, Stack, Typography } from "@mui/material";
+import { Alert, Container, Grid, Stack, Typography } from "@mui/material";
 import { currencyFormat } from "config/currencyUtils";
 import ProductAddToCart from "components/ProductAddToCart";
 import ProductCartSummary from "components/ProductCartSummary";
@@ -29,6 +29,9 @@ export default function ProductPage(): React.ReactElement {
             <Typography variant={"h6"}>
               {currencyFormat(product && getItemPrice(product))}
             </Typography>
+            <Alert severity={"warning"}>
+              Inventory will be shipped out in late February.
+            </Alert>
           </Stack>
         </Grid>
         <Grid item xs={12}>

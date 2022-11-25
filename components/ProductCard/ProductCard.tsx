@@ -10,7 +10,7 @@ import { currencyFormat } from "config/currencyUtils";
 import { useUserData } from "types/userData";
 
 export default function ProductCard({
-  product: { id, teamPrice, price, image, name },
+  product: { id, teamPrice, price, name },
 }: {
   product: Product;
 }) {
@@ -20,7 +20,11 @@ export default function ProductCard({
   return (
     <Link href={`/product/${id}`} sx={{ textDecoration: "none" }}>
       <Card className={styles.root}>
-        <CardMedia className={styles.media} component="img" image={image} />
+        <CardMedia
+          className={styles.media}
+          component="img"
+          image={`https://bakholdin.com/machine-pics/${id}/0.jpg`}
+        />
         <CardContent className={styles.title}>
           <Typography gutterBottom variant="h5" component="div">
             {name}
