@@ -14,6 +14,7 @@ import ListEditor from "components/ListEditor";
 export default function EditProductDetails(props: {
   edits: Product | null;
   handleEdit: (edit: Partial<Product>) => void;
+  handleSubmit: () => void;
 }): React.ReactElement {
   const { edits, handleEdit } = props;
   const disabled = !Boolean(edits);

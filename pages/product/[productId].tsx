@@ -8,6 +8,7 @@ import { currencyFormat } from "config/currencyUtils";
 import ProductAddToCart from "components/ProductAddToCart";
 import ProductCartSummary from "components/ProductCartSummary";
 import { useUserData, useUserData2 } from "types/userData";
+import ImageGallery from "components/ImageGallery";
 
 export default function ProductPage(): React.ReactElement {
   const { getItemPrice } = useUserData2();
@@ -20,7 +21,7 @@ export default function ProductPage(): React.ReactElement {
     <Container maxWidth={"md"} sx={{ paddingTop: 5 }}>
       <Grid container justifyContent={"center"} spacing={3}>
         <Grid item xs={8} sm={4}>
-          <img src={product?.image} width={"100%"} alt={product?.name} />
+          <ImageGallery imageLinks={product?.images} />
         </Grid>
         <Grid item xs={8}>
           <Stack>
