@@ -11,11 +11,9 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "config/firebaseApp";
 import { Link, Stack, Typography } from "@mui/material";
 import { ShoppingCart } from "@mui/icons-material";
-import { useCart } from "types/userData";
 
 export default function ProfileButton(): React.ReactElement {
   const [user] = useAuthState(auth);
-  const { cart } = useCart();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );

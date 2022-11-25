@@ -3,6 +3,9 @@ import {
   CollectionReference,
   doc,
   DocumentReference,
+  FirestoreError,
+  query,
+  where,
 } from "@firebase/firestore";
 import { firestore } from "config/firebaseApp";
 import { getFirestoreConverter } from "config/firestoreConverter";
@@ -31,6 +34,18 @@ export const productCollection: CollectionReference<Product> = collection(
   firestore,
   "products"
 ).withConverter(getFirestoreConverter<Product>());
+
+export function useProductData(
+  productIds?: string[]
+): [Product[], boolean, FirestoreError | undefined] {
+  productIds = productIds ?? [];
+  const q =
+    productIds.length > 0
+      ? query(productCollection, where("__name__", "in", productIds))
+      : undefined;
+  const [products, loading, error] = useCollectionData(q, { initialValue: [] });
+  return [products!, loading, error];
+}
 
 export interface ProductVariant {
   id: string;

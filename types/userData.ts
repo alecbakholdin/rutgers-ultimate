@@ -1,38 +1,41 @@
 import {
-  addDoc,
   collection,
-  deleteDoc,
   doc,
   DocumentReference,
   FirestoreError,
-  query,
+  setDoc,
   updateDoc,
-  where,
 } from "@firebase/firestore";
 import { auth, firestore } from "config/firebaseApp";
 import { getFirestoreConverter } from "config/firestoreConverter";
-import { Product, productCollection, ProductVariant } from "./product";
+import { Product, ProductVariant } from "./product";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useMemo } from "react";
-import {
-  useCollectionData,
-  useDocumentData,
-} from "react-firebase-hooks/firestore";
-import { distinctEntries } from "config/arrayUtils";
+import { useEffect } from "react";
+import { useDocumentData } from "react-firebase-hooks/firestore";
+
+export interface UserCartItem {
+  productId: string;
+  quantity: number;
+  color?: string;
+  size?: string;
+  name?: string;
+  number?: number;
+}
 
 export interface UserData {
   id: string;
   isAdmin: boolean;
-  email?: string;
+  email?: string | null;
   isTeam?: boolean;
+  cartItems: UserCartItem[];
 }
 
 export interface CartItem {
   id: string;
   variantRef: DocumentReference<ProductVariant>;
   quantity: number;
-  name: string;
-  number: number;
+  name?: string;
+  number?: number;
 }
 
 export const userDataCollection = collection(
@@ -45,10 +48,25 @@ export function useUserData(): [
   boolean,
   FirestoreError | undefined
 ] {
-  const [user] = useAuthState(auth);
-  const [userData, userDataLoading, userDataError] = useDocumentData(
-    user?.uid ? doc(userDataCollection, user.uid) : null
-  );
+  const [user, userLoading] = useAuthState(auth);
+  const userDataRef = user?.uid ? doc(userDataCollection, user.uid) : null;
+  const defaultUserData: UserData = {
+    id: user?.uid ?? "",
+    isAdmin: false,
+    email: user?.email,
+    cartItems: [],
+  };
+  const [userData, userDataLoading, userDataError] =
+    useDocumentData(userDataRef);
+  useEffect(() => {
+    if (!userData && !userDataLoading && !userLoading && userDataRef && user) {
+      console.log("creating user");
+      setDoc(userDataRef, defaultUserData).then(() =>
+        console.log("Successfully created user")
+      );
+    }
+  }, [userData, userDataLoading, userDataRef]);
+
   return [
     userData && { isTeam: user?.email?.endsWith("rutgers.edu"), ...userData },
     userDataLoading,
@@ -56,113 +74,84 @@ export function useUserData(): [
   ];
 }
 
-export function useCart() {
-  const [user, userLoading] = useAuthState(auth);
-  const [userData] = useUserData();
-  const cartCollection = useMemo(() => {
-    if (user && !userLoading) {
-      return collection(
-        doc(userDataCollection, user.uid),
-        "cartItems"
-      ).withConverter(getFirestoreConverter<CartItem>());
+export function useUserData2() {
+  const [user, loading, error] = useUserData();
+  const userRef = user?.id ? doc(userDataCollection, user?.id) : null;
+  const updateUser = (updateObj: Partial<UserData>) => {
+    if (!userRef) {
+      throw new Error("User is not logged in yet");
     }
-  }, [user, userLoading]);
-  const [cart, cartLoading] = useCollectionData(cartCollection);
+    return updateDoc(userRef, updateObj);
+  };
 
-  const productRefs = distinctEntries<DocumentReference<Product>>(
-    cart?.map(
-      (item) => item.variantRef.parent.parent as DocumentReference<Product>
-    ),
-    (docRef) => docRef.id
-  );
-  const productIdsInCart: string[] = productRefs.map((product) => product.id);
-  const productQuery = useMemo(
-    () =>
-      Boolean(productIdsInCart && productIdsInCart.length)
-        ? query(productCollection, where("__name__", "in", productIdsInCart))
-        : null,
-    [productIdsInCart]
-  );
-  const [productsInCart] = useCollectionData(productQuery);
-  const productsInCartById: { [id: string]: Product } = Object.fromEntries(
-    productsInCart?.map((p) => [p.id, p]) ?? []
-  );
+  const findCartItem = (
+    cartItems: UserCartItem[],
+    lookup: UserCartItem
+  ): [UserCartItem | undefined, number] => {
+    const index = cartItems.findIndex(
+      (item) =>
+        item.productId === lookup.productId &&
+        item.size === lookup.size &&
+        item.color === lookup.color &&
+        item.name === lookup.name &&
+        item.number === lookup.number
+    );
+    const item = index >= 0 ? cartItems[index] : undefined;
+    return [item, index];
+  };
+
+  const addToCartItem = async (cartItem: UserCartItem, addQty: number) => {
+    if (!user) throw new Error("User is not logged in");
+
+    const [item, itemIndex] = findCartItem(user.cartItems, cartItem);
+
+    if (itemIndex < 0) {
+      // add item
+      await updateUser({
+        cartItems: [...user.cartItems, { ...cartItem, quantity: addQty }],
+      });
+    } else {
+      // edit existing item
+      const newItems: UserCartItem[] = [
+        ...user.cartItems.slice(0, itemIndex),
+        ...(item && item.quantity + addQty > 0
+          ? [{ ...item, quantity: addQty + item.quantity }]
+          : []),
+        ...user.cartItems.slice(itemIndex + 1, user.cartItems.length),
+      ];
+      await updateUser({ cartItems: newItems });
+    }
+  };
 
   const getItemPrice = (product: Product) => {
-    const useTeamPrice = Boolean(userData?.isTeam && product.teamPrice);
-    return useTeamPrice ? product.teamPrice : product.price;
-  };
-  const totalCost = cart?.reduce((total, next) => {
-    const product = productsInCartById[next.variantRef.parent.parent!.id];
-    if (!product) {
-      return total;
-    }
-    return total + getItemPrice(product) * next.quantity;
-  }, 0);
-
-  const updateCartQuantity = async (cartItem: CartItem, quantity: number) => {
-    if (!user || !cartCollection) {
-      throw new Error("User is not authenticated. Please log in first");
-    }
-
-    const docReference = doc(cartCollection, cartItem.id);
-    if (quantity === 0) {
-      return deleteDoc(docReference);
-    }
-
-    return updateDoc(docReference, {
-      quantity,
-    } as CartItem);
+    return user?.isTeam ? product.teamPrice : product.price;
   };
 
-  const addToCart = async (
-    variantRef: DocumentReference<ProductVariant>,
-    quantity: number,
-    name?: string,
-    number?: number
-  ) => {
-    if (!user || !cartCollection) {
-      throw new Error("User is not authenticated. Please log in first");
-    }
-
-    // update quantity if item already is in the cart
-    const existingItem = cart?.find(
-      (item) =>
-        item.variantRef.path === variantRef.path &&
-        item.name === name &&
-        item.number === number
-    );
-
-    if (existingItem) {
-      return updateCartQuantity(existingItem, existingItem.quantity + quantity);
-    }
-
-    // otherwise, add it to the cart
-    return addDoc<CartItem>(cartCollection, {
-      variantRef,
-      quantity,
-      ...(name !== undefined && { name }),
-      ...(number !== undefined && { number }),
-    } as CartItem);
-  };
-
-  const clearCart = async () => {
-    if (!cart) return;
-    for (const cartItem of cart) {
-      await updateCartQuantity(cartItem, 0);
-    }
+  const getCartItemKey = (cartItem: UserCartItem) => {
+    const fields = [
+      cartItem.productId,
+      cartItem.size,
+      cartItem.color,
+      cartItem.name,
+      cartItem.number,
+    ];
+    return fields
+      .filter((field) => field !== undefined && field !== "")
+      .join("-");
   };
 
   return {
-    cart,
-    cartLoading,
-    productIdsInCart,
-    productsInCart,
-    productsInCartById,
-    totalCost,
-    addToCart,
-    updateCartQuantity,
+    user,
+    loading,
+    error,
+    cart: user?.cartItems ?? ([] as UserCartItem[]),
+    updateUser,
+    addToCartItem,
     getItemPrice,
-    clearCart,
+    getCartItemKey,
   };
+}
+
+export function useCart(): any {
+  return { getItemPrice: (product: Product) => product.price };
 }

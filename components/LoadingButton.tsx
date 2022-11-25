@@ -8,12 +8,18 @@ import {
 } from "@mui/material";
 import { Check, Error, PendingOutlined as Pending } from "@mui/icons-material";
 
-export type LoadingStatus = "pending" | "loading" | "success" | "error";
+export type LoadingStatus =
+  | "pending"
+  | "loading"
+  | "success"
+  | "error"
+  | undefined;
 
 export default function LoadingButton(
   props: ButtonProps & { status?: LoadingStatus | null }
 ): React.ReactElement {
   const { status } = props;
+
   return (
     <Grid container alignItems={"center"}>
       <Grid item>

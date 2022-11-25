@@ -7,10 +7,11 @@ import { Container, Grid, Stack, Typography } from "@mui/material";
 import { currencyFormat } from "config/currencyUtils";
 import ProductAddToCart from "components/ProductAddToCart";
 import ProductCartSummary from "components/ProductCartSummary";
-import { useCart } from "types/userData";
+import { useUserData, useUserData2 } from "types/userData";
 
 export default function ProductPage(): React.ReactElement {
-  const { getItemPrice } = useCart();
+  const { getItemPrice } = useUserData2();
+  useUserData();
   const router = useRouter();
   const { productId } = router.query;
   const [product] = useDocumentDataOnce(doc(productCollection, `${productId}`));

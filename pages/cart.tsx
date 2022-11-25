@@ -1,5 +1,5 @@
 import React from "react";
-import { useCart } from "types/userData";
+import { useUserData2 } from "types/userData";
 import {
   Button,
   Container,
@@ -10,9 +10,21 @@ import {
 } from "@mui/material";
 import ProductCartSummary from "components/ProductCartSummary";
 import { currencyFormat } from "config/currencyUtils";
+import { distinctEntries } from "config/arrayUtils";
+import { useProductData } from "types/product";
 
 export default function Cart(): React.ReactElement {
-  const { productsInCart, totalCost } = useCart();
+  const { cart, getItemPrice } = useUserData2();
+  const productIdsInCart = distinctEntries(cart.map((item) => item.productId));
+  const [productsInCart] = useProductData(productIdsInCart);
+  const priceMap = Object.fromEntries(
+    productsInCart.map((p) => [p.id, getItemPrice(p)])
+  );
+  const totalCost = cart.reduce(
+    (total, item) => total + item.quantity * priceMap[item.productId],
+    0
+  );
+  console.log(cart, productIdsInCart, productsInCart, priceMap);
 
   return (
     <Container maxWidth={"md"}>
@@ -22,11 +34,7 @@ export default function Cart(): React.ReactElement {
         </Grid>
         {productsInCart?.map((product) => (
           <Grid item key={product.id} xs={12}>
-            <ProductCartSummary
-              key={product.id}
-              product={product}
-              useProductName
-            />
+            <ProductCartSummary product={product} useProductName />
           </Grid>
         ))}
         <Grid item xs={6} container alignItems={"center"}>

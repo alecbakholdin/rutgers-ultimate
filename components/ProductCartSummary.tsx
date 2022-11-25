@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from "react";
-import { Product, useVariants } from "types/product";
+import { Product } from "types/product";
 import {
   Card,
   CardContent,
@@ -12,7 +12,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { CartItem, useCart } from "types/userData";
+import { UserCartItem, useUserData2 } from "types/userData";
 import { Add, Remove } from "@mui/icons-material";
 import { currencyFormat } from "config/currencyUtils";
 
@@ -23,25 +23,20 @@ export default function ProductCartSummary({
   product: Product;
   useProductName?: boolean;
 }): React.ReactElement {
-  const { cart, updateCartQuantity, getItemPrice } = useCart();
-  const [variants] = useVariants(product);
+  const { user, addToCartItem, getItemPrice, getCartItemKey } = useUserData2();
+  const cartItems = user?.cartItems;
 
-  const productCartItems = cart?.filter(
-    (cartItem) => cartItem.variantRef.parent.parent!.id === product.id
-  );
-  const variantOrder: { [id: string]: number } = Object.fromEntries(
-    variants?.map((v) => [v.id, v.order]) ?? []
-  );
-
+  const productCartItems =
+    cartItems?.filter((item) => item.productId === product.id) ?? [];
   const handleSet =
-    (cartItem: CartItem) => async (e: ChangeEvent<HTMLInputElement>) => {
-      await updateCartQuantity(cartItem, parseInt(e.target.value));
+    (cartItem: UserCartItem) => async (e: ChangeEvent<HTMLInputElement>) => {
+      await addToCartItem(cartItem, parseInt(e.target.value));
     };
-  const handleRemoveOne = (cartItem: CartItem) => async () => {
-    await updateCartQuantity(cartItem, cartItem.quantity - 1);
+  const handleRemoveOne = (cartItem: UserCartItem) => async () => {
+    await addToCartItem(cartItem, -1);
   };
-  const handleAddOne = (cartItem: CartItem) => async () => {
-    await updateCartQuantity(cartItem, cartItem.quantity + 1);
+  const handleAddOne = (cartItem: UserCartItem) => async () => {
+    await addToCartItem(cartItem, 1);
   };
   const totalQty =
     productCartItems?.reduce((t, item) => t + item.quantity, 0) ?? 0;
@@ -59,7 +54,6 @@ export default function ProductCartSummary({
   const priceCol = {
     xs: 2,
   };
-  console.log(cart);
   return (
     <Card sx={{ ...(!productCartItems?.length && { display: "none" }) }}>
       <CardHeader
@@ -78,79 +72,72 @@ export default function ProductCartSummary({
           alignItems={"center"}
           justifyContent={"space-around"}
         >
-          {productCartItems
-            ?.sort((a, b) => {
-              if (!variantOrder) return 0;
-              const aOrder = variantOrder[a.variantRef.id] ?? 0;
-              const bOrder = variantOrder[b.variantRef.id] ?? 0;
-              return aOrder - bOrder;
-            })
-            .map((cartItem) => (
-              <>
-                <Grid key={`${cartItem.id} divider`} item xs={12}>
-                  <Divider />
-                </Grid>
-                <Grid key={cartItem.id} item {...sizeCol}>
-                  <Stack>
-                    <Typography key={"id"} variant={"h5"}>
-                      {cartItem.variantRef.id}
-                    </Typography>
-                    {cartItem.name !== undefined && (
-                      <Typography
-                        key={"item-name"}
-                        color={"neutral"}
-                        variant={"caption"}
-                      >
-                        -Name: {cartItem.name}
-                      </Typography>
-                    )}
-                    {cartItem.number !== undefined && (
-                      <Typography
-                        key={"item-number"}
-                        color={"neutral"}
-                        variant={"caption"}
-                      >
-                        -Number: {cartItem.number}
-                      </Typography>
-                    )}
-                  </Stack>
-                </Grid>
-                <Grid
-                  key={`${cartItem.id}-quantity`}
-                  item
-                  {...qtyCol}
-                  container
-                  wrap={"nowrap"}
-                  alignItems={"center"}
-                >
-                  <Grid key={"remove-button"} item>
-                    <IconButton onClick={handleRemoveOne(cartItem)}>
-                      <Remove />
-                    </IconButton>
-                  </Grid>
-                  <Grid key={"qty-field"} item xs={8} flexGrow={1}>
-                    <TextField
-                      value={cartItem.quantity}
-                      onChange={handleSet(cartItem)}
-                      label={"Quantity"}
-                      type={"tel"}
-                      inputProps={{ min: 0, style: { textAlign: "center" } }}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid key={"add-button"} item>
-                    <IconButton onClick={handleAddOne(cartItem)}>
-                      <Add />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-                <Grid item container justifyContent={"right"} {...priceCol}>
-                  <Typography>
-                    {currencyFormat(getItemPrice(product) * cartItem.quantity)}
+          {productCartItems.map((cartItem) => (
+            <>
+              <Grid key={`${getCartItemKey(cartItem)} divider`} item xs={12}>
+                <Divider />
+              </Grid>
+              <Grid key={getCartItemKey(cartItem)} item {...sizeCol}>
+                <Stack>
+                  <Typography key={"id"} variant={"h5"}>
+                    {cartItem.color} {cartItem.size}
                   </Typography>
+                  {cartItem.name !== undefined && (
+                    <Typography
+                      key={"item-name"}
+                      color={"neutral"}
+                      variant={"caption"}
+                    >
+                      -Name: {cartItem.name}
+                    </Typography>
+                  )}
+                  {cartItem.number !== undefined && (
+                    <Typography
+                      key={"item-number"}
+                      color={"neutral"}
+                      variant={"caption"}
+                    >
+                      -Number: {cartItem.number}
+                    </Typography>
+                  )}
+                </Stack>
+              </Grid>
+              <Grid
+                key={`${getCartItemKey(cartItem)}-quantity`}
+                item
+                {...qtyCol}
+                container
+                wrap={"nowrap"}
+                alignItems={"center"}
+              >
+                <Grid key={"remove-button"} item>
+                  <IconButton onClick={handleRemoveOne(cartItem)}>
+                    <Remove />
+                  </IconButton>
                 </Grid>
-              </>
-            ))}
+                <Grid key={"qty-field"} item xs={8} flexGrow={1}>
+                  <TextField
+                    value={cartItem.quantity}
+                    onChange={handleSet(cartItem)}
+                    label={"Quantity"}
+                    type={"tel"}
+                    inputProps={{ min: 0, style: { textAlign: "center" } }}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid key={"add-button"} item>
+                  <IconButton onClick={handleAddOne(cartItem)}>
+                    <Add />
+                  </IconButton>
+                </Grid>
+              </Grid>
+              <Grid item container justifyContent={"right"} {...priceCol}>
+                <Typography>
+                  {currencyFormat(getItemPrice(product) * cartItem.quantity)}
+                </Typography>
+              </Grid>
+            </>
+          ))}
 
           {(productCartItems?.length ?? 0) > 1 && (
             <>
