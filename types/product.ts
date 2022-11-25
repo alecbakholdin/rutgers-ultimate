@@ -1,7 +1,6 @@
 import {
   collection,
   CollectionReference,
-  doc,
   DocumentReference,
   FirestoreError,
   query,
@@ -9,7 +8,6 @@ import {
 } from "@firebase/firestore";
 import { firestore } from "config/firebaseApp";
 import { getFirestoreConverter } from "config/firestoreConverter";
-import { useMemo } from "react";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
 export interface Color {
@@ -23,6 +21,7 @@ export interface Product {
   price: number;
   teamPrice: number;
   image?: string;
+  images?: string[];
   canHaveName: boolean;
   canHaveNumber: boolean;
   colors: Color[];
@@ -45,28 +44,4 @@ export function useProductData(
       : undefined;
   const [products, loading, error] = useCollectionData(q, { initialValue: [] });
   return [products!, loading, error];
-}
-
-export interface ProductVariant {
-  id: string;
-  ref: DocumentReference<ProductVariant>;
-  order: number;
-}
-
-export const variantCollection = (
-  productId: string
-): CollectionReference<ProductVariant> =>
-  collection(doc(productCollection, productId), "variants").withConverter(
-    getFirestoreConverter<ProductVariant>()
-  );
-
-export function useVariantCollection(product: Product) {
-  return useMemo(() => {
-    return variantCollection(product.id);
-  }, [product.id]);
-}
-
-export function useVariants(product: Product) {
-  const variantQuery = useVariantCollection(product);
-  return useCollectionData(variantQuery);
 }
