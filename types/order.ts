@@ -1,7 +1,7 @@
 import { collection, DocumentReference } from "@firebase/firestore";
 import { firestore } from "config/firebaseApp";
 import { getFirestoreConverter } from "config/firestoreConverter";
-import { CartItem } from "types/userData";
+import { UserCartItem } from "types/userData";
 
 export interface Order {
   id: string;
@@ -13,7 +13,7 @@ export interface Order {
   lastName: string;
   venmo?: string;
   totalCost: number;
-  summary: CartItem[];
+  cart: UserCartItem[];
 }
 
 export const orderCollection = collection(firestore, "orders").withConverter(

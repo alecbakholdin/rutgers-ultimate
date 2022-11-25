@@ -50,6 +50,7 @@ export default function ProductAddToCart({
       await addToCartItem(cartItem, cartItem.quantity);
       setStatus("success");
     } catch (e) {
+      console.error(e);
       setStatus("error");
     }
   };

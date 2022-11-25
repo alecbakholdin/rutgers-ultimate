@@ -10,21 +10,9 @@ import {
 } from "@mui/material";
 import ProductCartSummary from "components/ProductCartSummary";
 import { currencyFormat } from "config/currencyUtils";
-import { distinctEntries } from "config/arrayUtils";
-import { useProductData } from "types/product";
 
 export default function Cart(): React.ReactElement {
-  const { cart, getItemPrice } = useUserData2();
-  const productIdsInCart = distinctEntries(cart.map((item) => item.productId));
-  const [productsInCart] = useProductData(productIdsInCart);
-  const priceMap = Object.fromEntries(
-    productsInCart.map((p) => [p.id, getItemPrice(p)])
-  );
-  const totalCost = cart.reduce(
-    (total, item) => total + item.quantity * priceMap[item.productId],
-    0
-  );
-  console.log(cart, productIdsInCart, productsInCart, priceMap);
+  const { cart, getItemPrice, productsInCart, totalCost } = useUserData2();
 
   return (
     <Container maxWidth={"md"}>

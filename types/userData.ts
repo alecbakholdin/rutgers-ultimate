@@ -4,14 +4,13 @@ import {
   DocumentReference,
   FirestoreError,
   setDoc,
-  updateDoc,
 } from "@firebase/firestore";
 import { auth, firestore } from "config/firebaseApp";
 import { getFirestoreConverter } from "config/firestoreConverter";
-import { Product, ProductVariant } from "./product";
+import { Product, ProductVariant, useProductData } from "./product";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useEffect } from "react";
 import { useDocumentData } from "react-firebase-hooks/firestore";
+import { distinctEntries } from "config/arrayUtils";
 
 export interface UserCartItem {
   productId: string;
@@ -50,25 +49,30 @@ export function useUserData(): [
 ] {
   const [user, userLoading] = useAuthState(auth);
   const userDataRef = user?.uid ? doc(userDataCollection, user.uid) : null;
-  const defaultUserData: UserData = {
+  const initialValue: UserData = {
     id: user?.uid ?? "",
     isAdmin: false,
     email: user?.email,
     cartItems: [],
   };
-  const [userData, userDataLoading, userDataError] =
-    useDocumentData(userDataRef);
-  useEffect(() => {
+  const [userData, userDataLoading, userDataError] = useDocumentData(
+    userDataRef,
+    { initialValue }
+  );
+  /*  useEffect(() => {
     if (!userData && !userDataLoading && !userLoading && userDataRef && user) {
       console.log("creating user");
       setDoc(userDataRef, defaultUserData).then(() =>
         console.log("Successfully created user")
       );
     }
-  }, [userData, userDataLoading, userDataRef]);
+  }, [userData, userDataLoading, userDataRef]);*/
 
   return [
-    userData && { isTeam: user?.email?.endsWith("rutgers.edu"), ...userData },
+    userData && {
+      isTeam: user?.email?.endsWith("rutgers.edu"),
+      ...userData,
+    },
     userDataLoading,
     userDataError,
   ];
@@ -81,7 +85,10 @@ export function useUserData2() {
     if (!userRef) {
       throw new Error("User is not logged in yet");
     }
-    return updateDoc(userRef, updateObj);
+    const idObj: Partial<UserData> = {
+      email: user?.email,
+    };
+    return setDoc(userRef, { ...user, ...idObj, ...updateObj });
   };
 
   const findCartItem = (
@@ -140,15 +147,30 @@ export function useUserData2() {
       .join("-");
   };
 
+  const clearCart = async () => updateUser({ cartItems: [] });
+  const cart = user?.cartItems ?? ([] as UserCartItem[]);
+  const productIdsInCart = distinctEntries(cart.map((item) => item.productId));
+  const [productsInCart] = useProductData(productIdsInCart);
+  const priceMap = Object.fromEntries(
+    productsInCart.map((p) => [p.id, getItemPrice(p)])
+  );
+  const totalCost = cart.reduce(
+    (total, item) => total + item.quantity * priceMap[item.productId],
+    0
+  );
   return {
     user,
     loading,
     error,
-    cart: user?.cartItems ?? ([] as UserCartItem[]),
+    cart,
+    productIdsInCart,
+    productsInCart,
+    totalCost,
     updateUser,
     addToCartItem,
     getItemPrice,
     getCartItemKey,
+    clearCart,
   };
 }
 
