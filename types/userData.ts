@@ -81,7 +81,7 @@ export function useUserData2() {
     cartItems: UserCartItem[],
     lookup: UserCartItem
   ): [UserCartItem | undefined, number] => {
-    const index = cartItems.findIndex(
+    const index = cartItems?.findIndex(
       (item) =>
         item.productId === lookup.productId &&
         item.size === lookup.size &&
