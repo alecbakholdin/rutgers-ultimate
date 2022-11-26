@@ -13,7 +13,7 @@ export default function ProductAddToCart({
 }: {
   product: Product;
 }): React.ReactElement {
-  const { addToCartItem } = useUserData2();
+  const { addToCartItem, signedIn } = useUserData2();
   const [cartItem, setCartItem] = useState<UserCartItem>({
     productId: product.id,
     quantity: 1,
@@ -33,25 +33,23 @@ export default function ProductAddToCart({
   const { showError } = useMySnackbar();
   const [status, setStatus] = useState<LoadingStatus>();
   const handleSubmit = async () => {
-    if (cartItem.quantity === 0) {
+    if (!signedIn) {
+      showError("Please log in first");
+    } else if (cartItem.quantity === 0) {
       showError("Please select a quantity greater than 0");
-      return;
-    }
-    if (!cartItem.size && product.sizes?.length) {
+    } else if (!cartItem.size && product.sizes?.length) {
       showError("Please select a size");
-      return;
-    }
-    if (!cartItem.color && product.colors?.length) {
+    } else if (!cartItem.color && product.colors?.length) {
       showError("Please select a color");
-      return;
-    }
-    setStatus("loading");
-    try {
-      await addToCartItem(cartItem, cartItem.quantity);
-      setStatus("success");
-    } catch (e) {
-      console.error(e);
-      setStatus("error");
+    } else {
+      setStatus("loading");
+      try {
+        await addToCartItem(cartItem, cartItem.quantity);
+        setStatus("success");
+      } catch (e) {
+        console.error(e);
+        setStatus("error");
+      }
     }
   };
 

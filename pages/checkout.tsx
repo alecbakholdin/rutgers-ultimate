@@ -36,6 +36,10 @@ export default function Checkout(): React.ReactElement {
     };
   const [submitStatus, setSubmitStatus] = useState<LoadingStatus | null>();
   const handleSubmit = async () => {
+    if (!user) {
+      showError("Please log in first");
+      return;
+    }
     if (totalCost === 0) {
       showError("You don't have anything in your cart!");
       return;

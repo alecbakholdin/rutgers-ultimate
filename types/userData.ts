@@ -68,9 +68,8 @@ export function useUserData2() {
   const [user, loading, error] = useUserData();
   const userRef = user?.id ? doc(userDataCollection, user?.id) : null;
   const updateUser = (updateObj: Partial<UserData>) => {
-    if (!userRef) {
-      throw new Error("User is not logged in yet");
-    }
+    if (!userRef) throw new Error("User is not logged in");
+
     const idObj: Partial<UserData> = {
       email: user?.email,
     };
@@ -145,6 +144,7 @@ export function useUserData2() {
     0
   );
   return {
+    signedIn: Boolean(user?.id),
     user,
     loading,
     error,
