@@ -8,8 +8,7 @@ import { useRouter } from "next/router";
 
 export default function SignInButton(): React.ReactElement {
   const router = useRouter();
-  const pathname = router?.pathname;
-  const query = pathname !== "/signIn" ? `?redirect=${router.pathname}` : "";
+  const query = router.asPath !== "/signIn" ? `?redirect=${router.asPath}` : "";
   const [user] = useAuthState(auth);
   const signInPage: Page = {
     name: "Sign In",
