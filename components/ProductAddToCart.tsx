@@ -20,15 +20,19 @@ export default function ProductAddToCart({
   });
   const handleStringUpdate = (key: keyof UserCartItem) => (val: string) =>
     setCartItem({ ...cartItem, [key]: val });
-  const handleIntUpdate =
-    (key: keyof UserCartItem, maxLen?: number) => (val: number) => {
-      const numVal = isNaN(val)
-        ? undefined
-        : maxLen !== undefined
-        ? val % Math.pow(val, maxLen)
-        : val;
-      setCartItem({ ...cartItem, [key]: numVal });
-    };
+  const handleIntUpdate = (key: keyof UserCartItem) => (val: number) => {
+    setCartItem({ ...cartItem, [key]: val });
+  };
+  const handleNumberChange = (val: string) => {
+    val = val.replace(/\D/, "").slice(0, 2);
+    if (val === "") {
+      const newItem = { ...cartItem };
+      delete newItem.number;
+      setCartItem(newItem);
+    } else {
+      setCartItem({ ...cartItem, number: parseInt(val) });
+    }
+  };
 
   const { showError } = useMySnackbar();
   const [status, setStatus] = useState<LoadingStatus>();
@@ -109,9 +113,7 @@ export default function ProductAddToCart({
             <BetterTextField
               label={"Number"}
               value={cartItem.number ?? ""}
-              onChange={(e) =>
-                handleIntUpdate("number", 2)(parseInt(e.target.value))
-              }
+              onChange={(e) => handleNumberChange(e.target.value)}
               handlePressEnter={handleSubmit}
               fullWidth
             />
