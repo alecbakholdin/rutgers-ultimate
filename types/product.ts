@@ -10,9 +10,10 @@ import { firestore } from "config/firebaseApp";
 import { getFirestoreConverter } from "config/firestoreConverter";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
-export interface Color {
+export interface ProductColor {
   name: string;
   hex?: string;
+  images?: string[];
 }
 
 export interface Product {
@@ -20,11 +21,10 @@ export interface Product {
   name: string;
   price: number;
   teamPrice: number;
-  image?: string;
   images?: string[];
   canHaveName: boolean;
   canHaveNumber: boolean;
-  colors: Color[];
+  colors: ProductColor[];
   sizes: string[];
   ref: DocumentReference<Product>;
 }

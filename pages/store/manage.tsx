@@ -3,6 +3,7 @@ import { Container, Stack } from "@mui/material";
 import EditProductWizard from "components/EditProductWizard/EditProductWizard";
 import Typography from "@mui/material/Typography";
 import CreateProductWizard from "components/CreateProductWizard";
+import EditColorsWizard from "components/EditColorsWizard";
 
 export default function ManageStore(): React.ReactElement {
   return (
@@ -13,6 +14,7 @@ export default function ManageStore(): React.ReactElement {
         </Typography>
         <EditProductWizard />
         <CreateProductWizard />
+        <EditColorsWizard />
       </Stack>
     </Container>
   );

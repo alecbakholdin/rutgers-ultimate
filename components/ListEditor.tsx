@@ -18,6 +18,7 @@ export default function ListEditor({
   label,
   loading,
   disabled,
+  renderChipAvatar,
   textFieldProps,
 }: {
   setItems: (items: string[]) => void;
@@ -25,6 +26,7 @@ export default function ListEditor({
   label?: string;
   loading?: boolean;
   disabled?: boolean;
+  renderChipAvatar?: (item: string) => React.ReactElement | undefined;
   textFieldProps?: TextFieldProps;
 }): React.ReactElement {
   const [newItem, setNewItem] = useState<string>("");
@@ -76,7 +78,11 @@ export default function ListEditor({
       <Grid item container xs={12} spacing={1}>
         {items?.map((item) => (
           <Grid item key={item}>
-            <Chip label={item} onDelete={() => handleDeleteItem(item)} />
+            <Chip
+              label={item}
+              avatar={renderChipAvatar && renderChipAvatar(item)}
+              onDelete={() => handleDeleteItem(item)}
+            />
           </Grid>
         ))}
       </Grid>

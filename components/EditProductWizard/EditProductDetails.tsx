@@ -11,6 +11,9 @@ import CurrencyTextField from "./CurrencyTextField";
 import { Product } from "types/product";
 import ListEditor from "components/ListEditor";
 import NumberSelect from "components/NumberSelect";
+import ColorSwatch from "components/ColorSwatch";
+import { useCollectionData } from "react-firebase-hooks/firestore";
+import { colorCollection } from "types/color";
 
 export default function EditProductDetails(props: {
   edits: Product | null;
@@ -18,7 +21,15 @@ export default function EditProductDetails(props: {
   handleSubmit: () => void;
 }): React.ReactElement {
   const { edits, handleEdit } = props;
+  const [colors] = useCollectionData(colorCollection, { initialValue: [] });
   const disabled = !Boolean(edits);
+  const colorMap = Object.fromEntries(colors!.map(({ id, hex }) => [id, hex]));
+  const renderChipAvatar = (item: string) => {
+    if (!colorMap[item]) {
+      return undefined;
+    }
+    return <ColorSwatch hex={colorMap[item]} size={20} />;
+  };
 
   const handleImageCountChange = (qty: number) => {
     if (!edits) return;
@@ -78,6 +89,7 @@ export default function EditProductDetails(props: {
         <ListEditor
           items={edits?.sizes}
           label={"Sizes"}
+          disabled={disabled}
           setItems={(sizes: string[]) => handleEdit({ sizes })}
         />
       </Grid>
@@ -85,6 +97,8 @@ export default function EditProductDetails(props: {
         <ListEditor
           items={edits?.colors?.map((color) => color.name)}
           label={"Colors"}
+          disabled={disabled}
+          renderChipAvatar={renderChipAvatar}
           setItems={(colors: string[]) =>
             handleEdit({ colors: colors.map((name) => ({ name })) })
           }
