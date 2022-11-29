@@ -2,6 +2,10 @@
   cursor: pointer;
   width: 300px;
 
+  div {
+    overflow: clip;
+  }
+
   &:hover {
     img {
       transform: scale(1.15);

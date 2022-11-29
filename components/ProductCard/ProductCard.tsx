@@ -20,11 +20,13 @@ export default function ProductCard({
   return (
     <Link href={`/product/${id}`} sx={{ textDecoration: "none" }}>
       <Card className={styles.root}>
-        <CardMedia
-          className={styles.media}
-          component="img"
-          image={`https://bakholdin.com/machine-pics/${id}/0.jpg`}
-        />
+        <div>
+          <CardMedia
+            className={styles.media}
+            component="img"
+            image={`https://bakholdin.com/machine-pics/${id}/0.jpg`}
+          />
+        </div>
         <CardContent className={styles.title}>
           <Typography gutterBottom variant="h5" component="div">
             {name}
