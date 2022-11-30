@@ -15,12 +15,13 @@ import ColorSwatch from "components/ColorSwatch";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { colorCollection } from "types/color";
 
-export default function EditProductDetails(props: {
+export default function EditProductDetails({
+  edits,
+  handleEdit,
+}: {
   edits: Product | null;
   handleEdit: (edit: Partial<Product>) => void;
-  handleSubmit: () => void;
 }): React.ReactElement {
-  const { edits, handleEdit } = props;
   const [colors] = useCollectionData(colorCollection, { initialValue: [] });
   const disabled = !Boolean(edits);
   const colorMap = Object.fromEntries(colors!.map(({ id, hex }) => [id, hex]));
@@ -97,7 +98,7 @@ export default function EditProductDetails(props: {
         <ListEditor
           items={edits?.colors?.map((color) => color.name)}
           label={"Colors"}
-          disabled={disabled}
+          disabled
           renderChipAvatar={renderChipAvatar}
           setItems={(colors: string[]) =>
             handleEdit({ colors: colors.map((name) => ({ name })) })

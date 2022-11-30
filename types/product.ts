@@ -25,6 +25,7 @@ export interface Product {
   canHaveName: boolean;
   canHaveNumber: boolean;
   colors: ProductColor[];
+  colorMap: { [colorId: string]: ProductColor };
   sizes: string[];
   ref: DocumentReference<Product>;
 }

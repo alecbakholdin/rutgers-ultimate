@@ -14,6 +14,7 @@ import { deleteDoc, doc, setDoc } from "@firebase/firestore";
 import ProductSearchAutocomplete from "./ProductSearchAutocomplete";
 import EditProductDetails from "./EditProductDetails";
 import LoadingButton, { LoadingStatus } from "components/LoadingButton";
+import EditColorImages from "components/EditProductWizard/EditColorImages";
 
 export default function EditProductWizard(): React.ReactElement {
   const [editStatus, setEditStatus] = useState<LoadingStatus | null>(null);
@@ -28,12 +29,17 @@ export default function EditProductWizard(): React.ReactElement {
     if (!productLoading) {
       setEditStatus(null);
       setEdits(product?.data() ?? null);
+      console.log(product?.data());
     }
   }, [product, productLoading]);
 
   const handleEdit = (edit: Partial<Product>) => {
     setEditStatus("pending");
-    setEdits({ ...edits!, ...edit });
+    setEdits({
+      ...edits!,
+      ...edit,
+      colorMap: { ...(edits!.colorMap ?? {}), ...(edit.colorMap ?? {}) },
+    });
   };
 
   const handleDelete = async () => {
@@ -64,11 +70,10 @@ export default function EditProductWizard(): React.ReactElement {
               <ProductSearchAutocomplete onChange={(id) => setProductId(id)} />
             </Grid>
             <Grid item xs={12}>
-              <EditProductDetails
-                edits={edits}
-                handleEdit={handleEdit}
-                handleSubmit={handleSubmit}
-              />
+              <EditProductDetails edits={edits} handleEdit={handleEdit} />
+            </Grid>
+            <Grid item xs={12}>
+              <EditColorImages edits={edits} handleEdit={handleEdit} />
             </Grid>
             <Grid item xs={6}>
               <Stack direction={"row"} alignItems={"center"}>
