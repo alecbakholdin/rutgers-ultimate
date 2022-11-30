@@ -11,7 +11,7 @@ export default function ImageGallery({
     images.length > 0 ? images[0] : undefined
   );
   useEffect(() => {
-    if (images.length > 0 && !activeImage) {
+    if (images.length > 0) {
       setActiveImage(images[0]);
     }
   }, [images]);

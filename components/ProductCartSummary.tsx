@@ -12,7 +12,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { UserCartItem, useUserData2 } from "types/userData";
+import { CartItem, useUserData2 } from "types/userData";
 import { Add, Remove } from "@mui/icons-material";
 import { currencyFormat } from "config/currencyUtils";
 
@@ -28,10 +28,10 @@ export default function ProductCartSummary({
 
   const productCartItems =
     cartItems?.filter((item) => item.productId === product.id) ?? [];
-  const handleRemoveOne = (cartItem: UserCartItem) => async () => {
+  const handleRemoveOne = (cartItem: CartItem) => async () => {
     await addToCartItem(cartItem, -1);
   };
-  const handleAddOne = (cartItem: UserCartItem) => async () => {
+  const handleAddOne = (cartItem: CartItem) => async () => {
     await addToCartItem(cartItem, 1);
   };
   const totalQty =
@@ -78,7 +78,7 @@ export default function ProductCartSummary({
                   <Typography key={"id"} variant={"h5"}>
                     {cartItem.color} {cartItem.size}
                   </Typography>
-                  {cartItem.name !== undefined && (
+                  {cartItem.name && (
                     <Typography
                       key={"item-name"}
                       color={"neutral"}
@@ -87,13 +87,13 @@ export default function ProductCartSummary({
                       -Name: {cartItem.name}
                     </Typography>
                   )}
-                  {cartItem.number !== undefined && cartItem.number !== null && (
+                  {(cartItem.numberField || cartItem.number !== undefined) && (
                     <Typography
                       key={"item-number"}
                       color={"neutral"}
                       variant={"caption"}
                     >
-                      -Number: {cartItem.number}
+                      -Number: {cartItem.numberField || cartItem.number}
                     </Typography>
                   )}
                 </Stack>

@@ -22,7 +22,7 @@ export default function LoadingButton(
 
   return (
     <Grid container alignItems={"center"}>
-      <Grid item>
+      <Grid item sx={props.sx}>
         <Button {...props}>{props.children}</Button>
       </Grid>
       <Grid item>

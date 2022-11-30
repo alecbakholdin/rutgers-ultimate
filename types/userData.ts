@@ -6,13 +6,16 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { distinctEntries } from "config/arrayUtils";
 
-export interface UserCartItem {
+export interface CartItem {
   productId: string;
   quantity: number;
   color?: string;
   size?: string;
   name?: string;
   number?: number;
+  numberField?: string;
+  unitPrice: number;
+  totalPrice: number;
 }
 
 export interface UserData {
@@ -20,7 +23,7 @@ export interface UserData {
   isAdmin: boolean;
   email?: string | null;
   isTeam?: boolean;
-  cartItems: UserCartItem[];
+  cartItems: CartItem[];
 }
 
 export const userDataCollection = collection(
@@ -76,23 +79,33 @@ export function useUserData2() {
     return setDoc(userRef, { ...user, ...idObj, ...updateObj });
   };
 
+  const getCartItemKey = (cartItem: CartItem) => {
+    const fields = [
+      cartItem.productId,
+      cartItem.size,
+      cartItem.color,
+      cartItem.name,
+      cartItem.number,
+      cartItem.numberField,
+    ];
+    return fields
+      .filter((field) => field !== undefined && field !== "")
+      .join("-");
+  };
+
   const findCartItem = (
-    cartItems: UserCartItem[],
-    lookup: UserCartItem
-  ): [UserCartItem | undefined, number] => {
+    cartItems: CartItem[],
+    lookup: CartItem
+  ): [CartItem | undefined, number] => {
+    const lookupKey = getCartItemKey(lookup);
     const index = cartItems?.findIndex(
-      (item) =>
-        item.productId === lookup.productId &&
-        item.size === lookup.size &&
-        item.color === lookup.color &&
-        item.name === lookup.name &&
-        item.number === lookup.number
+      (item) => getCartItemKey(item) === lookupKey
     );
     const item = index >= 0 ? cartItems[index] : undefined;
     return [item, index];
   };
 
-  const addToCartItem = async (cartItem: UserCartItem, addQty: number) => {
+  const addToCartItem = async (cartItem: CartItem, addQty: number) => {
     if (!user) throw new Error("User is not logged in");
 
     const [item, itemIndex] = findCartItem(user.cartItems, cartItem);
@@ -104,7 +117,7 @@ export function useUserData2() {
       });
     } else {
       // edit existing item
-      const newItems: UserCartItem[] = [
+      const newItems: CartItem[] = [
         ...user.cartItems.slice(0, itemIndex),
         ...(item && item.quantity + addQty > 0
           ? [{ ...item, quantity: addQty + item.quantity }]
@@ -119,21 +132,8 @@ export function useUserData2() {
     return user?.isTeam ? product.teamPrice : product.price;
   };
 
-  const getCartItemKey = (cartItem: UserCartItem) => {
-    const fields = [
-      cartItem.productId,
-      cartItem.size,
-      cartItem.color,
-      cartItem.name,
-      cartItem.number,
-    ];
-    return fields
-      .filter((field) => field !== undefined && field !== "")
-      .join("-");
-  };
-
   const clearCart = async () => updateUser({ cartItems: [] });
-  const cart = user?.cartItems ?? ([] as UserCartItem[]);
+  const cart = user?.cartItems ?? ([] as CartItem[]);
   const productIdsInCart = distinctEntries(cart.map((item) => item.productId));
   const [productsInCart] = useProductData(productIdsInCart);
   const priceMap = Object.fromEntries(
