@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
+import SwitchableImage from "components/SwitchableImage";
 
 export default function ImageGallery({
   imageLinks,
@@ -19,7 +20,7 @@ export default function ImageGallery({
   return (
     <Grid container>
       <Grid key={"main-image"} item xs={12}>
-        {activeImage && <img src={activeImage} width={"100%"} />}
+        {activeImage && <SwitchableImage src={activeImage} width={"100%"} />}
       </Grid>
       {images?.length > 1 &&
         images.map((image, i) => (
@@ -37,7 +38,7 @@ export default function ImageGallery({
             }}
             onClick={() => setActiveImage(image)}
           >
-            <img src={image} height={"50px"} />
+            <SwitchableImage src={image} height={"50px"} />
           </Grid>
         ))}
     </Grid>
