@@ -114,7 +114,7 @@ export default function ProductPage(): React.ReactElement {
               <BetterTextField
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                label={"Name"}
+                label={"Name (optional)"}
                 fullWidth
               />
             </Grid>
@@ -124,13 +124,13 @@ export default function ProductPage(): React.ReactElement {
               <BetterTextField
                 value={numberField ?? ""}
                 onChange={(e) => handleChangeNumber(e.target.value)}
-                label={"Number"}
+                label={"Number (optional)"}
                 type={"tel"}
                 fullWidth
               />
             </Grid>
           )}
-          <Grid item xs={12} />
+          <Grid item xs={12} sx={{ margin: 0 }} />
 
           <Grid item xs={6}>
             <QuantitySelect
