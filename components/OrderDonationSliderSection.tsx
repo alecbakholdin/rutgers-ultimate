@@ -47,7 +47,7 @@ export default function OrderDonationSliderSection({
             Donation Distribution
             <Tooltip
               title={
-                "Please select a portion of your contributions to donate to each team. Machine is the men's team, Nightshade is the womxn's team."
+                "Please select the portion of your donation you'd like to give each team."
               }
               sx={{ cursor: "pointer", marginLeft: 1, marginTop: 0.5 }}
             >
