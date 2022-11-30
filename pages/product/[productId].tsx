@@ -131,15 +131,8 @@ export default function ProductPage(): React.ReactElement {
             </Grid>
           )}
           <Grid item xs={12} sx={{ margin: 0 }} />
-
-          <Grid item xs={6}>
-            <QuantitySelect
-              quantity={quantity}
-              setQuantity={handleSetQuantity}
-            />
-          </Grid>
           {(product?.sizes?.length ?? 0) > 0 && (
-            <Grid item xs={6} sx={{ display: "flex", alignItems: "center" }}>
+            <Grid item xs={4} sm={6}>
               <StringSelect
                 label={"Size"}
                 value={size}
@@ -148,6 +141,13 @@ export default function ProductPage(): React.ReactElement {
               />
             </Grid>
           )}
+          <Grid item xs={8} sm={6}>
+            <QuantitySelect
+              quantity={quantity}
+              setQuantity={handleSetQuantity}
+            />
+          </Grid>
+
           <Grid
             item
             flexGrow={1}

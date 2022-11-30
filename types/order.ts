@@ -21,6 +21,7 @@ export interface Order {
   phoneNumber: string;
   firstName: string;
   lastName: string;
+  comments: string;
   venmo?: string;
   machinePercentage?: number;
   nightshadePercentage?: number;

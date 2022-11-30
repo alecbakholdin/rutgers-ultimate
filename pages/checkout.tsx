@@ -9,6 +9,7 @@ import { useMySnackbar } from "hooks/useMySnackbar";
 import PaymentMethodSelector from "components/PaymentMethodSelector";
 import OrderPersonDetailSection from "components/OrderPersonDetailSection";
 import OrderDonationSliderSection from "components/OrderDonationSliderSection";
+import CommentsSection from "components/CommentsSection";
 
 export default function Checkout(): React.ReactElement {
   const { user, cart, totalCost, clearCart } = useUserData2();
@@ -79,6 +80,7 @@ export default function Checkout(): React.ReactElement {
         <PaymentMethodSelector {...checkoutSectionProps} />
         <OrderPersonDetailSection {...checkoutSectionProps} />
         <OrderDonationSliderSection {...checkoutSectionProps} />
+        <CommentsSection {...checkoutSectionProps} />
         <Stack direction={"row"}>
           <LoadingButton status={submitStatus} onClick={handleSubmit}>
             SUBMIT
