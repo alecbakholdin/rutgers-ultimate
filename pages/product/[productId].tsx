@@ -73,6 +73,7 @@ export default function ProductPage(): React.ReactElement {
       name,
       numberField,
       unitPrice,
+      image: imgArray?.length ? imgArray[0] : undefined,
       totalPrice,
     };
     await addToCartItem(cartItem, quantity);

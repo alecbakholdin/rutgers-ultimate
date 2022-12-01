@@ -14,6 +14,7 @@ export interface CartItem {
   name?: string;
   number?: number;
   numberField?: string;
+  image?: string;
   unitPrice: number;
   totalPrice: number;
 }
@@ -36,7 +37,7 @@ export function useUserData(): [
   boolean,
   FirestoreError | undefined
 ] {
-  const [user, userLoading] = useAuthState(auth);
+  const [user] = useAuthState(auth);
   const userDataRef = user?.uid ? doc(userDataCollection, user.uid) : null;
   const initialValue: UserData = {
     id: user?.uid ?? "",
