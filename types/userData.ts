@@ -102,43 +102,48 @@ export function useUserData2() {
     return [item, index];
   };
 
-  const addToCartItem = async (cartItem: CartItem, addQty: number) => {
+  const setCartItemQuantity = async (cartItem: CartItem, quantity: number) => {
     if (!user) throw new Error("User is not logged in");
 
     const [item, itemIndex] = findCartItem(cartItem);
-
+    const totalPrice = quantity * (cartItem?.unitPrice || 0);
+    const newItem = { ...(item || cartItem), quantity, totalPrice };
     if (itemIndex < 0) {
       // add item
       await updateUser({
-        cartItems: [...cart, { ...cartItem, quantity: addQty }],
+        cartItems: [...cart, newItem],
       });
     } else {
       // edit existing item
       const newItems: CartItem[] = [
         ...cart.slice(0, itemIndex),
-        ...(item && item.quantity + addQty > 0
-          ? [{ ...item, quantity: addQty + item.quantity }]
-          : []),
+        ...(item && quantity > 0 ? [newItem] : []),
         ...cart.slice(itemIndex + 1, cart.length),
       ];
       await updateUser({ cartItems: newItems });
     }
   };
 
+  const addToCartItem = async (cartItem: CartItem, addQty: number) => {
+    if (!user) throw new Error("User is not logged in");
+
+    const [item] = findCartItem(cartItem);
+    const newQty = (item?.quantity || 0) + addQty;
+    await setCartItemQuantity(cartItem, newQty);
+  };
+
   const getItemPrice = (product: Product) => {
-    return user?.isTeam ? product.teamPrice : product.price;
+    return user?.isTeam ? product.teamPrice || product.price : product.price;
   };
 
   const clearCart = async () => updateUser({ cartItems: [] });
   const productIdsInCart = distinctEntries(cart.map((item) => item.productId));
   const [productsInCart] = useProductData(productIdsInCart);
-  const priceMap = Object.fromEntries(
-    productsInCart.map((p) => [p.id, getItemPrice(p)])
+  const totalCost = cart.reduce((total, item) => total + item.totalPrice, 0);
+  const productsInCartMap: { [id: string]: Product } = Object.fromEntries(
+    productsInCart.map((product) => [product.id, product])
   );
-  const totalCost = cart.reduce(
-    (total, item) => total + item.quantity * priceMap[item.productId],
-    0
-  );
+  const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
   return {
     signedIn: Boolean(user?.id),
     user,
@@ -147,9 +152,12 @@ export function useUserData2() {
     cart,
     productIdsInCart,
     productsInCart,
+    productsInCartMap,
     totalCost,
+    itemCount,
     updateUser,
     addToCartItem,
+    setCartItemQuantity,
     getItemPrice,
     getCartItemKey,
     clearCart,

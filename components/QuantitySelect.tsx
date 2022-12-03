@@ -1,15 +1,13 @@
 import React from "react";
-import { Grid, IconButton, SxProps, Typography } from "@mui/material";
+import { Grid, IconButton, Typography } from "@mui/material";
 import { Add, Remove } from "@mui/icons-material";
 
 export default function QuantitySelect({
   quantity,
   setQuantity,
-  sx,
 }: {
   quantity: number;
   setQuantity: (qty: number) => void;
-  sx?: SxProps;
 }): React.ReactElement {
   return (
     <Grid

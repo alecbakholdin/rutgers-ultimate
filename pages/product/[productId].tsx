@@ -3,9 +3,8 @@ import { useRouter } from "next/router";
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore";
 import { productCollection } from "types/product";
 import { doc } from "@firebase/firestore";
-import { Alert, Container, Grid, Typography } from "@mui/material";
+import { Alert, Button, Container, Grid, Typography } from "@mui/material";
 import { currencyFormat } from "config/currencyUtils";
-import ProductCartSummary from "components/ProductCartSummary";
 import { CartItem, useUserData, useUserData2 } from "types/userData";
 import ImageGallery from "components/ImageGallery";
 import ProductColorPicker from "components/ProductColorPicker";
@@ -16,7 +15,7 @@ import StringSelect from "components/StringSelect";
 import { useMySnackbar } from "hooks/useMySnackbar";
 
 export default function ProductPage(): React.ReactElement {
-  const { getItemPrice, addToCartItem } = useUserData2();
+  const { getItemPrice, setCartItemQuantity } = useUserData2();
   useUserData();
   const router = useRouter();
   const { productId } = router.query;
@@ -53,7 +52,12 @@ export default function ProductPage(): React.ReactElement {
     }
   };
 
-  const { showError } = useMySnackbar();
+  const {
+    enqueueSnackbar,
+    closeSnackbar,
+    showError,
+    executeAndCatchErrorsAsync,
+  } = useMySnackbar();
   const handleSubmit = async () => {
     if (product?.sizes?.length && !size) {
       showError("Please select a size");
@@ -76,14 +80,23 @@ export default function ProductPage(): React.ReactElement {
       image: imgArray?.length ? imgArray[0] : undefined,
       totalPrice,
     };
-    try {
-      await addToCartItem(cartItem, quantity);
-    } catch (e) {
-      if (e instanceof Error) {
-        console.error(e);
-        showError(e.message);
-      }
-    }
+    console.log(cartItem);
+    await executeAndCatchErrorsAsync(
+      async () => await setCartItemQuantity(cartItem, quantity)
+    );
+    enqueueSnackbar("Item added to cart successfully", {
+      action: (key) => (
+        <Button
+          onClick={() => {
+            router.push("/cart");
+            closeSnackbar(key);
+          }}
+          color={"secondary"}
+        >
+          Go to cart
+        </Button>
+      ),
+    });
   };
 
   return (
@@ -174,9 +187,6 @@ export default function ProductPage(): React.ReactElement {
               Add to cart
             </LoadingButton>
           </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          {product && <ProductCartSummary product={product} />}
         </Grid>
       </Grid>
     </Container>
