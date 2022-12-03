@@ -70,6 +70,7 @@ export function useUserData(): [
 
 export function useUserData2() {
   const [user, loading, error] = useUserData();
+  const cart = user?.cartItems ?? ([] as CartItem[]);
   const userRef = user?.id ? doc(userDataCollection, user?.id) : null;
   const updateUser = (updateObj: Partial<UserData>) => {
     if (!userRef) throw new Error("User is not logged in");
@@ -94,36 +95,31 @@ export function useUserData2() {
       .join("-");
   };
 
-  const findCartItem = (
-    cartItems: CartItem[],
-    lookup: CartItem
-  ): [CartItem | undefined, number] => {
+  const findCartItem = (lookup: CartItem): [CartItem | undefined, number] => {
     const lookupKey = getCartItemKey(lookup);
-    const index = cartItems?.findIndex(
-      (item) => getCartItemKey(item) === lookupKey
-    );
-    const item = index >= 0 ? cartItems[index] : undefined;
+    const index = cart.findIndex((item) => getCartItemKey(item) === lookupKey);
+    const item = index >= 0 ? cart[index] : undefined;
     return [item, index];
   };
 
   const addToCartItem = async (cartItem: CartItem, addQty: number) => {
     if (!user) throw new Error("User is not logged in");
 
-    const [item, itemIndex] = findCartItem(user.cartItems, cartItem);
+    const [item, itemIndex] = findCartItem(cartItem);
 
     if (itemIndex < 0) {
       // add item
       await updateUser({
-        cartItems: [...user.cartItems, { ...cartItem, quantity: addQty }],
+        cartItems: [...cart, { ...cartItem, quantity: addQty }],
       });
     } else {
       // edit existing item
       const newItems: CartItem[] = [
-        ...user.cartItems.slice(0, itemIndex),
+        ...cart.slice(0, itemIndex),
         ...(item && item.quantity + addQty > 0
           ? [{ ...item, quantity: addQty + item.quantity }]
           : []),
-        ...user.cartItems.slice(itemIndex + 1, user.cartItems.length),
+        ...cart.slice(itemIndex + 1, cart.length),
       ];
       await updateUser({ cartItems: newItems });
     }
@@ -134,7 +130,6 @@ export function useUserData2() {
   };
 
   const clearCart = async () => updateUser({ cartItems: [] });
-  const cart = user?.cartItems ?? ([] as CartItem[]);
   const productIdsInCart = distinctEntries(cart.map((item) => item.productId));
   const [productsInCart] = useProductData(productIdsInCart);
   const priceMap = Object.fromEntries(
