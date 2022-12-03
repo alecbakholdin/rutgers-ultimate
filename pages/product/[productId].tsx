@@ -76,16 +76,28 @@ export default function ProductPage(): React.ReactElement {
       image: imgArray?.length ? imgArray[0] : undefined,
       totalPrice,
     };
-    await addToCartItem(cartItem, quantity);
+    try {
+      await addToCartItem(cartItem, quantity);
+    } catch (e) {
+      if (e instanceof Error) {
+        console.error(e);
+        showError(e.message);
+      }
+    }
   };
 
   return (
     <Container maxWidth={"md"} sx={{ paddingTop: 5 }}>
-      <Grid container justifyContent={"center"} spacing={3}>
+      <Grid
+        container
+        justifyContent={"center"}
+        alignItems={"start"}
+        spacing={3}
+      >
         <Grid item xs={8} sm={4}>
           <ImageGallery imageLinks={imgArray} />
         </Grid>
-        <Grid item container xs={8} spacing={1}>
+        <Grid item container xs={8} spacing={1} rowSpacing={2}>
           <Grid item xs={12}>
             <Typography variant={"h4"}>{product?.name}</Typography>
           </Grid>
