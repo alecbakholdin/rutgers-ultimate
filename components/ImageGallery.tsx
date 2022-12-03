@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Grid } from "@mui/material";
 import SwitchableImage from "components/SwitchableImage";
 
@@ -7,7 +7,10 @@ export default function ImageGallery({
 }: {
   imageLinks?: string[];
 }): React.ReactElement {
-  const images = imageLinks?.filter((link) => link) ?? [];
+  const images = useMemo(
+    () => imageLinks?.filter((link) => link) ?? [],
+    [imageLinks]
+  );
   const [activeImage, setActiveImage] = useState<string | undefined>(
     images.length > 0 ? images[0] : undefined
   );
