@@ -4,19 +4,60 @@ import EditProductWizard from "components/EditProductWizard/EditProductWizard";
 import Typography from "@mui/material/Typography";
 import CreateProductWizard from "components/CreateProductWizard";
 import EditColorsWizard from "components/EditColorsWizard";
-import { useCollectionData } from "react-firebase-hooks/firestore";
+import {
+  useCollectionData,
+  useCollectionDataOnce,
+} from "react-firebase-hooks/firestore";
 import { productCollection } from "types/product";
 import { updateDoc } from "@firebase/firestore";
+import { userDataCollection, useUserData2 } from "types/userData";
+import { Order, orderCollection } from "types/order";
+import { extractKey } from "config/arrayUtils";
 
 export default function ManageStore(): React.ReactElement {
   const [products] = useCollectionData(productCollection);
+  const productMap = Object.fromEntries(
+    products?.map((product) => [product.id, product]) ?? []
+  );
+  const { getItemPrice } = useUserData2();
+  const [userData] = useCollectionDataOnce(userDataCollection);
+  const userMap = extractKey(userData, "id");
+  const [orders] = useCollectionDataOnce(orderCollection);
   const handleFix = async () => {
-    for (const product of products ?? []) {
-      const colorMap = Object.fromEntries(
-        product?.colors?.map((color) => [color.name, color]) ?? []
-      );
-      await updateDoc(product.ref, { colorMap });
-      console.log("Finished " + product.name);
+    return;
+    for (const order of orders ?? []) {
+      const user = userMap[order.uid];
+      const update: Partial<Order> = { cart: [...(order.cart || [])] };
+      const isTeam = user.isTeam || user.email?.endsWith("rutgers.edu");
+      let isDirty = false;
+      for (const cartItem of update.cart ?? []) {
+        if (!cartItem.unitPrice) {
+          const product = productMap[cartItem.productId];
+          cartItem.unitPrice = isTeam ? product?.teamPrice : product?.price;
+          cartItem.totalPrice = cartItem.unitPrice * cartItem.quantity;
+          isDirty = true;
+        }
+        if (
+          !cartItem.numberField &&
+          cartItem.number !== undefined &&
+          cartItem.number !== null
+        ) {
+          cartItem.numberField = cartItem.number?.toString();
+          isDirty = true;
+        }
+      }
+      if (order.machinePercentage === undefined) {
+        update.machinePercentage = update.nightshadePercentage = 50;
+        isDirty = true;
+      }
+      if (!order.dateCreated) {
+        update.dateCreated = update.dateUpdated = new Date();
+        isDirty = true;
+      }
+      if (isDirty && order.ref) {
+        await updateDoc(order.ref, update);
+        console.log(update);
+      }
     }
     console.log("done");
   };

@@ -26,6 +26,8 @@ export interface Order {
   machinePercentage?: number;
   nightshadePercentage?: number;
   totalCost: number;
+  dateCreated: Date;
+  dateUpdated: Date;
   cart: CartItem[];
 }
 

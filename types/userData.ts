@@ -1,4 +1,10 @@
-import { collection, doc, FirestoreError, setDoc } from "@firebase/firestore";
+import {
+  collection,
+  doc,
+  DocumentReference,
+  FirestoreError,
+  setDoc,
+} from "@firebase/firestore";
 import { auth, firestore } from "config/firebaseApp";
 import { getFirestoreConverter } from "config/firestoreConverter";
 import { Product, useProductData } from "./product";
@@ -25,6 +31,7 @@ export interface UserData {
   email?: string | null;
   isTeam?: boolean;
   cartItems: CartItem[];
+  ref?: DocumentReference<UserData>;
 }
 
 export const userDataCollection = collection(

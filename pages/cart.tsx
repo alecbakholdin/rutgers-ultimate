@@ -15,7 +15,7 @@ import {
 import { useMySnackbar } from "hooks/useMySnackbar";
 import { currencyFormat } from "config/currencyUtils";
 import NumberSelect from "components/NumberSelect";
-import { router } from "next/client";
+import router from "next/router";
 
 function CartItemDetailRow({
   item,

@@ -59,6 +59,8 @@ export default function Checkout(): React.ReactElement {
       email: user.email,
       totalCost,
       cart,
+      dateCreated: new Date(),
+      dateUpdated: new Date(),
     } as unknown);
     await clearCart();
     setSubmitStatus("success");

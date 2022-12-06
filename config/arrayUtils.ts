@@ -9,3 +9,10 @@ export function distinctEntries<T>(array?: T[], keyFn?: (val: T) => any): T[] {
     Object.fromEntries(array.map((item) => [keyFn(item), item]))
   );
 }
+
+export function extractKey<T>(
+  array: T[] | undefined | null,
+  key: keyof T
+): { [id: string]: T } {
+  return Object.fromEntries(array?.map((obj) => [obj[key], obj]) ?? []);
+}
