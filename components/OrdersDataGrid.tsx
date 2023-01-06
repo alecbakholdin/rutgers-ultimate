@@ -1,9 +1,6 @@
 import React from "react";
-import {
-  useCollectionData,
-  useCollectionDataOnce,
-} from "react-firebase-hooks/firestore";
-import { Order, orderAsStringSummary, orderCollection } from "../types/order";
+import { useCollectionDataOnce } from "react-firebase-hooks/firestore";
+import { Order, orderAsStringSummary } from "../types/order";
 import { productCollection } from "../types/product";
 import { extractKey } from "../config/arrayUtils";
 import { useMySnackbar } from "../hooks/useMySnackbar";
@@ -24,8 +21,11 @@ import {
 import { currencyFormat } from "../config/currencyUtils";
 import { GridActionsColDef } from "@mui/x-data-grid/models/colDef/gridColDef";
 
-export default function OrdersDataGrid(): React.ReactElement {
-  const [orders] = useCollectionData(orderCollection);
+export default function OrdersDataGrid({
+  orders,
+}: {
+  orders: Order[] | undefined;
+}): React.ReactElement {
   const [products] = useCollectionDataOnce(productCollection);
   const productMap = extractKey(products, "id");
 
