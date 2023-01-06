@@ -14,6 +14,7 @@ import { distinctEntries } from "config/arrayUtils";
 
 export interface CartItem {
   productId: string;
+  productName: string;
   quantity: number;
   color?: string;
   size?: string;

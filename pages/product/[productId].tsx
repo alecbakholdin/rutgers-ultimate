@@ -71,6 +71,7 @@ export default function ProductPage(): React.ReactElement {
     const totalPrice = unitPrice * quantity;
     const cartItem: CartItem = {
       productId: product.id,
+      productName: product.name,
       color: selectedColor,
       size,
       quantity,

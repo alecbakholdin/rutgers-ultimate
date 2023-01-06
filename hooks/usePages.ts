@@ -45,6 +45,10 @@ export function usePages() {
         name: "Manage Store",
         href: "/store/manage",
       });
+      newMainPages.push({
+        name: "Orders",
+        href: "/admin/orders",
+      });
     }
     setMainPages(newMainPages);
     setUserPages(newUserPages);
