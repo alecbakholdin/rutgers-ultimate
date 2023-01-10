@@ -100,7 +100,7 @@ export default function EditProductDetails({
         <ListEditor
           items={edits?.colors?.map((color) => color.name)}
           label={"Colors"}
-          disabled
+          disabled={disabled}
           renderChipAvatar={renderChipAvatar}
           setItems={(colors: string[]) =>
             handleEdit({ colors: colors.map((name) => ({ name })) })

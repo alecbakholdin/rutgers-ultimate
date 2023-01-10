@@ -26,16 +26,24 @@ export function getFirestoreConverter<
   return {
     toFirestore(modelObject: WithFieldValue<T>): DocumentData {
       const { id, ref, ...object } = modelObject;
-      const obj = formatObject(object);
-      console.log(obj);
-      return obj;
+      return formatObject(object);
     },
     fromFirestore(
       snapshot: QueryDocumentSnapshot<T>,
       options?: SnapshotOptions
     ): T {
+      const data = Object.fromEntries(
+        Object.entries(snapshot.data(options) as any).map(([key, value]) => {
+          return [
+            key,
+            Object.hasOwn(value as any, "seconds")
+              ? new Date((value as { seconds: number }).seconds * 1000)
+              : value,
+          ];
+        })
+      );
       return {
-        ...snapshot.data(options),
+        ...(data as any),
         id: snapshot.id,
         ref: snapshot.ref,
       };

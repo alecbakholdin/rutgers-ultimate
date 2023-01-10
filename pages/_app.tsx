@@ -17,6 +17,8 @@ import {
 } from "@firebase/auth";
 import { Close } from "@mui/icons-material";
 import { useMySnackbar } from "hooks/useMySnackbar";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const EmailAuthReminder = () => {
   const { enqueueSnackbar, closeSnackbar, showSuccess } = useMySnackbar();
@@ -72,16 +74,18 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <ThemeProvider theme={theme}>
-      <SnackbarProvider>
-        <NonSSRWrapper>
-          <EmailAuthReminder />
-          <NavBar />
-          <main>
-            <Component {...pageProps} />
-          </main>
-          <Box height={50} />
-        </NonSSRWrapper>
-      </SnackbarProvider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <SnackbarProvider>
+          <NonSSRWrapper>
+            <EmailAuthReminder />
+            <NavBar />
+            <main>
+              <Component {...pageProps} />
+            </main>
+            <Box height={50} />
+          </NonSSRWrapper>
+        </SnackbarProvider>
+      </LocalizationProvider>
     </ThemeProvider>
   );
 }
