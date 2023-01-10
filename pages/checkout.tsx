@@ -56,6 +56,7 @@ export default function Checkout(): React.ReactElement {
     await addDoc(orderCollection, {
       ...orderInfo,
       uid: user.id,
+      isTeam: user.isTeam,
       email: user.email,
       totalCost,
       cart,

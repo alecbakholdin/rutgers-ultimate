@@ -10,7 +10,7 @@ import {
 } from "react-firebase-hooks/firestore";
 import { productCollection } from "types/product";
 import { updateDoc } from "@firebase/firestore";
-import { userDataCollection, useUserData2 } from "types/userData";
+import { userDataCollection } from "types/userData";
 import { Order, orderCollection } from "types/order";
 import { extractKey } from "config/arrayUtils";
 
@@ -19,12 +19,10 @@ export default function ManageStore(): React.ReactElement {
   const productMap = Object.fromEntries(
     products?.map((product) => [product.id, product]) ?? []
   );
-  const { getItemPrice } = useUserData2();
   const [userData] = useCollectionDataOnce(userDataCollection);
   const userMap = extractKey(userData, "id");
   const [orders] = useCollectionDataOnce(orderCollection);
   const handleFix = async () => {
-    return;
     for (const order of orders ?? []) {
       const user = userMap[order.uid];
       const update: Partial<Order> = { cart: [...(order.cart || [])] };
@@ -54,6 +52,11 @@ export default function ManageStore(): React.ReactElement {
         update.dateCreated = update.dateUpdated = new Date();
         isDirty = true;
       }
+      if (!order.isTeam && userMap[order.uid].isTeam) {
+        update.isTeam = true;
+        isDirty = true;
+      }
+
       if (isDirty && order.ref) {
         await updateDoc(order.ref, update);
         console.log(update);
