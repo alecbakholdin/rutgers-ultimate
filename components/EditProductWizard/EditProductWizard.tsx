@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Container,
   Grid,
   Stack,
 } from "@mui/material";
@@ -61,35 +60,33 @@ export default function EditProductWizard(): React.ReactElement {
   };
 
   return (
-    <Container maxWidth={"lg"}>
-      <Card>
-        <CardHeader title={"Edit Product"} />
-        <CardContent>
-          <Grid container justifyContent={"left"} spacing={4}>
-            <Grid item xs={12}>
-              <ProductSearchAutocomplete onChange={(id) => setProductId(id)} />
-            </Grid>
-            <Grid item xs={12}>
-              <EditProductDetails edits={edits} handleEdit={handleEdit} />
-            </Grid>
-            <Grid item xs={12}>
-              <EditColorImages edits={edits} handleEdit={handleEdit} />
-            </Grid>
-            <Grid item xs={6}>
-              <Stack direction={"row"} alignItems={"center"}>
-                <LoadingButton onClick={handleSubmit} status={editStatus}>
-                  SUBMIT CHANGES
-                </LoadingButton>
-              </Stack>
-            </Grid>
-            <Grid item xs={6} container justifyContent={"right"}>
-              <Button onClick={handleDelete} disabled={!Boolean(productId)}>
-                DELETE ITEM
-              </Button>
-            </Grid>
+    <Card>
+      <CardHeader title={"Edit Product"} />
+      <CardContent>
+        <Grid container justifyContent={"left"} spacing={4}>
+          <Grid item xs={12}>
+            <ProductSearchAutocomplete onChange={(id) => setProductId(id)} />
           </Grid>
-        </CardContent>
-      </Card>
-    </Container>
+          <Grid item xs={12}>
+            <EditProductDetails edits={edits} handleEdit={handleEdit} />
+          </Grid>
+          <Grid item xs={12}>
+            <EditColorImages edits={edits} handleEdit={handleEdit} />
+          </Grid>
+          <Grid item xs={6}>
+            <Stack direction={"row"} alignItems={"center"}>
+              <LoadingButton onClick={handleSubmit} status={editStatus}>
+                SUBMIT CHANGES
+              </LoadingButton>
+            </Stack>
+          </Grid>
+          <Grid item xs={6} container justifyContent={"right"}>
+            <Button onClick={handleDelete} disabled={!Boolean(productId)}>
+              DELETE ITEM
+            </Button>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
   );
 }

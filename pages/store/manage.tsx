@@ -13,6 +13,7 @@ import { updateDoc } from "@firebase/firestore";
 import { userDataCollection } from "types/userData";
 import { Order, orderCollection } from "types/order";
 import { extractKey } from "config/arrayUtils";
+import EventWizard from "../../components/EventWizard";
 
 export default function ManageStore(): React.ReactElement {
   const [products] = useCollectionData(productCollection);
@@ -75,6 +76,7 @@ export default function ManageStore(): React.ReactElement {
         <EditProductWizard />
         <CreateProductWizard />
         <EditColorsWizard />
+        <EventWizard />
       </Stack>
     </Container>
   );

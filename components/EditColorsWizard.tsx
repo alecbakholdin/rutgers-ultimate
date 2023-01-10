@@ -8,7 +8,6 @@ import {
   CardContent,
   CardHeader,
   Chip,
-  Container,
   Grid,
   IconButton,
 } from "@mui/material";
@@ -47,50 +46,48 @@ export default function EditColorsWizard(): React.ReactElement {
   };
 
   return (
-    <Container maxWidth={"lg"}>
-      <Card>
-        <CardHeader title={"Manage Colors"} />
-        <CardContent>
-          <Grid container spacing={1} alignItems={"center"}>
-            <Grid item>
-              <BetterTextField
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                label={"Name"}
-                handlePressEnter={handleAdd}
-              />
-            </Grid>
-            <Grid item>
-              <BetterTextField
-                value={hex}
-                onChange={handleChangeHex}
-                label={"Hex"}
-                handlePressEnter={handleAdd}
-                InputProps={{
-                  startAdornment: "#",
-                  endAdornment: <ColorSwatch hex={"#" + hex} />,
-                }}
-              />
-            </Grid>
-            <Grid item>
-              <IconButton onClick={handleAdd}>
-                <Add />
-              </IconButton>
-            </Grid>
-            <Grid item xs={12} />
-            {colors?.map((color) => (
-              <Grid item key={color.id}>
-                <Chip
-                  label={color.id}
-                  avatar={<ColorSwatch size={20} hex={color.hex} />}
-                  onDelete={() => handleDelete(color.id)}
-                  sx={{ paddingLeft: 0.5 }}
-                />
-              </Grid>
-            ))}
+    <Card>
+      <CardHeader title={"Manage Colors"} />
+      <CardContent>
+        <Grid container spacing={1} alignItems={"center"}>
+          <Grid item>
+            <BetterTextField
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              label={"Name"}
+              handlePressEnter={handleAdd}
+            />
           </Grid>
-        </CardContent>
-      </Card>
-    </Container>
+          <Grid item>
+            <BetterTextField
+              value={hex}
+              onChange={handleChangeHex}
+              label={"Hex"}
+              handlePressEnter={handleAdd}
+              InputProps={{
+                startAdornment: "#",
+                endAdornment: <ColorSwatch hex={"#" + hex} />,
+              }}
+            />
+          </Grid>
+          <Grid item>
+            <IconButton onClick={handleAdd}>
+              <Add />
+            </IconButton>
+          </Grid>
+          <Grid item xs={12} />
+          {colors?.map((color) => (
+            <Grid item key={color.id}>
+              <Chip
+                label={color.id}
+                avatar={<ColorSwatch size={20} hex={color.hex} />}
+                onDelete={() => handleDelete(color.id)}
+                sx={{ paddingLeft: 0.5 }}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      </CardContent>
+    </Card>
   );
 }

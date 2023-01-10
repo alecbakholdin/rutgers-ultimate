@@ -5,7 +5,6 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
-  Container,
   Grid,
   Stack,
   TextField,
@@ -36,36 +35,34 @@ export default function CreateProductWizard(): React.ReactElement {
   };
 
   return (
-    <Container maxWidth={"lg"}>
-      <Card>
-        <CardHeader title={"Create Product"} />
-        <CardContent>
-          <Grid container justifyContent={"left"} spacing={1}>
-            <Grid item xs={12}>
-              <TextField
-                value={productName}
-                onChange={(e) => setProductName(e.target.value)}
-                label={"Product Name"}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <Stack direction={"row"} alignItems={"center"}>
-                <Button onClick={handleSubmit}>SUBMIT</Button>
-                <Typography color={"primary"}>
-                  {editStatus === "loading" ? (
-                    <CircularProgress size={15} color={"error"} />
-                  ) : editStatus === "done" ? (
-                    <Check />
-                  ) : (
-                    <></>
-                  )}
-                </Typography>
-              </Stack>
-            </Grid>
+    <Card>
+      <CardHeader title={"Create Product"} />
+      <CardContent>
+        <Grid container justifyContent={"left"} spacing={1}>
+          <Grid item xs={12}>
+            <TextField
+              value={productName}
+              onChange={(e) => setProductName(e.target.value)}
+              label={"Product Name"}
+              fullWidth
+            />
           </Grid>
-        </CardContent>
-      </Card>
-    </Container>
+          <Grid item xs={6}>
+            <Stack direction={"row"} alignItems={"center"}>
+              <Button onClick={handleSubmit}>SUBMIT</Button>
+              <Typography color={"primary"}>
+                {editStatus === "loading" ? (
+                  <CircularProgress size={15} color={"error"} />
+                ) : editStatus === "done" ? (
+                  <Check />
+                ) : (
+                  <></>
+                )}
+              </Typography>
+            </Stack>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
   );
 }

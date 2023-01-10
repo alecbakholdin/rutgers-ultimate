@@ -29,7 +29,9 @@ export default function EditProductDetails({
     if (!colorMap[item]) {
       return undefined;
     }
-    return <ColorSwatch hex={colorMap[item]} size={20} />;
+    return (
+      <ColorSwatch hex={colorMap[item]} size={20} sx={{ marginLeft: 0.5 }} />
+    );
   };
 
   const handleImageCountChange = (qty: number) => {
