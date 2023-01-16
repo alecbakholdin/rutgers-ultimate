@@ -60,6 +60,17 @@ export default function EditProductDetails({
           fullWidth
         />
       </Grid>
+      <Grid item xs={12}>
+        <TextField
+          value={edits?.description || ""}
+          onChange={(e) => handleEdit({ name: e.target.value })}
+          disabled={disabled}
+          label={"Description"}
+          multiline
+          maxRows={3}
+          fullWidth
+        />
+      </Grid>
       <Grid item xs={12} md={4}>
         <CurrencyTextField
           label={"Price"}

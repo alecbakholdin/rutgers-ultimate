@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore";
 import { productCollection } from "types/product";
 import { doc } from "@firebase/firestore";
-import { Alert, Button, Container, Grid, Typography } from "@mui/material";
+import { Button, Container, Grid, Typography } from "@mui/material";
 import { currencyFormat } from "config/currencyUtils";
 import { CartItem, useUserData, useUserData2 } from "types/userData";
 import ImageGallery from "components/ImageGallery";
@@ -120,11 +120,11 @@ export default function ProductPage(): React.ReactElement {
               {currencyFormat(product && getItemPrice(product))}
             </Typography>
           </Grid>
-          <Grid item xs={12}>
+          {/*<Grid item xs={12}>
             <Alert severity={"warning"}>
               Inventory will be shipped out in late February.
             </Alert>
-          </Grid>
+          </Grid>*/}
           {selectedColor && (
             <Grid item xs={12}>
               <ProductColorPicker

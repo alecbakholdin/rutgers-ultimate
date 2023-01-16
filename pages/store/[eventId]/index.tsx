@@ -7,9 +7,9 @@ import {
   useDocumentDataOnce,
 } from "react-firebase-hooks/firestore";
 import ProductCard from "components/ProductCard/ProductCard";
-import { extractKey } from "../../config/arrayUtils";
+import { extractKey } from "../../../config/arrayUtils";
 import { useRouter } from "next/router";
-import { eventCollection } from "../../types/event";
+import { eventCollection } from "../../../types/event";
 import { doc } from "@firebase/firestore";
 
 export default function Store(): React.ReactElement {
@@ -37,8 +37,9 @@ export default function Store(): React.ReactElement {
         </Grid>
         <Grid item xs={12} container spacing={2}>
           {eventProducts
-            ?.filter((p) =>
-              p.name.toLowerCase().includes(searchString.toLowerCase())
+            ?.filter(
+              (p) =>
+                p && p.name.toLowerCase().includes(searchString.toLowerCase())
             )
             .map((product) => (
               <Grid xs={12} sm={6} md={4} item key={product.id}>

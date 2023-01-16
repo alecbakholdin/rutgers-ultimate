@@ -19,6 +19,7 @@ export interface ProductColor {
 export interface Product {
   id: string;
   name: string;
+  description: string;
   price: number;
   teamPrice: number;
   images?: string[];

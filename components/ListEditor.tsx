@@ -9,8 +9,8 @@ import {
   TextFieldProps,
 } from "@mui/material";
 import BetterTextField from "components/BetterTextField";
-import { useSnackbar } from "notistack";
 import { Add } from "@mui/icons-material";
+import { useMySnackbar } from "../hooks/useMySnackbar";
 
 export default function ListEditor({
   items,
@@ -20,6 +20,7 @@ export default function ListEditor({
   disabled,
   renderChipAvatar,
   textFieldProps,
+  disableMultiAdd,
 }: {
   setItems: (items: string[]) => void;
   items?: string[];
@@ -28,22 +29,25 @@ export default function ListEditor({
   disabled?: boolean;
   renderChipAvatar?: (item: string) => React.ReactElement | undefined;
   textFieldProps?: TextFieldProps;
+  disableMultiAdd?: boolean;
 }): React.ReactElement {
   const [newItem, setNewItem] = useState<string>("");
-  const { enqueueSnackbar } = useSnackbar();
+  const { showError } = useMySnackbar();
   const handleCreateItem = () => {
     if (disabled || !newItem) {
       return;
     }
-    if (items?.includes(newItem)) {
-      enqueueSnackbar("That item already exists in this list", {
-        variant: "error",
-        autoHideDuration: 1000,
-      });
-      return;
+    const newItems = disableMultiAdd ? [newItem] : newItem.split(",");
+    newItems
+      .filter((item) => items?.includes(item))
+      .forEach((item) => showError(`${item} already exists in this list`));
+    const itemsToAdd = newItems
+      .map((item) => item.trim())
+      .filter((item) => item && !items?.includes(item));
+    if (itemsToAdd.length > 0) {
+      setItems([...(items ?? []), ...itemsToAdd]);
+      setNewItem("");
     }
-    setItems([...(items ?? []), newItem]);
-    setNewItem("");
   };
   const handleDeleteItem = (toDelete: string) => {
     setItems(items?.filter((item) => item != toDelete) ?? []);
