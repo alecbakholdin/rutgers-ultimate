@@ -155,6 +155,7 @@ export function useUserData2() {
   return {
     signedIn: Boolean(user?.id),
     user,
+    uid: user?.id,
     loading,
     error,
     cart,

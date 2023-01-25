@@ -1,9 +1,17 @@
-import { collection, DocumentReference } from "@firebase/firestore";
+import {
+  collection,
+  DocumentReference,
+  FirestoreError,
+  query,
+  where,
+} from "@firebase/firestore";
 import { firestore } from "config/firebaseApp";
 import { getFirestoreConverter } from "config/firestoreConverter";
-import { CartItem } from "types/userData";
+import { CartItem, useUserData2 } from "types/userData";
 import { currencyFormat } from "../config/currencyUtils";
 import { Product } from "./product";
+import { useMemo } from "react";
+import { useCollectionData } from "react-firebase-hooks/firestore";
 
 export interface OrderInfo {
   venmo?: string;
@@ -32,6 +40,7 @@ export interface Order {
   dateCreated: Date;
   dateUpdated: Date;
   cart: CartItem[];
+  eventId: string;
 
   requested: boolean;
   paid: boolean;
@@ -41,6 +50,21 @@ export interface Order {
 export const orderCollection = collection(firestore, "orders").withConverter(
   getFirestoreConverter<Order>()
 );
+
+export function useUserOrders(): [
+  Order[],
+  boolean,
+  FirestoreError | undefined | null
+] {
+  const { uid } = useUserData2();
+  const q = useMemo(
+    () => (uid ? query(orderCollection, where("uid", "==", uid)) : undefined),
+    [uid]
+  );
+  const [orders, loading, error] = useCollectionData<Order>(q);
+
+  return [orders ?? [], !uid || loading, error];
+}
 
 export function orderAsStringSummary(
   order: Order,

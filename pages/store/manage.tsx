@@ -24,6 +24,7 @@ export default function ManageStore(): React.ReactElement {
   const userMap = extractKey(userData, "id");
   const [orders] = useCollectionDataOnce(orderCollection);
   const handleFix = async () => {
+    console.log(orders);
     for (const order of orders ?? []) {
       const user = userMap[order.uid];
       const update: Partial<Order> = { cart: [...(order.cart || [])] };
@@ -49,8 +50,8 @@ export default function ManageStore(): React.ReactElement {
         update.machinePercentage = update.nightshadePercentage = 50;
         isDirty = true;
       }
-      if (!order.dateCreated) {
-        update.dateCreated = update.dateUpdated = new Date();
+      if (!order.dateCreated || JSON.stringify(order.dateCreated) === "{}") {
+        update.dateCreated = update.dateUpdated = new Date("2022-12-14");
         isDirty = true;
       }
       if (!order.isTeam && userMap[order.uid].isTeam) {

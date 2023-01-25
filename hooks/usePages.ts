@@ -27,6 +27,10 @@ export function usePages() {
       name: "Sign Out",
       onClick: () => signOut(),
     },
+    {
+      name: "My Orders",
+      href: "/orders",
+    },
   ];
 
   const [signOut] = useSignOut(auth);
