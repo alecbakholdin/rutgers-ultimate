@@ -47,7 +47,7 @@ export default function Store(): React.ReactElement {
                   target={"_blank"}
                   download
                 >
-                  <Download />
+                  <Download color={"primary"} />
                 </a>
               </IconButton>
             </Grid>
