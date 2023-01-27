@@ -16,11 +16,13 @@ export default function Store(): React.ReactElement {
   const router = useRouter();
   const { eventId } = router.query;
   const [event] = useDocumentDataOnce(doc(eventCollection, `${eventId}`));
+  //const eventProductIds = event?.productStatuses?.map((s) => s.productId) || [];
   const eventProductIds = event?.productIds || [];
   const [products] = useCollectionDataOnce(productCollection);
   const productMap = extractKey(products, "id");
   const eventProducts = eventProductIds.map((id) => productMap[id]);
   const [searchString, setSearchString] = useState<string>("");
+  console.log(eventProductIds, eventProducts);
 
   const handleSearch = (searchValue: string) => {
     setSearchString(searchValue);
@@ -44,7 +46,7 @@ export default function Store(): React.ReactElement {
             .map((product) => (
               <Grid xs={12} sm={6} md={4} item key={product.id}>
                 <Box display={"flex"} justifyContent={"center"}>
-                  <ProductCard product={product} />
+                  <ProductCard eventId={eventId as string} product={product} />
                 </Box>
               </Grid>
             ))}

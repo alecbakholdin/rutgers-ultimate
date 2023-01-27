@@ -20,8 +20,10 @@ export default function ProductCard({
     colors: productColors,
     colorMap: productColorMap,
   },
+  eventId,
 }: {
   product: Product;
+  eventId: string;
 }) {
   const [userData] = useUserData();
   const priceToDisplay = userData?.isTeam && teamPrice ? teamPrice : price;
@@ -44,7 +46,7 @@ export default function ProductCard({
     setLoading(true);
   };
   return (
-    <Link href={`/product/${id}`} sx={{ textDecoration: "none" }}>
+    <Link href={`/store/${eventId}/${id}`} sx={{ textDecoration: "none" }}>
       <Card className={styles.root}>
         <div ref={divRef}>
           {loading && (

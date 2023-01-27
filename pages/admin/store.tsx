@@ -45,6 +45,13 @@ export default function ManageStore(): React.ReactElement {
           cartItem.numberField = cartItem.number?.toString();
           isDirty = true;
         }
+        if (!cartItem.event && order.dateCreated < new Date("2023-01-01")) {
+          cartItem.event = "aArV98cYa3d8nsErTgiL";
+          isDirty = true;
+        } else if (!cartItem.event) {
+          cartItem.event = "OeZmi1CZMzJGbRW3UHtw";
+          isDirty = true;
+        }
       }
       if (order.machinePercentage === undefined) {
         update.machinePercentage = update.nightshadePercentage = 50;
@@ -56,6 +63,10 @@ export default function ManageStore(): React.ReactElement {
       }
       if (!order.isTeam && userMap[order.uid].isTeam) {
         update.isTeam = true;
+        isDirty = true;
+      }
+      if (!order.eventIds) {
+        update.eventIds = [order.cart[0].event];
         isDirty = true;
       }
 

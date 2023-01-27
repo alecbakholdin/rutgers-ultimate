@@ -45,12 +45,12 @@ export function usePages() {
     const newMainPages: Page[] = [...defaultMainPages];
     const newUserPages: Page[] = [...defaultUserPages];
     if (userData?.isAdmin) {
-      newMainPages.push({
+      newUserPages.push({
         name: "Manage Store",
-        href: "/store/manage",
+        href: "/admin/store",
       });
-      newMainPages.push({
-        name: "Orders",
+      newUserPages.push({
+        name: "Manage All Orders",
         href: "/admin/orders",
       });
     }

@@ -40,7 +40,7 @@ export interface Order {
   dateCreated: Date;
   dateUpdated: Date;
   cart: CartItem[];
-  eventId: string;
+  eventIds: string[];
 
   requested: boolean;
   paid: boolean;

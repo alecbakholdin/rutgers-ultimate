@@ -24,6 +24,7 @@ export interface CartItem {
   image?: string;
   unitPrice: number;
   totalPrice: number;
+  event: string;
 }
 
 export interface UserData {

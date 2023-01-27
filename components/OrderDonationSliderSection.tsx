@@ -29,8 +29,8 @@ export default function OrderDonationSliderSection({
     const val = Math.max(0, Math.min(100, newValue));
     setOrderInfo({
       ...orderInfo,
-      machinePercentage: val,
-      nightshadePercentage: 100 - val,
+      machinePercentage: 100 - val,
+      nightshadePercentage: val,
     });
   };
   const handleDistributionChange = (e: Event, newValue: number | number[]) => {
@@ -83,7 +83,7 @@ export default function OrderDonationSliderSection({
               <Remove fontSize={"large"} />
             </IconButton>
             <Slider
-              value={machinePercentage}
+              value={nightshadePercentage}
               onChange={handleDistributionChange}
               step={10}
               min={0}

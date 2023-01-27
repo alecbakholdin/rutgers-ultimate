@@ -19,6 +19,10 @@ export default function Checkout(): React.ReactElement {
     nightshadePercentage: 50,
   });
   const { showError } = useMySnackbar();
+  const eventsInCart: string[] = cart?.reduce(
+    (prev, curr) => (prev.includes(curr.event) ? prev : [...prev, curr.event]),
+    [] as string[]
+  );
 
   const handleChangeOrderInfo =
     (key: keyof OrderInfo) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,6 +64,7 @@ export default function Checkout(): React.ReactElement {
       email: user.email,
       totalCost,
       cart,
+      eventIds: eventsInCart,
       dateCreated: new Date(),
       dateUpdated: new Date(),
     } as unknown);

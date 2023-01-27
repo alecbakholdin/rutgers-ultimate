@@ -1,7 +1,7 @@
 import React from "react";
-import { useUserOrders } from "../../types/order";
+import { useUserOrders } from "../types/order";
 import { Container, Stack, Typography } from "@mui/material";
-import OrderDetails from "../../components/OrderDetails";
+import OrderDetails from "../components/OrderDetails";
 
 export default function UserOrders(): React.ReactElement {
   const [orders] = useUserOrders();

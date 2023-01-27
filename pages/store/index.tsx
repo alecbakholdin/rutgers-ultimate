@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Container, Typography } from "@mui/material";
+import { Container } from "@mui/material";
 import { useActiveEventsOnce } from "../../types/event";
 import { useRouter } from "next/router";
 
@@ -12,9 +12,5 @@ export default function Store(): React.ReactElement {
     }
   }, [events]);
 
-  return (
-    <Container maxWidth={"lg"} sx={{ paddingTop: 5 }}>
-      <Typography variant={"h4"}>Active Events</Typography>
-    </Container>
-  );
+  return <Container maxWidth={"lg"} sx={{ paddingTop: 5 }}></Container>;
 }

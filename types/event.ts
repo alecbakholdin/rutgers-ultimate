@@ -11,6 +11,24 @@ import { getFirestoreConverter } from "../config/firestoreConverter";
 import { useCollectionDataOnce } from "react-firebase-hooks/firestore";
 import { useMemo } from "react";
 
+export type EventProductStatus =
+  | "Ready for Pickup"
+  | "Picked Up"
+  | "Shipped"
+  | "Delivered";
+
+export function getProductStatusColor(status?: EventProductStatus) {
+  if (!status) return "#000000";
+  switch (status) {
+    case "Ready for Pickup":
+    case "Shipped":
+    case "Delivered":
+    case "Picked Up":
+      return "green";
+  }
+  return "#000000";
+}
+
 export interface Event {
   id: string;
   ref: DocumentReference<Event>;
@@ -18,6 +36,7 @@ export interface Event {
   name: string;
   endDate: Date;
   productIds: string[];
+  productStatuses: { productId: string; status: EventProductStatus }[];
 }
 
 export const eventCollection: CollectionReference<Event> = collection(
