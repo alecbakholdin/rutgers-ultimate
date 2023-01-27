@@ -11,6 +11,7 @@ export default function NumberSelect({
   label,
   value,
   onChange,
+  disabled,
   min = 0,
   max = 5,
   selectProps,
@@ -18,13 +19,14 @@ export default function NumberSelect({
   label?: string;
   value?: number;
   onChange: (newVal: number) => void;
+  disabled?: boolean;
   min?: number;
   max?: number;
   selectProps?: SelectProps;
 }): React.ReactElement {
   return (
-    <FormControl fullWidth>
-      <InputLabel disabled={selectProps?.disabled}>{label}</InputLabel>
+    <FormControl fullWidth disabled={selectProps?.disabled || disabled}>
+      <InputLabel>{label}</InputLabel>
       <Select
         label={label}
         value={value === undefined ? "" : value.toString()}

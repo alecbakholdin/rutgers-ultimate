@@ -18,6 +18,7 @@ import dayjs from "dayjs";
 import { addDoc, updateDoc } from "@firebase/firestore";
 import { deleteDoc } from "@firebase/firestore/lite";
 import ProductSelector from "./ProductSelector";
+import NumberSelect from "./NumberSelect";
 
 export default function EventWizard(): React.ReactElement {
   const [events] = useCollectionData(eventCollection);
@@ -29,6 +30,7 @@ export default function EventWizard(): React.ReactElement {
     setEvent(eventMap[eventId ?? ""]);
   }, [eventId]);
   const handleEdit = (update: Partial<Event>) => {
+    console.log(update);
     if (event) {
       setEvent({ ...event, ...update });
     }
@@ -67,7 +69,14 @@ export default function EventWizard(): React.ReactElement {
               getOptionLabel={(option) => eventMap[option ?? ""]?.name || ""}
             />
           </Grid>
-
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              value={event?.id || ""}
+              disabled
+              label={"ID"}
+            />
+          </Grid>
           <Grid item xs={12}>
             <BetterTextField
               fullWidth
@@ -76,7 +85,7 @@ export default function EventWizard(): React.ReactElement {
               onChange={(e) => handleEdit({ name: e.target.value })}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item>
             <DateTimePicker
               onChange={(newValue) =>
                 handleEdit({ endDate: dayjs(newValue).toDate() })
@@ -85,6 +94,14 @@ export default function EventWizard(): React.ReactElement {
               renderInput={(params) => (
                 <TextField {...params} label={"End Date"} />
               )}
+            />
+          </Grid>
+          <Grid item>
+            <NumberSelect
+              value={event?.sizingChartCount || 0}
+              label={"Sizing Charts"}
+              onChange={(e) => handleEdit({ sizingChartCount: e })}
+              disabled={!event}
             />
           </Grid>
           <Grid item xs={12}>

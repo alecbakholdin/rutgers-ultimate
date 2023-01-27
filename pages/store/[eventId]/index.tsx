@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Container, Grid, Typography } from "@mui/material";
+import { Box, Container, Grid, IconButton, Typography } from "@mui/material";
 import { productCollection } from "types/product";
 import SearchBar from "components/SearchBar";
 import {
@@ -11,6 +11,7 @@ import { extractKey } from "../../../config/arrayUtils";
 import { useRouter } from "next/router";
 import { eventCollection } from "../../../types/event";
 import { doc } from "@firebase/firestore";
+import { Download } from "@mui/icons-material";
 
 export default function Store(): React.ReactElement {
   const router = useRouter();
@@ -34,6 +35,23 @@ export default function Store(): React.ReactElement {
         <Grid item xs={12}>
           <Typography variant={"h4"}>{event?.name}</Typography>
         </Grid>
+        {event?.sizingChartCount &&
+          Array.from({ length: event.sizingChartCount }).map((_, i) => (
+            <Grid item xs={12} container alignItems={"center"}>
+              <Typography color={"primary"}>
+                Download Sizing Chart {event.sizingChartCount > 1 ? i + 1 : ""}
+              </Typography>
+              <IconButton>
+                <a
+                  href={`https://bakholdin.com/machine-pics/events/${event.id}/sizing-chart-${i}.jpg`}
+                  target={"_blank"}
+                  download
+                >
+                  <Download />
+                </a>
+              </IconButton>
+            </Grid>
+          ))}
         <Grid item xs={12}>
           <SearchBar label={"Type to Search"} onChange={handleSearch} />
         </Grid>

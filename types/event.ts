@@ -37,6 +37,7 @@ export interface Event {
   endDate: Date;
   productIds: string[];
   productStatuses: { productId: string; status: EventProductStatus }[];
+  sizingChartCount: number;
 }
 
 export const eventCollection: CollectionReference<Event> = collection(
