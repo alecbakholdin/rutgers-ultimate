@@ -17,6 +17,8 @@
     "@mui/x-data-grid": "^5.17.16",
     "@mui/x-data-grid-generator": "^5.17.18",
     "@mui/x-date-pickers": "^5.0.13",
+    "@stripe/react-stripe-js": "^1.16.4",
+    "@stripe/stripe-js": "^1.46.0",
     "@types/node": "18.11.9",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.8",
@@ -33,6 +35,7 @@
     "react-firebase-hooks": "^5.1.1",
     "react-number-format": "^5.1.1",
     "sass": "^1.56.1",
+    "stripe": "^11.8.0",
     "typescript": "4.8.4"
   }
 }

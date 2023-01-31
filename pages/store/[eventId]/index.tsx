@@ -37,7 +37,7 @@ export default function Store(): React.ReactElement {
         </Grid>
         {event?.sizingChartCount &&
           Array.from({ length: event.sizingChartCount }).map((_, i) => (
-            <Grid item xs={12} container alignItems={"center"}>
+            <Grid item key={i} xs={12} container alignItems={"center"}>
               <Typography color={"primary"}>
                 Download Sizing Chart {event.sizingChartCount > 1 ? i + 1 : ""}
               </Typography>
@@ -45,6 +45,7 @@ export default function Store(): React.ReactElement {
                 <a
                   href={`https://bakholdin.com/machine-pics/events/${event.id}/sizing-chart-${i}.jpg`}
                   target={"_blank"}
+                  rel={"noreferrer"}
                   download
                 >
                   <Download color={"primary"} />

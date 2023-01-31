@@ -9,7 +9,7 @@ import { CartItem, useUserData, useUserData2 } from "types/userData";
 import ImageGallery from "components/ImageGallery";
 import ProductColorPicker from "components/ProductColorPicker";
 import BetterTextField from "components/BetterTextField";
-import LoadingButton from "components/LoadingButton";
+import StatusButton from "components/StatusButton";
 import QuantitySelect from "components/QuantitySelect";
 import StringSelect from "components/StringSelect";
 import { useMySnackbar } from "hooks/useMySnackbar";
@@ -181,13 +181,13 @@ export default function EventProductPage(): React.ReactElement {
             flexGrow={1}
             sx={{ display: "flex", alignItems: "center" }}
           >
-            <LoadingButton
+            <StatusButton
               variant={"contained"}
               onClick={handleSubmit}
               sx={{ width: "100%", height: "100%" }}
             >
               Add to cart
-            </LoadingButton>
+            </StatusButton>
           </Grid>
         </Grid>
       </Grid>

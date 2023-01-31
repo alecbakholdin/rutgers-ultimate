@@ -4,7 +4,7 @@ import { useSnackbar } from "notistack";
 import { Card, CardContent, CardHeader, Grid, TextField } from "@mui/material";
 import BetterTextField from "components/BetterTextField";
 import { addDoc } from "@firebase/firestore";
-import LoadingButton, { LoadingStatus } from "components/LoadingButton";
+import StatusButton, { LoadingStatus } from "components/StatusButton";
 
 export default function FeedbackForm(): React.ReactElement {
   const [name, setName] = useState<string>("");
@@ -52,9 +52,9 @@ export default function FeedbackForm(): React.ReactElement {
             />
           </Grid>
           <Grid item xs={6} md={3}>
-            <LoadingButton status={status} onClick={handleSubmit}>
+            <StatusButton status={status} onClick={handleSubmit}>
               SUBMIT
-            </LoadingButton>
+            </StatusButton>
           </Grid>
         </Grid>
       </CardContent>

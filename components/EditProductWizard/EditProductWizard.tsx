@@ -12,7 +12,7 @@ import { Product, productCollection } from "types/product";
 import { deleteDoc, doc, setDoc } from "@firebase/firestore";
 import ProductSearchAutocomplete from "./ProductSearchAutocomplete";
 import EditProductDetails from "./EditProductDetails";
-import LoadingButton, { LoadingStatus } from "components/LoadingButton";
+import StatusButton, { LoadingStatus } from "components/StatusButton";
 import EditColorImages from "components/EditProductWizard/EditColorImages";
 
 export default function EditProductWizard(): React.ReactElement {
@@ -75,9 +75,9 @@ export default function EditProductWizard(): React.ReactElement {
           </Grid>
           <Grid item xs={6}>
             <Stack direction={"row"} alignItems={"center"}>
-              <LoadingButton onClick={handleSubmit} status={editStatus}>
+              <StatusButton onClick={handleSubmit} status={editStatus}>
                 SUBMIT CHANGES
-              </LoadingButton>
+              </StatusButton>
             </Stack>
           </Grid>
           <Grid item xs={6} container justifyContent={"right"}>

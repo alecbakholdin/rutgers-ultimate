@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Alert, Container, Stack } from "@mui/material";
 import { useUserData2 } from "types/userData";
-import LoadingButton, { LoadingStatus } from "components/LoadingButton";
+import StatusButton, { LoadingStatus } from "components/StatusButton";
 import { addDoc } from "@firebase/firestore";
 import { orderCollection, OrderInfo } from "types/order";
 import { useRouter } from "next/router";
@@ -90,9 +90,9 @@ export default function Checkout(): React.ReactElement {
         <OrderDonationSliderSection {...checkoutSectionProps} />
         <CommentsSection {...checkoutSectionProps} />
         <Stack direction={"row"}>
-          <LoadingButton status={submitStatus} onClick={handleSubmit}>
+          <StatusButton status={submitStatus} onClick={handleSubmit}>
             SUBMIT
-          </LoadingButton>
+          </StatusButton>
         </Stack>
       </Stack>
     </Container>
