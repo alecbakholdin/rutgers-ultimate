@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
-import { Divider, Grid, Paper, Stack } from "@mui/material";
+import { Divider, Grid, Stack } from "@mui/material";
 import { Order } from "../types/order";
 import CartItemRow from "./CartItemRow";
 import Typography from "@mui/material/Typography";
 import { currencyFormat } from "../config/currencyUtils";
 
-function OrderSummary({ obj }: { obj: { [key: string]: string } }) {
+function OrderSummary({ obj }: { obj: { [_: string]: string } }) {
   const entries = useMemo(() => Object.entries(obj), [obj]);
   return (
     <>
@@ -47,22 +47,21 @@ export default function OrderDetails({
     ? "Awaiting Payment"
     : "Processing";
   return (
-    <Paper>
-      <Stack spacing={1}>
-        <OrderSummary
-          obj={{
-            "Order Placed": order.dateCreated?.toDateString(),
-            Status: statusString,
-            Subtotal: currencyFormat(order.totalCost) || "",
-          }}
-        />
-        {order.cart.map((item, i) => (
-          <>
-            <Divider key={`${i}-divider`} />
-            <CartItemRow key={i} item={item} sx={{ padding: 2 }} />
-          </>
-        ))}
-      </Stack>
-    </Paper>
+    <Stack spacing={1}>
+      <OrderSummary
+        key={"OrderSummary"}
+        obj={{
+          "Order Placed": order.dateCreated?.toDateString(),
+          Status: statusString,
+          Subtotal: currencyFormat(order.totalCost) || "",
+        }}
+      />
+      {order.cart.map((item, i) => (
+        <>
+          <Divider key={`${i}-divider`} />
+          <CartItemRow key={i} item={item} sx={{ padding: 2 }} />
+        </>
+      ))}
+    </Stack>
   );
 }

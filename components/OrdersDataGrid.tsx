@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useCollectionDataOnce } from "react-firebase-hooks/firestore";
 import { Order, orderAsStringSummary } from "../types/order";
 import { productCollection } from "../types/product";
@@ -11,15 +11,18 @@ import {
   GridRowParams,
   GridToolbar,
 } from "@mui/x-data-grid";
-import { IconButton } from "@mui/material";
+import { Container, Grid, IconButton, Modal, Paper } from "@mui/material";
 import { updateDoc } from "@firebase/firestore";
 import {
   CheckBox,
   CheckBoxOutlineBlank,
+  Close,
   ContentCopy,
+  OpenInNew,
 } from "@mui/icons-material";
 import { currencyFormat } from "../config/currencyUtils";
 import { GridActionsColDef } from "@mui/x-data-grid/models/colDef/gridColDef";
+import OrderDetails from "./OrderDetails";
 
 export default function OrdersDataGrid({
   orders,
@@ -28,6 +31,8 @@ export default function OrdersDataGrid({
 }): React.ReactElement {
   const [products] = useCollectionDataOnce(productCollection);
   const productMap = extractKey(products, "id");
+  const [detailedOrder, setDetailedOrder] = useState<Order | undefined>();
+  const handleCloseModal = () => setDetailedOrder(undefined);
 
   const rows = (orders || []).map((order) => ({
     ...order,
@@ -86,15 +91,59 @@ export default function OrdersDataGrid({
         />,
       ],
     } as GridActionsColDef,
+    {
+      field: "orderDetailsAction",
+      headerName: "Details",
+      type: "actions",
+      getActions: ({ row }: GridRowParams) => [
+        <GridActionsCellItem
+          key={"details"}
+          label={"Details"}
+          icon={<OpenInNew />}
+          onClick={() => setDetailedOrder(row as Order)}
+        />,
+      ],
+    } as GridActionsColDef,
     { field: "id", headerName: "ID" },
   ];
 
   return (
-    <DataGrid
-      columns={cols}
-      rows={rows}
-      components={{ Toolbar: GridToolbar }}
-      checkboxSelection
-    />
+    <>
+      <DataGrid
+        columns={cols}
+        rows={rows}
+        components={{ Toolbar: GridToolbar }}
+        checkboxSelection
+      />
+      <Modal
+        open={Boolean(detailedOrder)}
+        onClose={handleCloseModal}
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+      >
+        <Container
+          maxWidth={"md"}
+          sx={{
+            overflowY: "scroll",
+            maxHeight: "100vh",
+            marginTop: 3,
+            marginBottom: 3,
+          }}
+        >
+          <Paper>
+            <Grid container>
+              <Grid item flexGrow={1} />
+              <Grid item sx={{ paddingTop: 1, paddingRight: 1 }}>
+                <IconButton onClick={handleCloseModal}>
+                  <Close />
+                </IconButton>
+              </Grid>
+              <Grid item xs={12}>
+                {detailedOrder && <OrderDetails order={detailedOrder} />}
+              </Grid>
+            </Grid>
+          </Paper>
+        </Container>
+      </Modal>
+    </>
   );
 }
