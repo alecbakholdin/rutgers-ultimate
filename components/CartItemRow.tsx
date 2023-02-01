@@ -1,8 +1,11 @@
-import { CartItem, useUserData2 } from "../types/userData";
+import { CartItem } from "../types/userData";
 import React from "react";
 import { Box, Link, Stack, SxProps, Typography } from "@mui/material";
 import { currencyFormat } from "../config/currencyUtils";
 import NumberSelect from "./NumberSelect";
+import { useDocumentDataOnce } from "react-firebase-hooks/firestore";
+import { productCollection } from "../types/product";
+import { doc } from "@firebase/firestore";
 
 function CartItemDetailRow({
   item,
@@ -33,7 +36,7 @@ export default function CartItemRow({
   onChangeQty?: (newQty: number) => Promise<void>;
   sx?: SxProps;
 }) {
-  const { productsInCartMap } = useUserData2();
+  const [product] = useDocumentDataOnce(doc(productCollection, item.productId));
 
   return (
     <Stack direction={"row"} spacing={2} sx={sx}>
@@ -65,9 +68,7 @@ export default function CartItemRow({
             },
           }}
         >
-          <Typography variant={"h6"}>
-            {productsInCartMap[item.productId]?.name}
-          </Typography>
+          <Typography variant={"h6"}>{product?.name}</Typography>
         </Link>
         <CartItemDetailRow item={item} detailKey={"size"} />
         <CartItemDetailRow item={item} detailKey={"color"} />

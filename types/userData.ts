@@ -149,9 +149,6 @@ export function useUserData2() {
   const productIdsInCart = distinctEntries(cart.map((item) => item.productId));
   const [productsInCart] = useProductData(productIdsInCart);
   const totalCost = cart.reduce((total, item) => total + item.totalPrice, 0);
-  const productsInCartMap: { [id: string]: Product } = Object.fromEntries(
-    productsInCart.map((product) => [product.id, product])
-  );
   const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
   return {
     signedIn: Boolean(user?.id),
@@ -162,7 +159,6 @@ export function useUserData2() {
     cart,
     productIdsInCart,
     productsInCart,
-    productsInCartMap,
     totalCost,
     itemCount,
     updateUser,
