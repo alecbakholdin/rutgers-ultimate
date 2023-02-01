@@ -4,7 +4,7 @@ export function useMySnackbar() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const showAutoHide =
     (variant: VariantType) =>
-    (message: string, autoHideDuration: number = 1000) =>
+    (message: string, autoHideDuration: number = 1500) =>
       enqueueSnackbar(message, { variant, autoHideDuration });
 
   const handleError = (e: any) => {
