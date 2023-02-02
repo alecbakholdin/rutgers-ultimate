@@ -26,6 +26,7 @@
     "eslint-config-next": "13.0.2",
     "firebase": "^9.14.0",
     "firebaseui": "^6.0.2",
+    "jotai": "^2.0.0",
     "material-ui-color-picker": "^3.5.1",
     "next": "^13.1.1",
     "notistack": "^2.0.8",

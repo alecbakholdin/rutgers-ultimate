@@ -18,6 +18,7 @@ import { Close } from "@mui/icons-material";
 import { useMySnackbar } from "hooks/useMySnackbar";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { Provider } from "jotai";
 
 const EmailAuthReminder = () => {
   const { enqueueSnackbar, closeSnackbar, showSuccess } = useMySnackbar();
@@ -74,12 +75,14 @@ export default function App({ Component, pageProps }: AppProps) {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <SnackbarProvider>
           <NonSSRWrapper>
-            <EmailAuthReminder />
-            <NavBar />
-            <main>
-              <Component {...pageProps} />
-            </main>
-            <Box height={50} />
+            <Provider>
+              <EmailAuthReminder />
+              <NavBar />
+              <main>
+                <Component {...pageProps} />
+              </main>
+              <Box height={50} />
+            </Provider>
           </NonSSRWrapper>
         </SnackbarProvider>
       </LocalizationProvider>
