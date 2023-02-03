@@ -13,6 +13,13 @@ export default function Index(): React.ReactElement {
   const [checkoutConfig, setCheckoutConfig] = useState<CheckoutConfig>({
     deliveryMethod: "pickup",
     pickupLocation: "bid",
+
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    email: "",
+
+    sendEmailReceipt: false,
   });
 
   return (

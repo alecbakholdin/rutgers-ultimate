@@ -1,15 +1,17 @@
 import { CheckoutConfig } from "../../types/checkout";
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import { useUserData2 } from "../../types/userData";
 import {
   FormControl,
   FormControlLabel,
+  FormGroup,
   FormLabel,
   Grid,
   Radio,
   RadioGroup,
   TextField,
 } from "@mui/material";
+import { LovelySwitch } from "../../components/LovelySwitch";
 
 export function CheckoutConfigSection({
   checkoutConfig,
@@ -27,8 +29,63 @@ export function CheckoutConfigSection({
     (key: keyof CheckoutConfig) => (e: ChangeEvent<HTMLInputElement>) =>
       updateConfig({ [key]: e.target.value });
 
+  useEffect(() => {
+    if (user?.email && !checkoutConfig.email) {
+      updateConfig({ email: user.email });
+    }
+  }, [user]);
+
   return (
-    <Grid container spacing={1}>
+    <Grid container rowSpacing={3} spacing={1}>
+      <Grid item xs={12}>
+        <FormControl sx={{ width: "100%" }}>
+          <FormLabel>Personal Details</FormLabel>
+          <Grid container spacing={1} sx={{ paddingTop: 1 }}>
+            <Grid item xs={5}>
+              <TextField
+                label={"First Name"}
+                placeholder={"John"}
+                value={checkoutConfig.firstName || ""}
+                onChange={textValUpdater("firstName")}
+                autoComplete={"given-name"}
+                fullWidth
+                required
+              />
+            </Grid>
+            <Grid item xs={7}>
+              <TextField
+                label={"Last Name"}
+                placeholder={"Smith"}
+                value={checkoutConfig.lastName || ""}
+                onChange={textValUpdater("lastName")}
+                autoComplete={"family-name"}
+                fullWidth
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label={"Phone Number"}
+                placeholder={"+1 123 555 8888"}
+                value={checkoutConfig.phoneNumber || ""}
+                onChange={textValUpdater("phoneNumber")}
+                autoComplete={"phone-full"}
+                fullWidth
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label={"Email"}
+                placeholder={"john.smith@example.com"}
+                value={checkoutConfig.email}
+                disabled
+                fullWidth
+              />
+            </Grid>
+          </Grid>
+        </FormControl>
+      </Grid>
       <Grid item xs={12} md={3}>
         <FormControl>
           <FormLabel>Delivery Method</FormLabel>
@@ -128,6 +185,24 @@ export function CheckoutConfigSection({
           </FormControl>
         </Grid>
       )}
+
+      <Grid item xs={12}>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <LovelySwitch
+                checked={checkoutConfig.sendEmailReceipt}
+                onChange={() =>
+                  updateConfig({
+                    sendEmailReceipt: !checkoutConfig.sendEmailReceipt,
+                  })
+                }
+              />
+            }
+            label={"Email me a receipt"}
+          />
+        </FormGroup>
+      </Grid>
     </Grid>
   );
 }

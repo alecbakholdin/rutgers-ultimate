@@ -1,5 +1,6 @@
 import {
   CheckoutConfig,
+  CheckoutPaymentIntentRequest,
   CheckoutPaymentIntentResponse,
   useCheckoutPaymentState,
 } from "../../types/checkout";
@@ -25,14 +26,18 @@ export function CheckoutStripePaymentForm({
 
   useEffect(() => {
     updatePaymentState({ intentLoading: true, paymentStatus: "waiting" });
+    const intentRequest: CheckoutPaymentIntentRequest = {
+      items: cart,
+      deliveryMethod: checkoutConfig.deliveryMethod,
+      sendReceipt: checkoutConfig.sendEmailReceipt,
+      email: checkoutConfig.email,
+    };
+    console.log(checkoutConfig, cart, intentRequest);
     // Create PaymentIntent as soon as the page loads
     fetch("/api/create-payment-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        items: cart,
-        deliveryMethod: checkoutConfig.deliveryMethod,
-      }),
+      body: JSON.stringify(intentRequest),
     })
       .then((res) => res.json())
       .then((json) =>

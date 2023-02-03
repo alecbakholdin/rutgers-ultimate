@@ -30,8 +30,11 @@ export function CheckoutNavigation({
   }, [paymentStatus]);
 
   const handleMoveToPayment = () => {
+    const { firstName, lastName, phoneNumber } = checkoutConfig;
     const { deliveryMethod, address, city, state, zipCode } = checkoutConfig;
-    if (
+    if (!firstName || !lastName || !phoneNumber) {
+      showError("Please fill out all your personal details");
+    } else if (
       deliveryMethod === "delivery" &&
       (!address || !city || !state || !zipCode)
     ) {

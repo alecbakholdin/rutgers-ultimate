@@ -9,7 +9,6 @@ import { firestore } from "config/firebaseApp";
 import { getFirestoreConverter } from "config/firestoreConverter";
 import { CartItem, useUserData2 } from "types/userData";
 import { currencyFormat } from "../config/currencyUtils";
-import { Product } from "./product";
 import { useMemo } from "react";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
@@ -66,14 +65,15 @@ export function useUserOrders(): [
   return [orders ?? [], !uid || loading, error];
 }
 
-export function orderAsStringSummary(
-  order: Order,
-  productMap: { [id: string]: Product }
-): string {
-  let orderSummary = "";
+export function orderAsStringSummary(order: Order): string {
+  return cartSummary(order.cart) + `Total: ${currencyFormat(order.totalCost)}`;
+}
 
-  for (const item of order.cart) {
-    orderSummary += (productMap[item.productId]?.name || item.productId) + "\n";
+export function cartSummary(items: CartItem[]): string {
+  let cartSummary = "";
+
+  for (const item of items) {
+    cartSummary += item.productName + "\n";
     const attributes = [];
 
     if (item.size) attributes.push(item.size);
@@ -81,11 +81,9 @@ export function orderAsStringSummary(
       attributes.push("number " + item.number);
     if (item.name) attributes.push(item.name);
 
-    if (attributes.length > 0) orderSummary += attributes.join(", ") + "\n";
-    orderSummary += `${item.quantity} x ${currencyFormat(item.unitPrice)}\n\n`;
+    if (attributes.length > 0) cartSummary += attributes.join(", ") + "\n";
+    cartSummary += `${item.quantity} x ${currencyFormat(item.unitPrice)}\n\n`;
   }
 
-  orderSummary += `Total: ${currencyFormat(order.totalCost)}`;
-
-  return orderSummary;
+  return cartSummary;
 }

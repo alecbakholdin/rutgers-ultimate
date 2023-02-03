@@ -65,7 +65,6 @@ export function useProductDataOnce(productIds: string[]): Product[] {
       if (data) {
         newProducts.push(data);
       }
-      console.log("data", data);
     }
     setProducts(newProducts);
   };

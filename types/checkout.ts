@@ -1,4 +1,5 @@
 import { atom, useAtom } from "jotai";
+import { CartItem } from "./userData";
 
 export type CheckoutState = "config" | "payment" | "thank";
 export type CheckoutConfig = {
@@ -10,8 +11,20 @@ export type CheckoutConfig = {
   zipCode?: string;
 
   pickupLocation?: string;
-};
 
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+
+  sendEmailReceipt: boolean;
+};
+export type CheckoutPaymentIntentRequest = {
+  items: CartItem[];
+  deliveryMethod: "pickup" | "delivery";
+  sendReceipt: boolean;
+  email: string;
+};
 export type CheckoutPaymentIntentResponse = {
   clientSecret: string;
   subtotal: number;
@@ -34,13 +47,8 @@ const checkoutPaymentState = atom<CheckoutPaymentState>({
 export function useCheckoutPaymentState() {
   const [paymentState, setPaymentState] = useAtom(checkoutPaymentState);
   const updatePaymentState = (update: Partial<CheckoutPaymentState>) => {
-    console.log("updating", update, paymentState, {
-      ...paymentState,
-      ...update,
-    });
     setPaymentState({ ...paymentState, ...update });
   };
-  console.log("state", paymentState);
   const updatePaymentInfo = (
     update: Partial<CheckoutPaymentIntentResponse>
   ) => {

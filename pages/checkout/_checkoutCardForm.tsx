@@ -23,9 +23,6 @@ export function CheckoutCardForm({ clientSecret }: { clientSecret: string }) {
       const { error } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: cardElement,
-          billing_details: {
-            name: "Alec Bakholdin",
-          },
         },
       });
       if (error) {
@@ -51,7 +48,7 @@ export function CheckoutCardForm({ clientSecret }: { clientSecret: string }) {
 
   return (
     <Grid container spacing={2}>
-      <Grid item>
+      <Grid item xs={12}>
         {cart?.length && paymentState.paymentInfo && (
           <CheckoutCostSummary
             items={cart}
@@ -71,7 +68,6 @@ export function CheckoutCardForm({ clientSecret }: { clientSecret: string }) {
           <CardElement id={"card-element"} />
         </Box>
       </Grid>
-      <Grid item></Grid>
     </Grid>
   );
 }
