@@ -32,7 +32,6 @@ export function CheckoutStripePaymentForm({
       sendReceipt: checkoutConfig.sendEmailReceipt,
       email: checkoutConfig.email,
     };
-    console.log(checkoutConfig, cart, intentRequest);
     // Create PaymentIntent as soon as the page loads
     fetch("/api/create-payment-intent", {
       method: "POST",
