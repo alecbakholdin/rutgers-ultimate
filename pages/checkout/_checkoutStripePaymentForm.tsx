@@ -77,7 +77,11 @@ export function CheckoutStripePaymentForm({
           }}
           stripe={stripePromise}
         >
-          <CheckoutCardForm clientSecret={clientSecret} />
+          <CheckoutCardForm
+            clientSecret={clientSecret}
+            cart={cart}
+            checkoutConfig={checkoutConfig}
+          />
         </Elements>
       )}
     </>

@@ -22,6 +22,13 @@ export interface OrderInfo {
   comments?: string;
 }
 
+export interface Address {
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+}
+
 export interface Order {
   id: string;
   ref: DocumentReference<Order>;
@@ -30,7 +37,7 @@ export interface Order {
   phoneNumber: string;
   firstName: string;
   lastName: string;
-  comments: string;
+  comments?: string;
   venmo?: string;
   machinePercentage?: number;
   nightshadePercentage?: number;
@@ -44,6 +51,11 @@ export interface Order {
   requested: boolean;
   paid: boolean;
   delivered: boolean;
+  stripePaymentId?: string;
+
+  deliveryMethod: "delivery" | "pickup";
+  pickupLocation?: string;
+  address?: Address;
 }
 
 export const orderCollection = collection(firestore, "orders").withConverter(
