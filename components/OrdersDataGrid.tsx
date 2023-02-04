@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import { useCollectionDataOnce } from "react-firebase-hooks/firestore";
 import { Order, orderAsStringSummary } from "../types/order";
-import { productCollection } from "../types/product";
-import { extractKey } from "../config/arrayUtils";
 import { useMySnackbar } from "../hooks/useMySnackbar";
 import {
   DataGrid,
@@ -29,8 +26,6 @@ export default function OrdersDataGrid({
 }: {
   orders: Order[] | undefined;
 }): React.ReactElement {
-  const [products] = useCollectionDataOnce(productCollection);
-  const productMap = extractKey(products, "id");
   const [detailedOrder, setDetailedOrder] = useState<Order | undefined>();
   const handleCloseModal = () => setDetailedOrder(undefined);
 
@@ -84,7 +79,7 @@ export default function OrdersDataGrid({
           onClick={async () => {
             await navigator.clipboard.writeText(
               "Any concerns, please text 2013963132\n\n" +
-                orderAsStringSummary(params.row as Order, productMap)
+                orderAsStringSummary(params.row as Order)
             );
             showSuccess("Successfully copied to clipboard");
           }}
