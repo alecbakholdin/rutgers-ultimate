@@ -59,7 +59,7 @@ export default function CartItemRow({
       </Box>
       <Stack justifyContent={"start"} alignItems={"start"}>
         <Link
-          href={`product/${item.productId}`}
+          href={`/store/${item.event}/product/${item.productId}`}
           sx={{
             textDecoration: "none",
             color: "black",
