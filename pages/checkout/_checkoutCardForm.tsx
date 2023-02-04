@@ -7,7 +7,7 @@ import CheckoutCostSummary from "./_checkoutCostSummary";
 import { CheckoutConfig, useCheckoutPaymentState } from "../../types/checkout";
 import { Order, orderCollection } from "../../types/order";
 import { distinctEntries } from "../../config/arrayUtils";
-import { addDoc, doc, updateDoc } from "@firebase/firestore";
+import { addDoc, doc } from "@firebase/firestore";
 
 const unexpectedErrorMsg = "Unexpected error occurred. Try refreshing the page";
 
@@ -49,9 +49,8 @@ export function CheckoutCardForm({
         eventIds: distinctEntries(cart.map((i) => i.event)),
 
         requested: true,
-        paid: false,
+        paid: true,
         delivered: false,
-        stripePaymentId: clientSecret,
 
         deliveryMethod: checkoutConfig.deliveryMethod,
         ...(checkoutConfig.deliveryMethod === "pickup"
@@ -67,7 +66,6 @@ export function CheckoutCardForm({
             }
           : {}),
       };
-      const { id } = await addDoc(orderCollection, newOrder);
       const { error } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: cardElement,
@@ -77,7 +75,7 @@ export function CheckoutCardForm({
         showError(error.message || unexpectedErrorMsg);
         updatePaymentState({ paymentStatus: "error" });
       } else {
-        await updateDoc(doc(orderCollection, id), { paid: true });
+        await addDoc(orderCollection, newOrder);
         await clearCart();
         updatePaymentState({ paymentStatus: "complete" });
       }
