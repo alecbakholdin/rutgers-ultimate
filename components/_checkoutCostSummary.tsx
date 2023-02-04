@@ -1,8 +1,8 @@
 import React from "react";
-import { CartItem } from "../../types/userData";
+import { CartItem } from "../types/userData";
 import { Divider, Grid, Typography, useTheme } from "@mui/material";
-import { currencyFormat } from "../../config/currencyUtils";
-import { CheckoutPaymentIntentResponse } from "../../types/checkout";
+import { currencyFormat } from "../config/currencyUtils";
+import { CheckoutPaymentIntentResponse } from "../types/checkout";
 
 function SectionDivider(): React.ReactElement {
   return (

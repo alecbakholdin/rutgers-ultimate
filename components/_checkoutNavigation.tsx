@@ -2,11 +2,11 @@ import {
   CheckoutConfig,
   CheckoutState,
   useCheckoutPaymentState,
-} from "../../types/checkout";
+} from "../types/checkout";
 import React, { useEffect } from "react";
-import { useMySnackbar } from "../../hooks/useMySnackbar";
+import { useMySnackbar } from "../hooks/useMySnackbar";
 import { Grid, Paper } from "@mui/material";
-import LoadingButton from "../../components/LoadingButton";
+import LoadingButton from "./LoadingButton";
 
 export function CheckoutNavigation({
   checkoutConfig,

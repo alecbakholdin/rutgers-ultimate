@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Container, Grid, Typography } from "@mui/material";
 import { CheckoutConfig, CheckoutState } from "../../types/checkout";
-import { CheckoutStateIndicator } from "./_checkoutStateIndicator";
-import { CheckoutConfigSection } from "./_checkoutConfigSection";
+import { CheckoutStateIndicator } from "../../components/_checkoutStateIndicator";
+import { CheckoutConfigSection } from "../../components/_checkoutConfigSection";
 import { useUserData2 } from "../../types/userData";
-import { CheckoutStripePaymentForm } from "./_checkoutStripePaymentForm";
-import { CheckoutNavigation } from "./_checkoutNavigation";
+import { CheckoutStripePaymentForm } from "../../components/_checkoutStripePaymentForm";
+import { CheckoutNavigation } from "../../components/_checkoutNavigation";
 
 export default function Index(): React.ReactElement {
   const { cart } = useUserData2();

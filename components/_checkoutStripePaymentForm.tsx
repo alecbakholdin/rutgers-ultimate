@@ -3,8 +3,8 @@ import {
   CheckoutPaymentIntentRequest,
   CheckoutPaymentIntentResponse,
   useCheckoutPaymentState,
-} from "../../types/checkout";
-import { CartItem } from "../../types/userData";
+} from "../types/checkout";
+import { CartItem } from "../types/userData";
 import React, { useEffect } from "react";
 import { useTheme } from "@mui/material";
 import { Elements } from "@stripe/react-stripe-js";

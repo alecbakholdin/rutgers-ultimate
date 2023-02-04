@@ -1,4 +1,4 @@
-import { CheckoutState } from "../../types/checkout";
+import { CheckoutState } from "../types/checkout";
 import { Box, Grid, useTheme } from "@mui/material";
 import { CreditCard, SentimentSatisfiedAlt, Tune } from "@mui/icons-material";
 import React from "react";

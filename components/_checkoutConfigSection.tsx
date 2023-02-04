@@ -1,6 +1,6 @@
-import { CheckoutConfig } from "../../types/checkout";
+import { CheckoutConfig } from "../types/checkout";
 import React, { ChangeEvent, useEffect } from "react";
-import { useUserData2 } from "../../types/userData";
+import { useUserData2 } from "../types/userData";
 import {
   FormControl,
   FormControlLabel,
@@ -11,7 +11,7 @@ import {
   RadioGroup,
   TextField,
 } from "@mui/material";
-import { LovelySwitch } from "../../components/LovelySwitch";
+import { LovelySwitch } from "./LovelySwitch";
 
 export function CheckoutConfigSection({
   checkoutConfig,

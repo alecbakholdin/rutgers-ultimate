@@ -1,12 +1,12 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { Box, Grid, useTheme } from "@mui/material";
-import { useMySnackbar } from "../../hooks/useMySnackbar";
-import { CartItem, useUserData2 } from "../../types/userData";
+import { useMySnackbar } from "../hooks/useMySnackbar";
+import { CartItem, useUserData2 } from "../types/userData";
 import React, { useEffect } from "react";
 import CheckoutCostSummary from "./_checkoutCostSummary";
-import { CheckoutConfig, useCheckoutPaymentState } from "../../types/checkout";
-import { Order, orderCollection } from "../../types/order";
-import { distinctEntries } from "../../config/arrayUtils";
+import { CheckoutConfig, useCheckoutPaymentState } from "../types/checkout";
+import { Order, orderCollection } from "../types/order";
+import { distinctEntries } from "../config/arrayUtils";
 import { addDoc, doc } from "@firebase/firestore";
 
 const unexpectedErrorMsg = "Unexpected error occurred. Try refreshing the page";
