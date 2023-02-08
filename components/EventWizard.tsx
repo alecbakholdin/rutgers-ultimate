@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { Event, eventCollection } from "../types/event";
-import { extractKey } from "../config/arrayUtils";
+import { extractKey } from "util/array";
 import BetterTextField from "./BetterTextField";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";

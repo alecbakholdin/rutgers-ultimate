@@ -2,7 +2,7 @@ import React from "react";
 import { Order } from "../types/order";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { productCollection } from "../types/product";
-import { extractKey } from "../config/arrayUtils";
+import { extractKey } from "util/array";
 import { useCollectionDataOnce } from "react-firebase-hooks/firestore";
 
 export default function ProductSummaryDataGrid({

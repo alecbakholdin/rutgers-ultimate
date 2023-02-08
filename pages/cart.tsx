@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useMySnackbar } from "hooks/useMySnackbar";
-import { currencyFormat } from "config/currencyUtils";
+import { currencyFormat } from "util/currency";
 import router from "next/router";
 import CartItemRow from "../components/CartItemRow";
 

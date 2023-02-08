@@ -1,7 +1,7 @@
 import { CartItem } from "../types/userData";
 import React from "react";
 import { Box, Link, Stack, SxProps, Typography } from "@mui/material";
-import { currencyFormat } from "../config/currencyUtils";
+import { currencyFormat } from "util/currency";
 import NumberSelect from "./NumberSelect";
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore";
 import { productCollection } from "../types/product";

@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import { Product } from "types/product";
 import styles from "components/ProductCard/ProductCard.module.scss";
 import { Box, CardActions, CircularProgress, Link } from "@mui/material";
-import { currencyFormat } from "config/currencyUtils";
+import { currencyFormat } from "util/currency";
 import { useUserData } from "types/userData";
 import ProductColorPicker from "components/ProductColorPicker";
 

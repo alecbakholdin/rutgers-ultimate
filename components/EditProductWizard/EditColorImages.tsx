@@ -3,7 +3,7 @@
 import React from "react";
 import { Product } from "types/product";
 import { Checkbox, FormControlLabel, Grid, Typography } from "@mui/material";
-import { distinctEntries } from "config/arrayUtils";
+import { distinctEntries } from "util/array";
 
 export default function EditColorImages({
   edits,

@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 import CheckoutCostSummary from "./_checkoutCostSummary";
 import { CheckoutConfig, useCheckoutPaymentState } from "../types/checkout";
 import { Order, orderCollection } from "../types/order";
-import { distinctEntries } from "../config/arrayUtils";
+import { distinctEntries } from "util/array";
 import { addDoc, doc } from "@firebase/firestore";
 
 const unexpectedErrorMsg = "Unexpected error occurred. Try refreshing the page";

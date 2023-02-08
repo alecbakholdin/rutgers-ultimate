@@ -4,7 +4,7 @@ import { useDocumentDataOnce } from "react-firebase-hooks/firestore";
 import { productCollection } from "types/product";
 import { doc } from "@firebase/firestore";
 import { Button, Container, Grid, Typography } from "@mui/material";
-import { currencyFormat } from "config/currencyUtils";
+import { currencyFormat } from "util/currency";
 import { CartItem, useUserData, useUserData2 } from "types/userData";
 import ImageGallery from "components/ImageGallery";
 import ProductColorPicker from "components/ProductColorPicker";

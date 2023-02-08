@@ -7,7 +7,7 @@ import {
   useDocumentDataOnce,
 } from "react-firebase-hooks/firestore";
 import ProductCard from "components/ProductCard/ProductCard";
-import { extractKey } from "../../../config/arrayUtils";
+import { extractKey } from "util/array";
 import { useRouter } from "next/router";
 import { eventCollection } from "../../../types/event";
 import { doc } from "@firebase/firestore";

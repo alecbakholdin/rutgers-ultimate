@@ -10,7 +10,7 @@ import { getFirestoreConverter } from "config/firestoreConverter";
 import { Product, useProductData } from "./product";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useDocumentData } from "react-firebase-hooks/firestore";
-import { distinctEntries } from "config/arrayUtils";
+import { distinctEntries } from "util/array";
 
 export interface CartItem {
   productId: string;
