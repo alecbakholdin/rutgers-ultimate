@@ -1,3 +1,4 @@
+import "/styles/globals.css";
 import type { AppProps } from "next/app";
 import "firebaseui/dist/firebaseui.css";
 import { Box, Button, IconButton, Stack, ThemeProvider } from "@mui/material";
