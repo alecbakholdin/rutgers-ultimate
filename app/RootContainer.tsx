@@ -8,7 +8,10 @@ export default function RootContainer({
   children: ReactNode;
 }): React.ReactElement {
   return (
-    <Container maxWidth={"md"} sx={{ paddingTop: 5 }}>
+    <Container
+      maxWidth={"md"}
+      sx={{ paddingTop: 5, display: "flex", justifyContent: "center" }}
+    >
       {children}
     </Container>
   );

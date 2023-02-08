@@ -1,7 +1,8 @@
 import React from "react";
 import { serverDb } from "config/firebaseServerApp";
 import { redirect } from "next/navigation";
-import NoEvents from "app/store/NoEvents";
+import { Event } from "types/event";
+import TextDisplay from "appComponents/TextDisplay";
 
 export default async () => {
   const eventQuery = await serverDb
@@ -10,11 +11,21 @@ export default async () => {
     .get();
 
   if (eventQuery.empty) {
-    return <NoEvents />;
+    return (
+      <TextDisplay
+        text={"No events are active at this time. Please check back later."}
+      />
+    );
   }
   const firstEventId = eventQuery.docs.at(0)?.id;
   if (eventQuery.size === 1 && firstEventId) {
     redirect("/store/" + firstEventId);
   }
-  return <>multiple are present</>;
+  return (
+    <>
+      {eventQuery.docs?.map((e) => (
+        <a href={"/store/" + e.id}>{(e.data() as Event).name}</a>
+      ))}
+    </>
+  );
 };
