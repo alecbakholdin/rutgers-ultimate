@@ -1,5 +1,7 @@
-import React from "react";
+"use client";
 
-export default function Loading(): React.ReactElement {
-  return <>Loading...</>;
-}
+import { CircularProgress } from "@mui/material";
+
+export default () => {
+  return <CircularProgress />;
+};

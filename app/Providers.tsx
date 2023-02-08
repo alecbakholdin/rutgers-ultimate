@@ -1,8 +1,9 @@
 "use client";
 import React from "react";
-import { ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import { theme } from "config/theme";
 import { SnackbarProvider } from "notistack";
+import { AuthProvider } from "components/AuthProvider";
 
 export default function Providers({
   children,
@@ -11,7 +12,12 @@ export default function Providers({
 }): React.ReactElement {
   return (
     <ThemeProvider theme={theme}>
-      <SnackbarProvider>{children}</SnackbarProvider>
+      <SnackbarProvider>
+        <AuthProvider>
+          <CssBaseline />
+          {children}
+        </AuthProvider>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }
