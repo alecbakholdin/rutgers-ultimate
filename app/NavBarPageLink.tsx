@@ -4,7 +4,7 @@ import { Typography } from "@mui/material";
 export type NavAction = {
   name: string;
   href?: string;
-  action?: () => void | Promise<void>;
+  onClick?: () => void | Promise<void>;
 };
 
 export default function NavBarPageLink({

@@ -43,7 +43,7 @@ export default function DesktopNavBar(): React.ReactElement {
   const userActions: NavAction[] = [
     ...(user
       ? [
-          { name: "Sign Out", action: () => signOut(auth) },
+          { name: "Sign Out", onClick: () => signOut(auth) },
           { name: "My Orders", href: "/orders" },
         ]
       : []),
