@@ -7,6 +7,7 @@ import { cookies } from "next/headers";
 import { FIREBASE_AUTH_COOKIE } from "types/serverAuth";
 import { serverAuth } from "config/firebaseServerApp";
 import { DecodedIdToken } from "firebase-admin/lib/auth";
+import RootContainer from "app/RootContainer";
 
 export default async ({ children }: { children: ReactNode }) => {
   const authToken = cookies().get(FIREBASE_AUTH_COOKIE)?.value;
@@ -22,7 +23,7 @@ export default async ({ children }: { children: ReactNode }) => {
       <body>
         <Providers>
           <DesktopNavBar existingUser={existingUser} />
-          {children}
+          <RootContainer>{children}</RootContainer>
         </Providers>
       </body>
     </html>
