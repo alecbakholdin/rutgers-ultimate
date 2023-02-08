@@ -5,7 +5,7 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import { useAuth } from "components/AuthProvider";
 import Typography from "@mui/material/Typography";
-import { Container } from "@mui/material";
+import { Container, Link, Stack } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Menu from "@mui/material/Menu";
@@ -15,10 +15,21 @@ import Box from "@mui/material/Box";
 import { signOut } from "@firebase/auth";
 import { auth } from "config/firebaseApp";
 import Button from "@mui/material/Button";
-import ProfileButton from "app/ProfileButton";
+import { usePathname } from "next/navigation";
+import { DecodedIdToken } from "firebase-admin/lib/auth";
+import { ShoppingCart } from "@mui/icons-material";
+import Tooltip from "@mui/material/Tooltip";
+import Avatar from "@mui/material/Avatar";
 
-export default function DesktopNavBar(): React.ReactElement {
+export default function DesktopNavBar({
+  existingUser,
+}: {
+  existingUser: DecodedIdToken | undefined;
+}): React.ReactElement {
   const { user, userData } = useAuth();
+  const loggedIn = Boolean(user || existingUser);
+  const email = user?.email || existingUser?.email;
+  const path = usePathname();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -27,6 +38,17 @@ export default function DesktopNavBar(): React.ReactElement {
   };
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
+  };
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null
+  );
+
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
   };
 
   const pages: NavAction[] = [
@@ -139,11 +161,53 @@ export default function DesktopNavBar(): React.ReactElement {
               </Button>
             ))}
           </Box>
-          <ProfileButton userActions={userActions} user={user} />
-          <Box sx={{ display: user ? "none" : "block" }}>
+          <Box sx={{ flexGrow: 0, display: loggedIn ? "block" : "none" }}>
+            <Stack direction={"row"} alignItems={"center"} spacing={1}>
+              <Link href={"/cart"}>
+                <Typography color={"primary.contrastText"}>
+                  <ShoppingCart sx={{ verticalAlign: "middle" }} />
+                </Typography>
+              </Link>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu}>
+                  <Avatar
+                    alt={email ?? undefined}
+                    /*src={user?.photoURL ?? undefined}
+                  sx={{ backgroundColor: user?.photoURL && "white" }}*/
+                  >
+                    {email?.slice(0, 1).toUpperCase()}
+                  </Avatar>
+                </IconButton>
+              </Tooltip>
+            </Stack>
+            <Menu
+              sx={{ mt: "45px" }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {userActions.map((page) => (
+                <MenuItem key={page.name} onClick={handleCloseUserMenu}>
+                  <NavBarPageLink page={page} />
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+          <Box sx={{ display: loggedIn ? "none" : "block" }}>
             <NavBarPageLink
               page={{
                 name: "Sign In",
+                href: "/signIn" + (path !== "signIn" && "?redirect=" + path),
               }}
             />
           </Box>
