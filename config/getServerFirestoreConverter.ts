@@ -27,7 +27,13 @@ export function getServerFirestoreConverter<T>(): FirestoreDataConverter<T> {
     },
     fromFirestore(snapshot: QueryDocumentSnapshot): T {
       return Object.fromEntries(
-        Object.entries(snapshot.data() as any).filter(([key]) => key !== "ref")
+        Object.entries(snapshot.data() as any)
+          .filter(([key]) => key !== "ref")
+          .map(([key, value]) =>
+            value && Object.hasOwn(value, "_seconds")
+              ? [key, { seconds: (value as any)._seconds }]
+              : [key, value]
+          )
       ) as T;
     },
   };

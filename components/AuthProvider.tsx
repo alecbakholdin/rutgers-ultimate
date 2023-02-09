@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { User } from "@firebase/auth";
 import { auth } from "config/firebaseApp";
 import { FIREBASE_AUTH_COOKIE } from "types/serverAuth";
-import { UserData, userDataCollection } from "types/userData";
+import { newUserData, UserData, userDataCollection } from "types/userData";
 import { doc, getDoc, setDoc } from "@firebase/firestore";
 
 const AuthContext = createContext<{
@@ -32,11 +32,7 @@ export function AuthProvider({ children }: any) {
         const userDataDoc = doc(userDataCollection, user.uid);
         const userData =
           (await getDoc(userDataDoc)) ??
-          (await setDoc(userDataDoc, {
-            id: user.uid,
-            isAdmin: false,
-            cartItems: [],
-          }));
+          (await setDoc(userDataDoc, newUserData(user.uid)));
         setUserData(userData.data() || null);
       }
     });

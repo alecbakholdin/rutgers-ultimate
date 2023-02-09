@@ -2,7 +2,7 @@
 import React from "react";
 import { Product } from "types/product";
 import { useAuth } from "components/AuthProvider";
-import { Box, useTheme } from "@mui/material";
+import { Box, Stack, useTheme } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 
@@ -15,16 +15,33 @@ export default function ProductCard({
   const { isTeam } = useAuth();
 
   return (
-    <Box
-      borderRadius={4}
-      padding={4}
-      width={400}
-      sx={{ position: "relative", objectFit: "contain" }}
+    <Stack
+      sx={{
+        borderRadius: 4,
+        padding: 4,
+        width: 200,
+        objectFit: "cover",
+      }}
     >
-      <Typography></Typography>
+      <Typography>{product.name}</Typography>
       {product.images?.length && (
-        <Image src={product.images[0]} alt={product.id} fill />
+        <Box
+          width={200}
+          height={200}
+          sx={{
+            position: "relative",
+            height: "max-content",
+          }}
+        >
+          <Image
+            src={product.images[0]}
+            alt={product.id}
+            width={200}
+            height={200}
+            style={{ objectFit: "cover" }}
+          />
+        </Box>
       )}
-    </Box>
+    </Stack>
   );
 }

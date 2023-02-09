@@ -36,6 +36,14 @@ export interface UserData {
   ref?: DocumentReference<UserData>;
 }
 
+export function newUserData(uid: string): UserData {
+  return {
+    id: uid,
+    isAdmin: false,
+    cartItems: [],
+  };
+}
+
 export const userDataCollection = collection(
   firestore,
   "userData"
