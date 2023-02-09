@@ -4,7 +4,6 @@ import {
   DocumentReference,
   FirestoreError,
   query,
-  Timestamp,
   where,
 } from "@firebase/firestore";
 import { firestore } from "config/firebaseApp";
@@ -33,7 +32,7 @@ export function getProductStatusColor(status?: EventProductStatus) {
 export type ServerEvent = {
   id: string;
   name: string;
-  endDate: Timestamp;
+  endDate: Date;
   productIds: string[];
   productStatuses: { productId: string; status: EventProductStatus }[];
   sizingChartCount: number;
