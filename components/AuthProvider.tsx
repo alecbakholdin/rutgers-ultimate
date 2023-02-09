@@ -9,9 +9,11 @@ import { doc, getDoc, setDoc } from "@firebase/firestore";
 const AuthContext = createContext<{
   user: User | null;
   userData: UserData | null;
+  isTeam: boolean;
 }>({
   user: null,
   userData: null,
+  isTeam: false,
 });
 
 export function AuthProvider({ children }: any) {
@@ -51,8 +53,11 @@ export function AuthProvider({ children }: any) {
     return () => clearInterval(handle);
   }, []);
 
+  const isTeam = Boolean(
+    user?.email?.endsWith("rutgers.edu") || userData?.isTeam
+  );
   return (
-    <AuthContext.Provider value={{ user, userData }}>
+    <AuthContext.Provider value={{ user, userData, isTeam }}>
       {children}
     </AuthContext.Provider>
   );
