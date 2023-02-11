@@ -17,7 +17,6 @@ export async function getUserData(
   authToken: string | undefined
 ): Promise<UserData | undefined> {
   const user = await getDecodedToken(authToken);
-  console.log(authToken, user);
   if (!user) return undefined;
   const userDataDoc = serverDb
     .collection("userData")
