@@ -8,7 +8,9 @@ import {
   CardHeader,
   FormControlLabel,
   Grid,
+  Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import { Product, productCollection } from "types/product";
 import { useCollectionData } from "react-firebase-hooks/firestore";
@@ -16,13 +18,22 @@ import LoadingButton from "components/LoadingButton";
 import BetterTextField from "components/BetterTextField";
 import { sleep } from "util/sleep";
 import { LovelySwitch } from "components/LovelySwitch";
+import ListEditor from "components/ListEditor";
+import { Color, colorCollection } from "types/color";
+import ColorSwatch from "components/ColorSwatch";
+import ListDisplay from "components/ListDisplay";
+import { extractKey } from "util/array";
 
 export default function () {
   const [products, loading] = useCollectionData(productCollection);
+  const [colors, colorsLoading] = useCollectionData(colorCollection);
   const [activeProduct, setActiveProduct] = useState<Product | null>(null);
   const [productUpdate, setProductUpdate] = useState<Partial<Product>>({});
   const [submitLoading, setSubmitLoading] = useState(false);
   const updatePending = Boolean(Object.keys(productUpdate || {}).length);
+  const colorMap = extractKey(colors, "id");
+  const selectedColors = productUpdate.colors || activeProduct?.colors || [];
+  console.log(productUpdate.colors, activeProduct?.colors, selectedColors);
 
   const handleReset = () => setProductUpdate({});
   const handleSubmit = async () => {
@@ -58,6 +69,7 @@ export default function () {
   return (
     <Card sx={{ width: "100%" }}>
       <CardHeader title={"Products"} />
+
       <CardContent>
         <Grid container spacing={1}>
           <Grid item xs={12}>
@@ -98,6 +110,71 @@ export default function () {
             <FormControlLabel
               control={<LovelySwitch {...switchProps("canHaveNumber")} />}
               label={"Can Have Number"}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <ListEditor
+              label={"Sizes"}
+              items={productUpdate.sizes || activeProduct?.sizes}
+              setItems={(sizes) =>
+                setProductUpdate({ ...productUpdate, sizes })
+              }
+              disabled={!activeProduct}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Autocomplete
+              disabled={!activeProduct}
+              options={colors ?? []}
+              getOptionLabel={(p: Color) => p.id}
+              onChange={(e, newValue) => {
+                if (
+                  newValue &&
+                  !selectedColors.map((c) => c.name).includes(newValue.id)
+                ) {
+                  setProductUpdate({
+                    ...productUpdate,
+                    colors: [
+                      ...selectedColors,
+                      { name: newValue.id, hex: newValue.hex },
+                    ],
+                  });
+                }
+              }}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              loading={colorsLoading}
+              renderInput={(params) => {
+                // @ts-ignore
+                const { key, ...p } = params;
+                return <TextField {...p} label={"Add a Color"} />;
+              }}
+              renderOption={(props, option) => (
+                <li {...props}>
+                  <Stack direction={"row"} alignItems={"center"} spacing={2}>
+                    <ColorSwatch hex={option.hex} />
+                    <Typography textOverflow={"ellipsis"}>
+                      {option.id}
+                    </Typography>
+                  </Stack>
+                </li>
+              )}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <ListDisplay
+              items={selectedColors.map((i) => i.name)}
+              renderChipAvatar={(item) => (
+                <ColorSwatch
+                  hex={colorMap[item]?.hex}
+                  sx={{ marginLeft: 0.7 }}
+                />
+              )}
+              handleDeleteItem={(toDelete) =>
+                setProductUpdate({
+                  ...productUpdate,
+                  colors: selectedColors.filter((c) => c.name !== toDelete),
+                })
+              }
             />
           </Grid>
         </Grid>
