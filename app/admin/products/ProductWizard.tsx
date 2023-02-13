@@ -16,13 +16,14 @@ import { Product, productCollection } from "types/product";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import LoadingButton from "components/LoadingButton";
 import BetterTextField from "components/BetterTextField";
-import { sleep } from "util/sleep";
 import { LovelySwitch } from "components/LovelySwitch";
 import ListEditor from "components/ListEditor";
 import { Color, colorCollection } from "types/color";
 import ColorSwatch from "components/ColorSwatch";
 import ListDisplay from "components/ListDisplay";
 import { extractKey } from "util/array";
+import { doc, updateDoc } from "@firebase/firestore";
+import { isEmptyObject } from "util/object";
 
 export default function () {
   const [products, loading] = useCollectionData(productCollection);
@@ -33,13 +34,15 @@ export default function () {
   const updatePending = Boolean(Object.keys(productUpdate || {}).length);
   const colorMap = extractKey(colors, "id");
   const selectedColors = productUpdate.colors || activeProduct?.colors || [];
-  console.log(productUpdate.colors, activeProduct?.colors, selectedColors);
 
   const handleReset = () => setProductUpdate({});
   const handleSubmit = async () => {
-    console.log(productUpdate);
+    if (!activeProduct || isEmptyObject(productUpdate)) return;
+    const productRef = doc(productCollection, activeProduct.id);
+
     setSubmitLoading(true);
-    await sleep(1000)
+    await updateDoc(productRef, productUpdate)
+      .then(() => setActiveProduct({ ...activeProduct, ...productUpdate }))
       .then(handleReset)
       .finally(() => setSubmitLoading(false));
   };
