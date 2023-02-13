@@ -181,6 +181,14 @@ export default function () {
             />
           </Grid>
         </Grid>
+        {/*
+        TODO: implement file upload for images
+        <Grid item xs={12}>
+          <Button variant={"contained"} component={"label"}>
+            Upload File
+            <input type={"file"} hidden />
+          </Button>
+        </Grid>*/}
       </CardContent>
       <CardActions>
         <Grid container spacing={1} sx={{ padding: 1 }}>
