@@ -72,6 +72,7 @@ export default function DesktopNavBar({
     ...(userData?.isAdmin
       ? [
           { name: "Manage Store", href: "/admin/store" },
+          { name: "Manage Products", href: "/admin/products" },
           { name: "All Orders", href: "/admin/orders" },
         ]
       : []),
