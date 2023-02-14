@@ -68,6 +68,10 @@ export default function () {
 
     setSubmitLoading(true);
     try {
+      for (const storagePath of pendingDeletions) {
+        if (!storagePath) continue;
+        await deleteObject(ref(storage, storagePath));
+      }
       for (const storagePath of Object.keys(pendingUploads)) {
         const extension = storagePath.slice(storagePath.lastIndexOf(".") + 1);
         const contentType = ["jpeg", "jpg"].includes(extension)
@@ -78,9 +82,6 @@ export default function () {
           pendingUploads[storagePath],
           { contentType }
         );
-      }
-      for (const storagePath of pendingDeletions) {
-        await deleteObject(ref(storage, storagePath));
       }
       await updateDoc(doc(productCollection, activeProduct.id), productUpdate);
     } catch (e: any) {
