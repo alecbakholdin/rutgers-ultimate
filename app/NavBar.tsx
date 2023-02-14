@@ -58,7 +58,7 @@ export default function DesktopNavBar({
     },
     {
       name: "Store",
-      href: "/",
+      href: "/store",
     },
   ];
 
