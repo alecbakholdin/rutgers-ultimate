@@ -2,17 +2,22 @@
 import React, { useState } from "react";
 import {
   Autocomplete,
+  Button,
   Card,
   CardActions,
   CardContent,
   CardHeader,
+  Checkbox,
   FormControlLabel,
+  FormGroup,
+  FormLabel,
   Grid,
+  IconButton,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import { Product, productCollection } from "types/product";
+import { Product, productCollection, ProductImage } from "types/product";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import LoadingButton from "components/LoadingButton";
 import BetterTextField from "components/BetterTextField";
@@ -21,38 +26,76 @@ import ListEditor from "components/ListEditor";
 import { Color, colorCollection } from "types/color";
 import ColorSwatch from "components/ColorSwatch";
 import ListDisplay from "components/ListDisplay";
-import { extractKey } from "util/array";
+import { extractKey, insert, remove } from "util/array";
 import { doc, updateDoc } from "@firebase/firestore";
 import { isEmptyObject } from "util/object";
+import StorageImage from "appComponents/StorageImage";
+import { randomString } from "util/random";
+import { Delete } from "@mui/icons-material";
+import { deleteObject, ref, uploadBytes } from "@firebase/storage";
+import { storage } from "config/firebaseApp";
+import { useMySnackbar } from "hooks/useMySnackbar";
+
+type PendingUploads = { [storagePath: string]: ArrayBuffer };
 
 export default function () {
+  const { showError } = useMySnackbar();
   const [products, loading] = useCollectionData(productCollection);
   const [colors, colorsLoading] = useCollectionData(colorCollection);
+
   const [activeProduct, setActiveProduct] = useState<Product | null>(null);
   const [productUpdate, setProductUpdate] = useState<Partial<Product>>({});
+  const [pendingUploads, setPendingUploads] = useState<PendingUploads>({});
+  const [pendingDeletions, setPendingDeletions] = useState<string[]>([]);
+
   const [submitLoading, setSubmitLoading] = useState(false);
-  const updatePending = Boolean(Object.keys(productUpdate || {}).length);
+
+  const updatePending = !isEmptyObject(productUpdate);
   const colorMap = extractKey(colors, "id");
   const selectedColors = productUpdate.colors || activeProduct?.colors || [];
+  const selectedColorNames = selectedColors.map((c) => c.name);
+  const currentImages =
+    productUpdate.productImages || activeProduct?.productImages || [];
 
-  const handleReset = () => setProductUpdate({});
+  const handleReset = () => {
+    setProductUpdate({});
+    setPendingUploads({});
+    setPendingDeletions([]);
+  };
+
   const handleSubmit = async () => {
     if (!activeProduct || isEmptyObject(productUpdate)) return;
-    const productRef = doc(productCollection, activeProduct.id);
 
     setSubmitLoading(true);
-    await updateDoc(productRef, productUpdate)
-      .then(() => setActiveProduct({ ...activeProduct, ...productUpdate }))
-      .then(handleReset)
-      .finally(() => setSubmitLoading(false));
+    try {
+      for (const storagePath of Object.keys(pendingUploads)) {
+        const extension = storagePath.slice(storagePath.lastIndexOf(".") + 1);
+        const contentType = ["jpeg", "jpg"].includes(extension)
+          ? "image/jpeg"
+          : "image/png";
+        await uploadBytes(
+          ref(storage, storagePath),
+          pendingUploads[storagePath],
+          { contentType }
+        );
+      }
+      for (const storagePath of pendingDeletions) {
+        await deleteObject(ref(storage, storagePath));
+      }
+      await updateDoc(doc(productCollection, activeProduct.id), productUpdate);
+    } catch (e: any) {
+      console.error(e);
+      showError(e.message);
+    }
+    setActiveProduct({ ...activeProduct, ...productUpdate });
+    handleReset();
+    setSubmitLoading(false);
   };
   const textFieldProps = (label: string, key: keyof Product) => ({
     label,
     value: productUpdate[key] || (activeProduct && activeProduct[key]) || "",
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log(e.target.value);
-      setProductUpdate({ ...productUpdate, [key]: e.target.value });
-    },
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+      setProductUpdate({ ...productUpdate, [key]: e.target.value }),
     disabled: !activeProduct,
     fullWidth: true,
     handlePressControlEnter: handleSubmit,
@@ -69,6 +112,33 @@ export default function () {
     };
   };
 
+  const updateImage = (index: number, update: Partial<ProductImage>) => {
+    const oldImage = currentImages[index];
+    const newImage = { ...oldImage, ...update };
+    setProductUpdate({
+      ...productUpdate,
+      productImages: insert(currentImages, newImage, index),
+    });
+  };
+
+  const handleImageUpload = (index: number) => {
+    return async (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!e.target.files) return;
+
+      const file = e.target.files[0];
+      if (file.name.lastIndexOf(".") < 0) {
+        showError("File has no extension");
+        return;
+      }
+      const extension = file.name.slice(file.name.lastIndexOf("."));
+      const binaryData = await file.arrayBuffer();
+      const storagePath = `product-images/${randomString(12)}${extension}`;
+
+      updateImage(index, { storagePath });
+      setPendingUploads({ ...pendingUploads, [storagePath]: binaryData });
+    };
+  };
+
   return (
     <Card sx={{ width: "100%" }}>
       <CardHeader title={"Products"} />
@@ -79,7 +149,10 @@ export default function () {
             <Autocomplete
               options={products ?? []}
               getOptionLabel={(p: Product) => p.name}
-              onChange={(e, newValue) => setActiveProduct(newValue)}
+              onChange={(e, newValue) => {
+                handleReset();
+                setActiveProduct(newValue);
+              }}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               loading={loading}
               renderInput={(params) => {
@@ -128,19 +201,16 @@ export default function () {
           <Grid item xs={12}>
             <Autocomplete
               disabled={!activeProduct}
-              options={colors ?? []}
+              options={
+                colors?.filter((c) => !selectedColorNames.includes(c.id)) ?? []
+              }
               getOptionLabel={(p: Color) => p.id}
               onChange={(e, newValue) => {
-                if (
-                  newValue &&
-                  !selectedColors.map((c) => c.name).includes(newValue.id)
-                ) {
+                if (newValue) {
+                  const newColor = { name: newValue.id, hex: newValue.hex };
                   setProductUpdate({
                     ...productUpdate,
-                    colors: [
-                      ...selectedColors,
-                      { name: newValue.id, hex: newValue.hex },
-                    ],
+                    colors: [...selectedColors, newColor],
                   });
                 }
               }}
@@ -180,15 +250,112 @@ export default function () {
               }
             />
           </Grid>
+          <Grid item container xs={12}>
+            {currentImages.map(({ storagePath, colorNames }, i) => (
+              <Grid item container alignItems={"center"} spacing={2}>
+                <Grid item>
+                  <IconButton
+                    onClick={() => {
+                      if (!pendingUploads[storagePath]) {
+                        setPendingDeletions([...pendingDeletions, storagePath]);
+                      } else {
+                        const { ...newUploads } = pendingUploads;
+                        delete newUploads[storagePath];
+                        setPendingUploads(newUploads);
+                      }
+                      setProductUpdate({
+                        ...productUpdate,
+                        productImages: remove(currentImages, i),
+                      });
+                    }}
+                  >
+                    <Delete />
+                  </IconButton>
+                </Grid>
+                <Grid
+                  item
+                  container
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  flexWrap={"nowrap"}
+                  sx={{
+                    height: 150,
+                    width: 150,
+                  }}
+                >
+                  {storagePath ? (
+                    <StorageImage
+                      storagePath={storagePath}
+                      binary={pendingUploads[storagePath]}
+                    />
+                  ) : (
+                    <Button component={"label"}>
+                      Upload File
+                      <input
+                        accept={".png,.jpg,.jpeg"}
+                        type={"file"}
+                        hidden
+                        onChange={handleImageUpload(i)}
+                      />
+                    </Button>
+                  )}
+                </Grid>
+
+                <Grid item>
+                  {selectedColors?.length ? (
+                    <FormGroup>
+                      <FormLabel>Colors</FormLabel>
+                      <Stack flexWrap={"wrap"} sx={{ height: 126 }}>
+                        {selectedColors?.map((color) => {
+                          const checked = colorNames?.includes(color.name);
+                          return (
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  checked={checked}
+                                  onChange={() => {
+                                    const newColorNames = checked
+                                      ? colorNames?.filter(
+                                          (c) => c !== color.name
+                                        )
+                                      : [...colorNames, color.name];
+                                    updateImage(i, {
+                                      colorNames: newColorNames,
+                                    });
+                                  }}
+                                />
+                              }
+                              label={color.name}
+                            />
+                          );
+                        })}
+                      </Stack>
+                    </FormGroup>
+                  ) : (
+                    <></>
+                  )}
+                </Grid>
+              </Grid>
+            ))}
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              variant={"contained"}
+              disabled={!activeProduct}
+              onClick={() =>
+                setProductUpdate({
+                  ...productUpdate,
+                  productImages: [
+                    ...currentImages,
+                    { storagePath: "", colorNames: [] },
+                  ],
+                })
+              }
+            >
+              Add Image
+            </Button>
+          </Grid>
         </Grid>
-        {/*
-        TODO: implement file upload for images
-        <Grid item xs={12}>
-          <Button variant={"contained"} component={"label"}>
-            Upload File
-            <input type={"file"} hidden />
-          </Button>
-        </Grid>*/}
       </CardContent>
       <CardActions>
         <Grid container spacing={1} sx={{ padding: 1 }}>

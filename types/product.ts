@@ -19,6 +19,11 @@ export interface ProductColor {
   images?: string[];
 }
 
+export interface ProductImage {
+  storagePath: string;
+  colorNames: string[];
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -29,6 +34,7 @@ export interface Product {
   canHaveName: boolean;
   canHaveNumber: boolean;
   colors: ProductColor[];
+  productImages: ProductImage[];
   colorMap: { [colorId: string]: ProductColor };
   sizes: string[];
   ref: DocumentReference<Product>;
