@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useRef } from "react";
 import { Button, ButtonProps, CircularProgress } from "@mui/material";
 
 export default function LoadingButton({
@@ -10,13 +10,21 @@ export default function LoadingButton({
   loadingIndicatorSize?: number;
   loading?: boolean;
 } & ButtonProps): React.ReactElement {
+  const ref = useRef<HTMLDivElement>(null);
+  const width = useMemo(
+    () => (loading ? ref.current?.offsetWidth : undefined),
+    [loading]
+  );
+
   return (
-    <Button {...buttonProps}>
-      {loading ? (
-        <CircularProgress color={"inherit"} size={loadingIndicatorSize} />
-      ) : (
-        children
-      )}
-    </Button>
+    <div ref={ref}>
+      <Button sx={{ width }} {...buttonProps}>
+        {loading ? (
+          <CircularProgress color={"inherit"} size={loadingIndicatorSize} />
+        ) : (
+          children
+        )}
+      </Button>
+    </div>
   );
 }
