@@ -15,15 +15,11 @@ export default function EventPage({
   const { palette } = useTheme();
 
   return (
-    <Stack width={"100%"}>
-      <Box
-        borderRadius={10}
-        border={"1px solid " + palette.info.main}
-        padding={5}
-      >
+    <Stack width={"100%"} alignItems={"center"}>
+      <Box borderRadius={10} padding={5}>
         <Typography variant={"h4"}>{event.name}</Typography>
       </Box>
-      <Grid container justifyContent={"space-between"}>
+      <Grid container spacing={1} justifyContent={"center"} padding={"auto"}>
         {products.map((product) => (
           <Grid key={product.id} item>
             <ProductCard product={product} />
