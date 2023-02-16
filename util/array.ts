@@ -27,3 +27,11 @@ export function remove<T>(arr: T[] | undefined | null, i: number): T[] {
   if (arr.length <= i) return arr;
   return [...arr.slice(0, i), ...arr.slice(i + 1)];
 }
+
+export function getFromIndex<T>(
+  arr: T[] | undefined | null,
+  i: number
+): T | null {
+  if (!arr?.length || arr.length <= i) return null;
+  return arr[i];
+}
