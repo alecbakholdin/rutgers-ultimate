@@ -9,13 +9,16 @@ export default function ColorSwatch({
   hex,
   selected,
   sx,
+  defaultHex,
 }: {
   size?: number;
-  hex: string;
+  hex?: string;
   selected?: boolean;
   sx?: SxProps;
+  defaultHex?: string;
 }): React.ReactElement {
   const { palette } = useTheme();
+  hex = hex || defaultHex || "#ffffff";
   const chooseContrastColor = () => {
     if (!hex?.match(/^#[\dA-F]{6}$/)) return "black";
     const [_, ...rgb] =
