@@ -22,19 +22,22 @@ export function getServerFirestoreConverter<T>(): FirestoreDataConverter<T> {
     toFirestore(
       modelObject: FirebaseFirestore.WithFieldValue<T>
     ): DocumentData {
-      const { id, ref, ...object } = modelObject as any;
+      const { ref, ...object } = modelObject as any;
       return formatObject(object);
     },
     fromFirestore(snapshot: QueryDocumentSnapshot): T {
-      return Object.fromEntries(
-        Object.entries(snapshot.data() as any)
-          .filter(([key]) => key !== "ref")
-          .map(([key, value]) =>
-            value && Object.hasOwn(value, "_seconds")
-              ? [key, { seconds: (value as any)._seconds }]
-              : [key, value]
-          )
-      ) as T;
+      return {
+        ...Object.fromEntries(
+          Object.entries(snapshot.data() as any)
+            .filter(([key]) => key !== "ref")
+            .map(([key, value]) =>
+              value && Object.hasOwn(value, "_seconds")
+                ? [key, { seconds: (value as any)._seconds }]
+                : [key, value]
+            )
+        ),
+        id: snapshot.id,
+      } as T;
     },
   };
 }
