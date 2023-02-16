@@ -253,7 +253,13 @@ export default function ProductWizard() {
           </Grid>
           <Grid item container xs={12}>
             {currentImages.map(({ storagePath, colorNames }, i) => (
-              <Grid item container alignItems={"center"} spacing={2}>
+              <Grid
+                key={storagePath + "_" + i}
+                item
+                container
+                alignItems={"center"}
+                spacing={2}
+              >
                 <Grid item>
                   <IconButton
                     onClick={() => {
@@ -307,26 +313,25 @@ export default function ProductWizard() {
                     <FormGroup>
                       <FormLabel>Colors</FormLabel>
                       <Stack flexWrap={"wrap"} sx={{ height: 126 }}>
-                        {selectedColors?.map((color) => {
-                          const checked = colorNames?.includes(color.name);
+                        {selectedColors?.map(({ name }) => {
+                          const checked = colorNames?.includes(name);
                           return (
                             <FormControlLabel
+                              key={name}
                               control={
                                 <Checkbox
                                   checked={checked}
                                   onChange={() => {
                                     const newColorNames = checked
-                                      ? colorNames?.filter(
-                                          (c) => c !== color.name
-                                        )
-                                      : [...colorNames, color.name];
+                                      ? colorNames?.filter((c) => c !== name)
+                                      : [...colorNames, name];
                                     updateImage(i, {
                                       colorNames: newColorNames,
                                     });
                                   }}
                                 />
                               }
-                              label={color.name}
+                              label={name}
                             />
                           );
                         })}

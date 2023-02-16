@@ -23,8 +23,10 @@ export default async () => {
   }
   return (
     <>
-      {eventQuery.docs?.map((e) => (
-        <a href={"/store/" + e.id}>{(e.data() as Event).name}</a>
+      {eventQuery.docs?.map((event) => (
+        <a key={event.id} href={"/store/" + event.id}>
+          {(event.data() as Event).name}
+        </a>
       ))}
     </>
   );
