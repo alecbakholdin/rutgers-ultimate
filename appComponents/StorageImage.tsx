@@ -1,7 +1,8 @@
 import { base64ArrayBuffer } from "util/arrayBuffer";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { CSSProperties, useEffect, useMemo, useState } from "react";
 import { getDownloadURL, ref } from "@firebase/storage";
 import { storage } from "config/firebaseApp";
+import { CircularProgress, Stack } from "@mui/material";
 
 export default function ({
   storagePath,
@@ -24,22 +25,38 @@ export default function ({
         .catch(console.error);
     }
   }, [storagePath, binary]);
+  const [loading, setLoading] = useState(false);
 
   const altText = alt || "image";
-  const imgStyle = {
-    maxHeight: "100%",
-    maxWidth: "100%",
+  const imgStyle: CSSProperties = {
+    objectFit: "contain",
+    height: "100%",
+    width: "100%",
     borderRadius: "5px",
   };
-  return base64Binary ? (
-    <img
-      src={`data:image/jpeg;base64,${base64Binary}`}
-      alt={altText}
-      style={imgStyle}
-    />
-  ) : downloadUrl ? (
-    <img src={downloadUrl} alt={altText} style={imgStyle} />
-  ) : (
-    <></>
+  return (
+    <Stack
+      justifyContent={"center"}
+      alignItems={"center"}
+      width={"100%"}
+      height={"100%"}
+    >
+      {base64Binary ? (
+        <img
+          src={`data:image/jpeg;base64,${base64Binary}`}
+          alt={altText}
+          style={imgStyle}
+        />
+      ) : downloadUrl ? (
+        <img
+          src={downloadUrl}
+          alt={altText}
+          style={imgStyle}
+          onLoadStartCapture={() => setLoading(true)}
+          onLoad={() => setLoading(false)}
+        />
+      ) : null}
+      {loading && <CircularProgress />}
+    </Stack>
   );
 }
