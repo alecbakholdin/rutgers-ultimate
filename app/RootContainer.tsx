@@ -9,8 +9,13 @@ export default function RootContainer({
 }): React.ReactElement {
   return (
     <Container
-      maxWidth={"md"}
-      sx={{ paddingTop: 5, display: "flex", justifyContent: "center" }}
+      maxWidth={"lg"}
+      sx={{
+        paddingTop: 5,
+        paddingBottom: 5,
+        display: "flex",
+        justifyContent: "center",
+      }}
     >
       {children}
     </Container>
