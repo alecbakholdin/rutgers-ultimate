@@ -2,7 +2,7 @@
 import { Chip, Grid } from "@mui/material";
 import React from "react";
 
-export default function ({
+export default function ListDisplay({
   items,
   renderChipAvatar,
   handleDeleteItem,

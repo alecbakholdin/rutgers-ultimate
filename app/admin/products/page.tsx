@@ -4,7 +4,7 @@ import ProductWizard from "app/admin/products/ProductWizard";
 import { Stack } from "@mui/material";
 import ColorWizard from "app/admin/products/ColorWizard";
 
-export default function () {
+export default function ManageProducts() {
   return (
     <Stack spacing={2}>
       <ProductWizard />

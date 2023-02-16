@@ -2,6 +2,6 @@
 
 import { CircularProgress } from "@mui/material";
 
-export default () => {
+export default function Loading() {
   return <CircularProgress />;
-};
+}

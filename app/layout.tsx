@@ -9,7 +9,11 @@ import { serverAuth } from "config/firebaseServerApp";
 import { DecodedIdToken } from "firebase-admin/lib/auth";
 import RootContainer from "app/RootContainer";
 
-export default async ({ children }: { children: ReactNode }) => {
+export default async function RootLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const authToken = cookies().get(FIREBASE_AUTH_COOKIE)?.value;
   const existingUser: DecodedIdToken | undefined = authToken
     ? await serverAuth.verifyIdToken(authToken).catch((e) => {
@@ -28,4 +32,4 @@ export default async ({ children }: { children: ReactNode }) => {
       </body>
     </html>
   );
-};
+}

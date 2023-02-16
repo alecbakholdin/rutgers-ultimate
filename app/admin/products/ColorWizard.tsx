@@ -17,7 +17,7 @@ import ColorSwatch from "components/ColorSwatch";
 import { Add } from "@mui/icons-material";
 import { useMySnackbar } from "hooks/useMySnackbar";
 
-export default function (): React.ReactElement {
+export default function ColorWizard(): React.ReactElement {
   const [colors] = useCollectionData(colorCollection, {
     initialValue: [],
   });

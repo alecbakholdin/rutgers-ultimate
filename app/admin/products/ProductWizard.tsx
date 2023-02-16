@@ -38,7 +38,7 @@ import { useMySnackbar } from "hooks/useMySnackbar";
 
 type PendingUploads = { [storagePath: string]: ArrayBuffer };
 
-export default function () {
+export default function ProductWizard() {
   const { showError } = useMySnackbar();
   const [products, loading] = useCollectionData(productCollection);
   const [colors, colorsLoading] = useCollectionData(colorCollection);
