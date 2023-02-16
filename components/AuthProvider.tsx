@@ -5,36 +5,47 @@ import { auth } from "config/firebaseApp";
 import { FIREBASE_AUTH_COOKIE } from "types/serverAuth";
 import { newUserData, UserData, userDataCollection } from "types/userData";
 import { doc, getDoc, setDoc } from "@firebase/firestore";
+import { useRouter } from "next/navigation";
 
 const AuthContext = createContext<{
   user: User | null;
   userData: UserData | null;
   isTeam: boolean;
+  loading: boolean;
 }>({
   user: null,
   userData: null,
   isTeam: false,
+  loading: false,
 });
 
 export function AuthProvider({ children }: any) {
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
-    return auth.onIdTokenChanged(async (user) => {
-      if (!user) {
+    return auth.onIdTokenChanged(async (authUser) => {
+      setLoading(true);
+      if (!authUser) {
         setUser(null);
         setUserData(null);
         nookies.set(undefined, FIREBASE_AUTH_COOKIE, "", { path: "/" });
       } else {
-        const token = await user.getIdToken();
-        setUser(user);
+        const token = await authUser.getIdToken();
+        setUser(authUser);
+        const oldToken = nookies.get(undefined)[FIREBASE_AUTH_COOKIE];
         nookies.set(undefined, FIREBASE_AUTH_COOKIE, token, { path: "/" });
-        const userDataDoc = doc(userDataCollection, user.uid);
+        const userDataDoc = doc(userDataCollection, authUser.uid);
         const userData =
           (await getDoc(userDataDoc)) ??
-          (await setDoc(userDataDoc, newUserData(user.uid)));
+          (await setDoc(userDataDoc, newUserData(authUser.uid)));
         setUserData(userData.data() || null);
+        if (oldToken && token !== oldToken) {
+          router.refresh();
+        }
       }
+      setLoading(false);
     });
   }, []);
 
@@ -53,7 +64,7 @@ export function AuthProvider({ children }: any) {
     user?.email?.endsWith("rutgers.edu") || userData?.isTeam
   );
   return (
-    <AuthContext.Provider value={{ user, userData, isTeam }}>
+    <AuthContext.Provider value={{ user, userData, isTeam, loading }}>
       {children}
     </AuthContext.Provider>
   );
