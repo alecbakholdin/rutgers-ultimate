@@ -22,7 +22,7 @@ export default function EventPage({
       <Grid container spacing={1} justifyContent={"center"} padding={"auto"}>
         {products.map((product) => (
           <Grid key={product.id} item>
-            <ProductCard product={product} />
+            <ProductCard product={product} eventId={event.id} />
           </Grid>
         ))}
       </Grid>

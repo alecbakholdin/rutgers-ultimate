@@ -35,3 +35,7 @@ export function getFromIndex<T>(
   if (!arr?.length || arr.length <= i) return null;
   return arr[i];
 }
+
+export function count<T>(arr: T[] | undefined | null, fn: (val: T) => any) {
+  return arr?.filter(fn).length || 0;
+}

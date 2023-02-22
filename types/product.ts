@@ -24,6 +24,20 @@ export interface ProductImage {
   colorNames: string[];
 }
 
+export interface ProductField {
+  name: string;
+  type: "string" | "number" | "options" | "color";
+
+  // for string or number
+  maxChars: number;
+
+  // for options
+  options?: string[];
+
+  // for color
+  colors?: ProductColor[];
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -37,6 +51,7 @@ export interface Product {
   productImages: ProductImage[];
   colorMap: { [colorId: string]: ProductColor };
   sizes: string[];
+  fields: ProductField[];
   ref: DocumentReference<Product>;
 }
 

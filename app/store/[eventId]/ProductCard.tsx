@@ -5,7 +5,6 @@ import { useAuth } from "components/AuthProvider";
 import {
   Box,
   Button,
-  CircularProgress,
   FormControl,
   Grid,
   InputLabel,
@@ -21,16 +20,21 @@ import LoadingButton from "components/LoadingButton";
 import MenuItem from "@mui/material/MenuItem";
 import ColorSwatch from "components/ColorSwatch";
 import { getFromIndex } from "util/array";
+import { useRouter } from "next/navigation";
+import FancyCurrency from "appComponents/FancyCurrency";
 
 const productCardSize = 275;
 
 export default function ProductCard({
   product,
+  eventId,
 }: {
   product: Product;
+  eventId: string;
 }): React.ReactElement {
   const { palette } = useTheme();
   const { userData, isTeam, loading } = useAuth();
+  const router = useRouter();
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [numberField, setNumberField] = useState("");
@@ -40,9 +44,10 @@ export default function ProductCard({
     getFromIndex(product.colors, 0)?.name || ""
   );
 
-  const mainImage = product.productImages?.find(
-    (i) => !colorField || i.colorNames.includes(colorField)
-  );
+  const cardImage =
+    product.productImages?.find(
+      (i) => !colorField || i.colorNames.includes(colorField)
+    ) || getFromIndex(product.productImages, 0);
   const price = isTeam ? product.teamPrice : product.price;
 
   const handleReset = () => {
@@ -51,6 +56,11 @@ export default function ProductCard({
     setNameField("");
     setSizeField("");
   };
+
+  const handleNavigation = () =>
+    router.push(
+      `/store/${eventId}/${product.id}${colorField && `?color=${colorField}`}`
+    );
 
   return (
     <>
@@ -72,9 +82,14 @@ export default function ProductCard({
           <Grid
             item
             xs={12}
-            sx={{ width: productCardSize, height: productCardSize }}
+            onClick={handleNavigation}
+            sx={{
+              width: productCardSize,
+              height: productCardSize,
+              cursor: "pointer",
+            }}
           >
-            <StorageImage storagePath={mainImage?.storagePath} />
+            <StorageImage storagePath={cardImage?.storagePath} />
           </Grid>
           <Grid item xs={12}>
             <Typography variant={"body2"} fontSize={18}>
@@ -95,39 +110,11 @@ export default function ProductCard({
               ))}
             </Grid>
           )}
-          <Grid item container xs={6} spacing={0.1} alignItems={"start"}>
-            {!userData || loading ? (
-              <Grid item>
-                <CircularProgress size={10} />
-              </Grid>
-            ) : (
-              <>
-                <Grid item>
-                  <Typography
-                    variant={"body1"}
-                    color={"primary"}
-                    width={"fit-content"}
-                    fontSize={18}
-                    lineHeight={"70%"}
-                  >
-                    ${Math.floor(price)}
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Typography
-                    variant={"body1"}
-                    color={"primary"}
-                    fontSize={10}
-                    lineHeight={"70%"}
-                  >
-                    {Math.floor(price % 1)
-                      .toPrecision(3)
-                      .slice(-2)}
-                  </Typography>
-                </Grid>
-              </>
-            )}
-          </Grid>
+          <FancyCurrency
+            amount={price}
+            size={18}
+            loading={!userData || loading}
+          />
           <Grid item xs={6} container justifyContent={"end"}>
             <Button
               variant={"contained"}
