@@ -24,18 +24,30 @@ export interface ProductImage {
   colorNames: string[];
 }
 
+export type ProductFieldType = "text" | "number" | "options" | "color";
+
 export interface ProductField {
   name: string;
-  type: "string" | "number" | "options" | "color";
+  type: ProductFieldType;
 
-  // for string or number
+  // for text or number
   maxChars: number;
 
   // for options
-  options?: string[];
+  options: string[];
 
   // for color
-  colors?: ProductColor[];
+  colors: ProductColor[];
+}
+
+export function defaultField(): ProductField {
+  return {
+    name: "New Field",
+    type: "text",
+    maxChars: 0,
+    options: [],
+    colors: [] as ProductColor[],
+  };
 }
 
 export interface Product {
@@ -47,18 +59,34 @@ export interface Product {
   images?: string[];
   canHaveName: boolean;
   canHaveNumber: boolean;
-  colors: ProductColor[];
+  colors?: ProductColor[];
   productImages: ProductImage[];
-  colorMap: { [colorId: string]: ProductColor };
+  colorMap?: { [colorId: string]: ProductColor };
   sizes: string[];
   fields: ProductField[];
-  ref: DocumentReference<Product>;
+  ref?: DocumentReference<Product>;
 }
 
 export const productCollection: CollectionReference<Product> = collection(
   firestore,
   "products"
 ).withConverter(getFirestoreConverter<Product>());
+
+export function defaultProduct(): Product {
+  return {
+    id: "",
+    name: "",
+    description: "",
+    price: 0,
+    teamPrice: 0,
+    canHaveName: false,
+    canHaveNumber: false,
+    colors: [] as ProductColor[],
+    productImages: [] as ProductImage[],
+    sizes: [] as string[],
+    fields: [] as ProductField[],
+  };
+}
 
 export function useProductData(
   productIds?: string[]

@@ -17,7 +17,11 @@ export function extractKey<T>(
   return Object.fromEntries(array?.map((obj) => [obj[key], obj]) ?? []);
 }
 
-export function insert<T>(arr: T[] | undefined | null, obj: T, i: number): T[] {
+export function replace<T>(
+  arr: T[] | undefined | null,
+  obj: T,
+  i: number
+): T[] {
   if (!arr?.length) return [obj];
   return [...arr.slice(0, i), obj, ...arr.slice(i + 1)];
 }

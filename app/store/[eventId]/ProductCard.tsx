@@ -98,7 +98,7 @@ export default function ProductCard({
           </Grid>
           {Boolean(product.colors?.length) && (
             <Grid item xs={12} container flexWrap={"nowrap"}>
-              {product.colors.map(({ name, hex }) => (
+              {product.colors?.map(({ name, hex }) => (
                 <Grid
                   key={name}
                   item
