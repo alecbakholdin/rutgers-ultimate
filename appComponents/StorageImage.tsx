@@ -17,15 +17,19 @@ export default function ({
     () => binary && base64ArrayBuffer(binary),
     [binary]
   );
+  const [loading, setLoading] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState<string | undefined>();
   useEffect(() => {
     if (storagePath) {
+      setLoading(true);
       getDownloadURL(ref(storage, storagePath))
         .then(setDownloadUrl)
-        .catch(console.error);
+        .catch((e) => {
+          console.error(e);
+          setLoading(false);
+        });
     }
   }, [storagePath, binary]);
-  const [loading, setLoading] = useState(false);
 
   const altText = alt || "image";
   const imgStyle: CSSProperties = {
@@ -33,6 +37,7 @@ export default function ({
     height: "100%",
     width: "100%",
     borderRadius: "5px",
+    ...(loading ? { display: "none" } : {}),
   };
   return (
     <Stack
