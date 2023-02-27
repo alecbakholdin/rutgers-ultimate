@@ -1,8 +1,9 @@
-import { Box, Button, Grid, Typography, useTheme } from "@mui/material";
+import { Button, Grid, Typography, useTheme } from "@mui/material";
 import React from "react";
 import { defaultField, Product, ProductField } from "types/product";
 import { remove, replace } from "util/array";
 import SingleProductFieldEditor from "app/admin/products/SingleProductFieldEditor";
+import FieldSection from "appComponents/FieldSection";
 
 export default function ProductFieldEditor({
   product,
@@ -15,18 +16,14 @@ export default function ProductFieldEditor({
   changes: Partial<Product>;
   setChanges: (update: Partial<Product>) => void;
 }) {
-  const { palette, shape } = useTheme();
+  const { palette } = useTheme();
   const fields = updatedProduct.fields;
   const updateFields = (fields: ProductField[]) =>
     setChanges({ ...changes, fields });
   const handleNewField = () => updateFields([...fields, defaultField()]);
 
   return (
-    <Box
-      border={"1px solid rgba(0, 0, 0, 0.23)"}
-      borderRadius={shape.borderRadius + "px"}
-      padding={"16.5px 14px"}
-    >
+    <FieldSection>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography color={"lightslategrey"} variant={"body1"}>
@@ -63,6 +60,6 @@ export default function ProductFieldEditor({
           </Button>
         </Grid>
       </Grid>
-    </Box>
+    </FieldSection>
   );
 }
