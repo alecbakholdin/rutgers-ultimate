@@ -22,6 +22,14 @@ export interface ProductColor {
 export interface ProductImage {
   storagePath: string;
   colorNames: string[];
+  assignedColor?: string;
+}
+
+export function defaultProductImage(): ProductImage {
+  return {
+    storagePath: "",
+    colorNames: [],
+  };
 }
 
 export type ProductFieldType = "text" | "number" | "options" | "color";

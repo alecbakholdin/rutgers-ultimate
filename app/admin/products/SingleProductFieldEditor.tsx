@@ -91,7 +91,7 @@ export default function SingleProductFieldEditor({
                 }
               />
               <StringChipList
-                items={field.options}
+                options={field.options}
                 onDeleteChip={(i) =>
                   updateField({ options: remove(field.options, i) })
                 }

@@ -1,25 +1,19 @@
 "use client";
 import React, { useState } from "react";
 import { Autocomplete, Grid, Stack, TextField } from "@mui/material";
-import {
-  defaultProduct,
-  Product,
-  productCollection,
-  ProductImage,
-} from "types/product";
+import { defaultProduct, Product, productCollection } from "types/product";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import LoadingButton from "components/LoadingButton";
 import BetterTextField from "components/BetterTextField";
-import { replace } from "util/array";
 import { doc, updateDoc } from "@firebase/firestore";
 import { isEmptyObject } from "util/object";
-import { randomString } from "util/random";
 import { deleteObject, ref, uploadBytes } from "@firebase/storage";
 import { storage } from "config/firebaseApp";
 import { useMySnackbar } from "hooks/useMySnackbar";
 import ProductFieldEditor from "app/admin/products/ProductFieldEditor";
-
-type PendingUploads = { [storagePath: string]: ArrayBuffer };
+import ProductImageEditor, {
+  PendingUploads,
+} from "app/admin/products/ProductImageEditor";
 
 export default function ProductWizard() {
   const { showError } = useMySnackbar();
@@ -33,7 +27,6 @@ export default function ProductWizard() {
   const [submitLoading, setSubmitLoading] = useState(false);
 
   const updatePending = !isEmptyObject(changes);
-  const currentImages = changes.productImages || product?.productImages || [];
   const updatedProduct: Product = {
     ...defaultProduct(),
     ...product,
@@ -84,32 +77,6 @@ export default function ProductWizard() {
     fullWidth: true,
     handlePressControlEnter: handleSubmit,
   });
-  const updateImage = (index: number, update: Partial<ProductImage>) => {
-    const oldImage = currentImages[index];
-    const newImage = { ...oldImage, ...update };
-    setChanges({
-      ...changes,
-      productImages: replace(currentImages, newImage, index),
-    });
-  };
-
-  const handleImageUpload = (index: number) => {
-    return async (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (!e.target.files) return;
-
-      const file = e.target.files[0];
-      if (file.name.lastIndexOf(".") < 0) {
-        showError("File has no extension");
-        return;
-      }
-      const extension = file.name.slice(file.name.lastIndexOf("."));
-      const binaryData = await file.arrayBuffer();
-      const storagePath = `product-images/${randomString(12)}${extension}`;
-
-      updateImage(index, { storagePath });
-      setPendingUploads({ ...pendingUploads, [storagePath]: binaryData });
-    };
-  };
 
   return (
     <Stack>
@@ -151,6 +118,18 @@ export default function ProductWizard() {
             updatedProduct={updatedProduct}
             changes={changes}
             setChanges={setChanges}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <ProductImageEditor
+            product={product}
+            updatedProduct={updatedProduct}
+            changes={changes}
+            setChanges={setChanges}
+            pendingUploads={pendingUploads}
+            setPendingUploads={setPendingUploads}
+            pendingDeletions={pendingDeletions}
+            setPendingDeletions={setPendingDeletions}
           />
         </Grid>
       </Grid>

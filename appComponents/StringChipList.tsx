@@ -1,21 +1,42 @@
 import { Chip, Grid } from "@mui/material";
 
 export default function StringChipList({
-  items,
+  options,
   onDeleteChip,
-}: /*  selected,
-  setSelected*/
-{
-  items?: string[];
+  selected,
+  setSelected,
+  disabled,
+  multiSelect,
+}: {
+  options?: string[];
   onDeleteChip?: (index: number) => void;
-  /*  selected?: string[];
-                                                                                    setSelected?: (newSelected: string[]) => void;*/
+  selected?: string[];
+  setSelected?: (newSelected: string[]) => void;
+  disabled?: string[];
+  multiSelect?: boolean;
 }) {
+  const selectedArr = selected || [];
+  const handleSelect = (item: string) => {
+    if (!setSelected) return;
+    if (selectedArr.includes(item)) {
+      setSelected(selectedArr.filter((i) => i !== item));
+    } else if (multiSelect || !selectedArr.length) {
+      setSelected([...selectedArr, item]);
+    }
+  };
+
   return (
     <Grid container spacing={0.5}>
-      {items?.map((item, i) => (
+      {options?.map((item, i) => (
         <Grid key={i} item>
-          <Chip label={item} onDelete={() => onDeleteChip && onDeleteChip(i)} />
+          <Chip
+            label={item}
+            disabled={disabled?.includes(item)}
+            color={selected?.includes(item) ? "primary" : undefined}
+            onDelete={onDeleteChip ? () => onDeleteChip(i) : undefined}
+            onClick={setSelected ? () => handleSelect(item) : undefined}
+            variant={selected?.includes(item) ? "filled" : "outlined"}
+          />
         </Grid>
       ))}
     </Grid>
