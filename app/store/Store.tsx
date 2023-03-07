@@ -23,7 +23,7 @@ export default function Store({
           {eventProducts[event.id]?.map((product) => (
             <>
               <Grid key={`${event.id}-${product.id}`} item>
-                <ProductCard product={product} eventId={event.id} />
+                <ProductCard product={product} event={event} />
               </Grid>
             </>
           ))}

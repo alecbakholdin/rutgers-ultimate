@@ -26,6 +26,15 @@ export function replace<T>(
   return [...arr.slice(0, i), obj, ...arr.slice(i + 1)];
 }
 
+export function update<T>(
+  arr: T[] | undefined | null,
+  i: number,
+  update: Partial<T>
+): T[] {
+  if (!arr?.length || i >= arr.length) return arr || [];
+  return replace(arr, { ...arr[i], ...update }, i);
+}
+
 export function remove<T>(arr: T[] | undefined | null, i: number): T[] {
   if (!arr?.length) return [];
   if (arr.length <= i) return arr;

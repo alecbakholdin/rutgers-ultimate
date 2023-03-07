@@ -10,33 +10,34 @@ import ColorSwatch from "components/ColorSwatch";
 import { getFromIndex } from "util/array";
 import { useRouter } from "next/navigation";
 import FancyCurrency from "appComponents/FancyCurrency";
-import { useMySnackbar } from "hooks/useMySnackbar";
 import ProductFieldInput from "appComponents/ProductFieldInput";
+import { getDefaultColorField, useFieldValuesState } from "appUtil/cartItem";
+import { ServerEvent } from "types/event";
 
 const productCardSize = 275;
 
 export default function ProductCard({
   product,
-  eventId,
+  event,
 }: {
   product: Product;
-  eventId: string;
+  event: ServerEvent;
 }): React.ReactElement {
   const { palette } = useTheme();
   const { userData, isTeam, loading } = useAuth();
-  const { showError } = useMySnackbar();
   const router = useRouter();
   const productFields: ProductField[] = product.fields || [];
-
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const colorField = productFields.find((f) => f.type === "color");
-  const defaultFieldValues: { [fieldName: string]: any } = colorField
-    ? { [colorField.name]: colorField.colors?.[0]?.name }
-    : {};
-  const [fieldValues, setFieldValues] = useState(defaultFieldValues);
-  const setFieldValue = (field: ProductField, value: any) =>
-    setFieldValues({ ...fieldValues, [field.name]: value });
-  const getFieldValue = (field: ProductField): any => fieldValues[field.name];
+  const colorField = getDefaultColorField(product);
+  const {
+    fieldValues,
+    resetFieldValues,
+    getFieldValue,
+    setFieldValue,
+
+    handleAddToCart,
+    loading: addToCartLoading,
+  } = useFieldValuesState(event, product);
 
   const cardImage =
     product.productImages?.find(
@@ -46,30 +47,16 @@ export default function ProductCard({
 
   const handleReset = () => {
     setAnchorEl(null);
-    setFieldValues(defaultFieldValues);
+    resetFieldValues();
   };
 
   const handleNavigation = () =>
     router.push(
-      `/store/${eventId}/${product.id}${
+      `/store/${event.id}/${product.id}${
         Boolean(colorField && getFieldValue(colorField)) &&
         `?color=${getFieldValue(colorField!)}`
       }`
     );
-
-  const handleAddToCart = () => {
-    const missingFields = productFields
-      .filter((f) => f.required && !getFieldValue(f))
-      .map((f) => f.name);
-    if (missingFields.length) {
-      showError(
-        `Missing required field${
-          missingFields.length > 0 && "s"
-        } ${missingFields.join(", ")}`
-      );
-      return;
-    }
-  };
 
   return (
     <>
@@ -161,7 +148,12 @@ export default function ProductCard({
                 setFieldValue={(v) => setFieldValue(field, v)}
               />
             ))}
-            <LoadingButton onClick={handleAddToCart}>Confirm</LoadingButton>
+            <LoadingButton
+              loading={addToCartLoading}
+              onClick={() => handleAddToCart(1)}
+            >
+              Confirm
+            </LoadingButton>
           </Stack>
         </Box>
       </Popover>
