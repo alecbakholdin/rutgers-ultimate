@@ -1,15 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import { Product } from "types/product";
+import { Product, ProductField } from "types/product";
 import { useAuth } from "components/AuthProvider";
 import {
   Box,
   Button,
-  FormControl,
+  FormGroup,
+  FormLabel,
   Grid,
-  InputLabel,
   Popover,
-  Select,
   Stack,
   TextField,
   useTheme,
@@ -17,11 +16,12 @@ import {
 import Typography from "@mui/material/Typography";
 import StorageImage from "appComponents/StorageImage";
 import LoadingButton from "components/LoadingButton";
-import MenuItem from "@mui/material/MenuItem";
 import ColorSwatch from "components/ColorSwatch";
 import { getFromIndex } from "util/array";
 import { useRouter } from "next/navigation";
 import FancyCurrency from "appComponents/FancyCurrency";
+import StringChipList from "appComponents/StringChipList";
+import { useMySnackbar } from "hooks/useMySnackbar";
 
 const productCardSize = 275;
 
@@ -34,33 +34,52 @@ export default function ProductCard({
 }): React.ReactElement {
   const { palette } = useTheme();
   const { userData, isTeam, loading } = useAuth();
+  const { showError } = useMySnackbar();
   const router = useRouter();
+  const productFields: ProductField[] = product.fields || [];
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [numberField, setNumberField] = useState("");
-  const [nameField, setNameField] = useState("");
-  const [sizeField, setSizeField] = useState<string>("");
-  const [colorField, setColorField] = useState<string>(
-    getFromIndex(product.colors, 0)?.name || ""
-  );
+  const colorField = productFields.find((f) => f.type === "color");
+  const defaultFieldValues: { [fieldName: string]: any } = colorField
+    ? { [colorField.name]: colorField.colors?.[0]?.name }
+    : {};
+  const [fieldValues, setFieldValues] = useState(defaultFieldValues);
+  const setFieldValue = (field: ProductField, value: any) =>
+    setFieldValues({ ...fieldValues, [field.name]: value });
+  const getFieldValue = (field: ProductField): any => fieldValues[field.name];
 
   const cardImage =
     product.productImages?.find(
-      (i) => !colorField || i.colorNames.includes(colorField)
+      (i) => !colorField || i.colorNames.includes(fieldValues[colorField.name])
     ) || getFromIndex(product.productImages, 0);
   const price = isTeam ? product.teamPrice : product.price;
 
   const handleReset = () => {
     setAnchorEl(null);
-    setNumberField("");
-    setNameField("");
-    setSizeField("");
+    setFieldValues(defaultFieldValues);
   };
 
   const handleNavigation = () =>
     router.push(
-      `/store/${eventId}/${product.id}${colorField && `?color=${colorField}`}`
+      `/store/${eventId}/${product.id}${
+        Boolean(colorField && getFieldValue(colorField)) &&
+        `?color=${getFieldValue(colorField!)}`
+      }`
     );
+
+  const handleAddToCart = () => {
+    const missingFields = productFields
+      .filter((f) => f.required && !getFieldValue(f))
+      .map((f) => f.name);
+    if (missingFields.length) {
+      showError(
+        `Missing required field${
+          missingFields.length > 0 && "s"
+        } ${missingFields.join(", ")}`
+      );
+      return;
+    }
+  };
 
   return (
     <>
@@ -96,16 +115,19 @@ export default function ProductCard({
               {product.name}
             </Typography>
           </Grid>
-          {Boolean(product.colors?.length) && (
+          {colorField && (
             <Grid item xs={12} container flexWrap={"nowrap"}>
-              {product.colors?.map(({ name, hex }) => (
+              {colorField.colors?.map(({ name, hex }) => (
                 <Grid
                   key={name}
                   item
-                  onClick={() => setColorField(name)}
+                  onClick={() => setFieldValue(colorField, name)}
                   sx={{ cursor: "pointer" }}
                 >
-                  <ColorSwatch hex={hex} selected={name === colorField} />
+                  <ColorSwatch
+                    hex={hex}
+                    selected={name === getFieldValue(colorField)}
+                  />
                 </Grid>
               ))}
             </Grid>
@@ -139,44 +161,49 @@ export default function ProductCard({
           horizontal: "right",
         }}
       >
-        <Box width={200} padding={2}>
-          <Stack spacing={1} alignItems={"end"}>
-            {product.canHaveNumber && (
-              <TextField
-                value={numberField}
-                onChange={(e) =>
-                  setNumberField(e.target.value.replace(/\D/, "").slice(0, 2))
-                }
-                label={"Number (optional)"}
-                size={"small"}
-              />
+        <Box width={250} padding={2}>
+          <Stack spacing={2}>
+            {productFields.map((field) =>
+              field.type === "text" ? (
+                <TextField
+                  label={field.name + (!field.required && " (optional)")}
+                  value={getFieldValue(field) || ""}
+                  onChange={(e) => setFieldValue(field, e.target.value)}
+                  required={field.required}
+                />
+              ) : field.type === "options" ? (
+                <FormGroup>
+                  <FormLabel>
+                    {field.name}
+                    {field.required ? "*" : " (optional)"}
+                  </FormLabel>
+                  <StringChipList
+                    options={field.options}
+                    selected={getFieldValue(field) && [getFieldValue(field)]}
+                    setSelected={(v) =>
+                      setFieldValue(field, v.length ? v[0] : undefined)
+                    }
+                  />
+                </FormGroup>
+              ) : field.type === "number" ? (
+                <TextField
+                  label={field.name + (!field.required && " (optional)")}
+                  value={getFieldValue(field) || ""}
+                  onChange={(e) =>
+                    setFieldValue(
+                      field,
+                      e.target.value
+                        .replace(/\D/, "")
+                        .slice(0, field.maxChars || undefined)
+                    )
+                  }
+                  required={field.required}
+                />
+              ) : (
+                <></>
+              )
             )}
-            {product.canHaveName && (
-              <TextField
-                value={nameField}
-                onChange={(e) => setNameField(e.target.value)}
-                label={"Name (optional)"}
-                size={"small"}
-              />
-            )}
-            {Boolean(product.sizes?.length) && (
-              <FormControl size={"small"} sx={{ width: "100%" }}>
-                <InputLabel>Size</InputLabel>
-                <Select
-                  value={sizeField}
-                  onChange={(e) => setSizeField(e.target.value)}
-                  label={"Size"}
-                  fullWidth
-                >
-                  {product.sizes.map((size) => (
-                    <MenuItem key={size} value={size}>
-                      {size}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
-            <LoadingButton>Confirm</LoadingButton>
+            <LoadingButton onClick={handleAddToCart}>Confirm</LoadingButton>
           </Stack>
         </Box>
       </Popover>

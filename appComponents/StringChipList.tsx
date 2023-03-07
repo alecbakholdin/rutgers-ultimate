@@ -20,8 +20,10 @@ export default function StringChipList({
     if (!setSelected) return;
     if (selectedArr.includes(item)) {
       setSelected(selectedArr.filter((i) => i !== item));
-    } else if (multiSelect || !selectedArr.length) {
+    } else if (multiSelect) {
       setSelected([...selectedArr, item]);
+    } else {
+      setSelected([item]);
     }
   };
 

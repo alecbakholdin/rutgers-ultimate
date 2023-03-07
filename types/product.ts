@@ -46,6 +46,7 @@ export interface ProductField {
 
   // for color
   colors: ProductColor[];
+  required?: boolean;
 }
 
 export function defaultField(): ProductField {

@@ -1,6 +1,8 @@
 import { ProductField, ProductFieldType } from "types/product";
 import {
   FormControl,
+  FormControlLabel,
+  FormGroup,
   Grid,
   IconButton,
   InputLabel,
@@ -15,6 +17,7 @@ import { remove } from "util/array";
 import StringChipList from "appComponents/StringChipList";
 import ListEditorTextField from "appComponents/ListEditorTextField";
 import ColorProductFieldEditor from "app/admin/products/ColorProductFieldEditor";
+import { LovelySwitch } from "components/LovelySwitch";
 
 export default function SingleProductFieldEditor({
   field,
@@ -104,6 +107,19 @@ export default function SingleProductFieldEditor({
             <ColorProductFieldEditor field={field} updateField={updateField} />
           </Grid>
         )}
+        <Grid item>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <LovelySwitch
+                  checked={Boolean(field.required)}
+                  onChange={() => updateField({ required: !field.required })}
+                />
+              }
+              label={"Required"}
+            />
+          </FormGroup>
+        </Grid>
       </Grid>
     </Grid>
   );
