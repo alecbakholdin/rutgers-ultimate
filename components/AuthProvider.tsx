@@ -6,6 +6,7 @@ import { FIREBASE_AUTH_COOKIE } from "types/serverAuth";
 import { newUserData, UserData, userDataCollection } from "types/userData";
 import { doc, getDoc, setDoc } from "@firebase/firestore";
 import { useRouter } from "next/navigation";
+import { useDocumentData } from "react-firebase-hooks/firestore";
 
 const AuthContext = createContext<{
   user: User | null;
@@ -22,14 +23,15 @@ const AuthContext = createContext<{
 export function AuthProvider({ children }: any) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
-  const [userData, setUserData] = useState<UserData | null>(null);
+  const [userData, firestoreLoading] = useDocumentData(
+    user?.uid ? doc(userDataCollection, user.uid) : null
+  );
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     return auth.onIdTokenChanged(async (authUser) => {
       setLoading(true);
       if (!authUser) {
         setUser(null);
-        setUserData(null);
         nookies.set(undefined, FIREBASE_AUTH_COOKIE, "", { path: "/" });
       } else {
         const token = await authUser.getIdToken();
@@ -37,10 +39,8 @@ export function AuthProvider({ children }: any) {
         const oldToken = nookies.get(undefined)[FIREBASE_AUTH_COOKIE];
         nookies.set(undefined, FIREBASE_AUTH_COOKIE, token, { path: "/" });
         const userDataDoc = doc(userDataCollection, authUser.uid);
-        const userData =
-          (await getDoc(userDataDoc)) ??
-          (await setDoc(userDataDoc, newUserData(authUser.uid)));
-        setUserData(userData.data() || null);
+        if (!(await getDoc(userDataDoc)))
+          await setDoc(userDataDoc, newUserData(authUser.uid));
         if (oldToken && token !== oldToken) {
           router.refresh();
         }
@@ -64,7 +64,14 @@ export function AuthProvider({ children }: any) {
     user?.email?.endsWith("rutgers.edu") || userData?.isTeam
   );
   return (
-    <AuthContext.Provider value={{ user, userData, isTeam, loading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        userData: userData || null,
+        isTeam,
+        loading: loading || firestoreLoading,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
