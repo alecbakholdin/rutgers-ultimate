@@ -11,7 +11,6 @@ export default function Store({
   events: ServerEvent[];
   eventProducts: { [eventId: string]: Product[] };
 }) {
-  console.log(events[0]);
   return (
     <Grid container justifyContent={"center"} spacing={1} width={"max-content"}>
       {events.map((event) => (
@@ -22,9 +21,11 @@ export default function Store({
             </Divider>
           </Grid>
           {eventProducts[event.id]?.map((product) => (
-            <Grid key={`${event.id}-${product.id}`} item>
-              <ProductCard product={product} eventId={event.id} />
-            </Grid>
+            <>
+              <Grid key={`${event.id}-${product.id}`} item>
+                <ProductCard product={product} eventId={event.id} />
+              </Grid>
+            </>
           ))}
         </>
       ))}
