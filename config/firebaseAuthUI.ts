@@ -9,9 +9,5 @@ export const uiConfig: firebaseui.auth.Config = {
   signInOptions: [
     GoogleAuthProvider.PROVIDER_ID,
     EmailAuthProvider.PROVIDER_ID,
-    {
-      provider: GoogleAuthProvider.PROVIDER_ID,
-      scopes: ["https://www.googleapis.com/auth/gmail.labels"],
-    },
   ],
 };
