@@ -26,6 +26,7 @@ export interface CartItem {
   unitPrice: number;
   totalPrice: number;
   event: string;
+  delivered: boolean;
 }
 
 export type NewCartItemFieldValues = { [fieldName: string]: any };
@@ -36,6 +37,7 @@ export interface NewCartItem {
   fieldValues: NewCartItemFieldValues;
   quantity: number;
   imageStoragePath: string;
+  delivered: boolean;
 }
 
 export function defaultNewCartItem(
@@ -60,6 +62,7 @@ export function defaultNewCartItem(
     fieldValues,
     quantity,
     imageStoragePath: image?.storagePath || "",
+    delivered: false,
   };
 }
 

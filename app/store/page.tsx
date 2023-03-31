@@ -11,7 +11,7 @@ export default async () => {
   const eventQuery = await serverDb
     .collection("events")
     .withConverter(getServerFirestoreConverter<ServerEvent>())
-    .where("endDate", ">", new Date())
+    /*.where("endDate", ">", new Date())*/
     .get();
   const events = eventQuery.docs?.map((e) => e.data()) || [];
 
@@ -43,5 +43,5 @@ export default async () => {
     eventProducts[eventId] = [...eventProducts[eventId], ...products];
   }
 
-  return <Store events={events} eventProducts={eventProducts} />;
+  return <Store events={events.reverse()} eventProducts={eventProducts} />;
 };

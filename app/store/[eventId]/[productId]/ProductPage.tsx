@@ -90,7 +90,7 @@ export default function ProductPage({
         </Grid>
         {Boolean(product.colors?.length) && (
           <Grid item container xs={12} spacing={0.5} justifyContent={"end"}>
-            {product.colors.map(({ name, hex }) => (
+            {product.colors?.map(({ name, hex }) => (
               <Grid
                 key={"name"}
                 item
