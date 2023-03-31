@@ -10,7 +10,8 @@ import { getFirestoreConverter } from "config/firestoreConverter";
 import { Product, useProductData } from "./product";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useDocumentData } from "react-firebase-hooks/firestore";
-import { distinctEntries } from "config/arrayUtils";
+import { distinctEntries } from "util/array";
+import { ServerEvent } from "types/event";
 
 export interface CartItem {
   productId: string;
@@ -25,6 +26,44 @@ export interface CartItem {
   unitPrice: number;
   totalPrice: number;
   event: string;
+  delivered: boolean;
+}
+
+export type NewCartItemFieldValues = { [fieldName: string]: any };
+
+export interface NewCartItem {
+  productId: string;
+  eventId: string;
+  fieldValues: NewCartItemFieldValues;
+  quantity: number;
+  imageStoragePath: string;
+  delivered: boolean;
+}
+
+export function defaultNewCartItem(
+  event: ServerEvent,
+  product: Product,
+  fieldValues: NewCartItemFieldValues,
+  quantity: number
+): NewCartItem {
+  const colorField = product.fields.find((f) => f.type === "color");
+  const selectedColor = fieldValues[colorField?.name || ""];
+
+  const productImages = product.productImages;
+  const image = selectedColor
+    ? productImages.find((i) => i.colorNames.includes(selectedColor))
+    : productImages?.length
+    ? productImages[0]
+    : undefined;
+
+  return {
+    productId: product.id,
+    eventId: event.id,
+    fieldValues,
+    quantity,
+    imageStoragePath: image?.storagePath || "",
+    delivered: false,
+  };
 }
 
 export interface UserData {
@@ -33,7 +72,16 @@ export interface UserData {
   email?: string | null;
   isTeam?: boolean;
   cartItems: CartItem[];
+  cart?: NewCartItem[];
   ref?: DocumentReference<UserData>;
+}
+
+export function newUserData(uid: string): UserData {
+  return {
+    id: uid,
+    isAdmin: false,
+    cartItems: [],
+  };
 }
 
 export const userDataCollection = collection(

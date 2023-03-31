@@ -6,8 +6,8 @@ import {
   query,
   where,
 } from "@firebase/firestore";
-import { firestore } from "../config/firebaseApp";
-import { getFirestoreConverter } from "../config/firestoreConverter";
+import { firestore } from "config/firebaseApp";
+import { getFirestoreConverter } from "config/firestoreConverter";
 import { useCollectionDataOnce } from "react-firebase-hooks/firestore";
 import { useMemo } from "react";
 
@@ -29,16 +29,18 @@ export function getProductStatusColor(status?: EventProductStatus) {
   return "#000000";
 }
 
-export interface Event {
+export type ServerEvent = {
   id: string;
-  ref: DocumentReference<Event>;
-
   name: string;
   endDate: Date;
   productIds: string[];
   productStatuses: { productId: string; status: EventProductStatus }[];
   sizingChartCount: number;
-}
+};
+
+export type Event = ServerEvent & {
+  ref: DocumentReference<Event>;
+};
 
 export const eventCollection: CollectionReference<Event> = collection(
   firestore,

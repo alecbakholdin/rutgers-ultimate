@@ -6,7 +6,7 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 export interface Color {
   id: string;
   hex: string;
-  ref: DocumentReference<Color>;
+  ref?: DocumentReference<Color>;
 }
 
 export const colorCollection = collection(

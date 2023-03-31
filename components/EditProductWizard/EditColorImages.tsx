@@ -3,7 +3,7 @@
 import React from "react";
 import { Product } from "types/product";
 import { Checkbox, FormControlLabel, Grid, Typography } from "@mui/material";
-import { distinctEntries } from "config/arrayUtils";
+import { distinctEntries } from "util/array";
 
 export default function EditColorImages({
   edits,
@@ -15,7 +15,7 @@ export default function EditColorImages({
   const handleImageToggle =
     (colorName: string, imageURL: string) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const color = edits?.colorMap[colorName];
+      const color = edits?.colorMap?.[colorName];
       if (color) {
         const images = e.target.checked
           ? distinctEntries([...(color?.images ?? []), imageURL]) // add image
@@ -54,7 +54,7 @@ export default function EditColorImages({
                     <Checkbox
                       checked={Boolean(
                         edits?.colorMap &&
-                          edits.colorMap[color.name].images?.includes(image)
+                          edits.colorMap[color.name]?.images?.includes(image)
                       )}
                       onChange={handleImageToggle(color.name, image)}
                     />

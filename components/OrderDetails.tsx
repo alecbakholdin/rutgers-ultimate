@@ -3,7 +3,7 @@ import { Divider, Grid, Stack } from "@mui/material";
 import { Order } from "../types/order";
 import CartItemRow from "./CartItemRow";
 import Typography from "@mui/material/Typography";
-import { currencyFormat } from "../config/currencyUtils";
+import { currencyFormat } from "util/currency";
 
 function OrderSummary({ obj }: { obj: { [_: string]: string } }) {
   const entries = useMemo(() => Object.entries(obj), [obj]);

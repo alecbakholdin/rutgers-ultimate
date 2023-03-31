@@ -17,7 +17,7 @@ import {
   ContentCopy,
   OpenInNew,
 } from "@mui/icons-material";
-import { currencyFormat } from "../config/currencyUtils";
+import { currencyFormat } from "util/currency";
 import { GridActionsColDef } from "@mui/x-data-grid/models/colDef/gridColDef";
 import OrderDetails from "./OrderDetails";
 

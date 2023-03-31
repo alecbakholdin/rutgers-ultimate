@@ -8,7 +8,7 @@ import {
 import { firestore } from "config/firebaseApp";
 import { getFirestoreConverter } from "config/firestoreConverter";
 import { CartItem, useUserData2 } from "types/userData";
-import { currencyFormat } from "../config/currencyUtils";
+import { currencyFormat } from "util/currency";
 import { useMemo } from "react";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 

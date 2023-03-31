@@ -12,7 +12,7 @@ import { productCollection } from "types/product";
 import { updateDoc } from "@firebase/firestore";
 import { userDataCollection } from "types/userData";
 import { Order, orderCollection } from "types/order";
-import { extractKey } from "config/arrayUtils";
+import { extractKey } from "util/array";
 import EventWizard from "../../components/EventWizard";
 
 export default function ManageStore(): React.ReactElement {

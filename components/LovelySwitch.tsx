@@ -20,6 +20,7 @@ export const LovelySwitch = styled(Switch)(({ theme }) => ({
       transform: `translateX(${width - size - margin * 2}px)`,
       color: "#fff",
       "& + .MuiSwitch-track": {
+        borderWidth: 1,
         backgroundColor: theme.palette.primary.main,
         opacity: 1,
         borderColor: theme.palette.primary.main,
@@ -36,9 +37,10 @@ export const LovelySwitch = styled(Switch)(({ theme }) => ({
         theme.palette.mode === "light"
           ? theme.palette.grey[100]
           : theme.palette.grey[600],
+      opacity: theme.palette.mode === "light" ? 0.5 : 0.3,
     },
     "&.Mui-disabled + .MuiSwitch-track": {
-      opacity: theme.palette.mode === "light" ? 0.7 : 0.3,
+      opacity: theme.palette.mode === "light" ? 0.5 : 0.3,
     },
   },
   "& .MuiSwitch-thumb": {

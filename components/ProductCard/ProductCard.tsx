@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import { Product } from "types/product";
 import styles from "components/ProductCard/ProductCard.module.scss";
 import { Box, CardActions, CircularProgress, Link } from "@mui/material";
-import { currencyFormat } from "config/currencyUtils";
+import { currencyFormat } from "util/currency";
 import { useUserData } from "types/userData";
 import ProductColorPicker from "components/ProductColorPicker";
 
@@ -28,11 +28,13 @@ export default function ProductCard({
   const [userData] = useUserData();
   const priceToDisplay = userData?.isTeam && teamPrice ? teamPrice : price;
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
-    productColors?.length > 0 ? productColors[0].name : undefined
+    Boolean(productColors?.length) ? productColors?.[0].name : undefined
   );
 
   const imageToDisplay = useMemo(() => {
-    const imgArray = selectedColor ? productColorMap[selectedColor].images : [];
+    const imgArray = selectedColor
+      ? productColorMap?.[selectedColor].images
+      : [];
     return imgArray && imgArray.length > 0
       ? imgArray[0]
       : `https://bakholdin.com/machine-pics/${id}/0.jpg`;

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Box,
-  Chip,
   CircularProgress,
   Grid,
   IconButton,
@@ -10,7 +9,8 @@ import {
 } from "@mui/material";
 import BetterTextField from "components/BetterTextField";
 import { Add } from "@mui/icons-material";
-import { useMySnackbar } from "../hooks/useMySnackbar";
+import { useMySnackbar } from "hooks/useMySnackbar";
+import ListDisplay from "components/ListDisplay";
 
 export default function ListEditor({
   items,
@@ -73,22 +73,19 @@ export default function ListEditor({
             <IconButton
               onClick={handleCreateItem}
               sx={{ width: 40, height: 40, border: "1px solid", opacity: 0.75 }}
+              disabled={disabled}
             >
               <Add />
             </IconButton>
           )}
         </Stack>
       </Grid>
-      <Grid item container xs={12} spacing={1}>
-        {items?.map((item) => (
-          <Grid item key={item}>
-            <Chip
-              label={item}
-              avatar={renderChipAvatar && renderChipAvatar(item)}
-              onDelete={() => handleDeleteItem(item)}
-            />
-          </Grid>
-        ))}
+      <Grid item xs={12}>
+        <ListDisplay
+          items={items}
+          handleDeleteItem={handleDeleteItem}
+          renderChipAvatar={renderChipAvatar}
+        />
       </Grid>
     </Grid>
   );
