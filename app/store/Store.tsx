@@ -21,11 +21,9 @@ export default function Store({
             </Divider>
           </Grid>
           {eventProducts[event.id]?.map((product) => (
-            <>
-              <Grid key={`${event.id}-${product.id}`} item>
-                <ProductCard product={product} event={event} />
-              </Grid>
-            </>
+            <Grid key={`${event.id}-${product.id}`} item>
+              <ProductCard product={product} event={event} />
+            </Grid>
           ))}
         </>
       ))}

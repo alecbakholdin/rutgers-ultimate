@@ -33,10 +33,14 @@ export type NewCartItemFieldValues = { [fieldName: string]: any };
 
 export interface NewCartItem {
   productId: string;
+  productName: string;
   eventId: string;
+  eventName: string;
   fieldValues: NewCartItemFieldValues;
   quantity: number;
   imageStoragePath: string;
+  unitPrice: number;
+  teamUnitPrice: number;
   delivered: boolean;
 }
 
@@ -58,9 +62,13 @@ export function defaultNewCartItem(
 
   return {
     productId: product.id,
+    productName: product.name,
     eventId: event.id,
+    eventName: event.name,
     fieldValues,
     quantity,
+    unitPrice: product.price,
+    teamUnitPrice: product.teamPrice,
     imageStoragePath: image?.storagePath || "",
     delivered: false,
   };
