@@ -1,13 +1,14 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { Box, Grid, useTheme } from "@mui/material";
-import { useMySnackbar } from "../hooks/useMySnackbar";
-import { CartItem, useUserData2 } from "../types/userData";
+import { useMySnackbar } from "hooks/useMySnackbar";
+import { CartItem } from "types/userData";
 import React, { useEffect } from "react";
-import CheckoutCostSummary from "./_checkoutCostSummary";
-import { CheckoutConfig, useCheckoutPaymentState } from "../types/checkout";
-import { Order, orderCollection } from "../types/order";
+import CheckoutCostSummary from "app/checkout/_checkoutCostSummary";
+import { CheckoutConfig, useCheckoutPaymentState } from "types/checkout";
+import { Order, orderCollection } from "types/order";
 import { distinctEntries } from "util/array";
 import { addDoc, doc } from "@firebase/firestore";
+import { useAuth } from "components/AuthProvider";
 
 const unexpectedErrorMsg = "Unexpected error occurred. Try refreshing the page";
 
@@ -24,25 +25,26 @@ export function CheckoutCardForm({
   const elements = useElements();
   const theme = useTheme();
   const { showError } = useMySnackbar();
-  const { clearCart, user } = useUserData2();
+  const { userData } = useAuth();
 
   const { paymentState, updatePaymentState } = useCheckoutPaymentState();
 
   const handleSubmit = async () => {
     const cardElement = elements?.getElement(CardElement);
-    if (!stripe || !cardElement || !user || !paymentState.paymentInfo) return;
+    if (!stripe || !cardElement || !userData || !paymentState.paymentInfo)
+      return;
 
     try {
       const newOrder: Order = {
         id: "",
         ref: doc(orderCollection),
-        uid: user.id,
+        uid: userData.id,
         email: checkoutConfig.email,
         phoneNumber: checkoutConfig.phoneNumber,
         firstName: checkoutConfig.firstName,
         lastName: checkoutConfig.lastName,
         totalCost: paymentState.paymentInfo.total,
-        isTeam: Boolean(user.isTeam),
+        isTeam: Boolean(userData.isTeam),
         dateCreated: new Date(),
         dateUpdated: new Date(),
         cart,
@@ -76,7 +78,7 @@ export function CheckoutCardForm({
         updatePaymentState({ paymentStatus: "error" });
       } else {
         await addDoc(orderCollection, newOrder);
-        await clearCart();
+        //await clearCart();
         updatePaymentState({ paymentStatus: "complete" });
       }
     } catch (e) {
