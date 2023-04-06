@@ -1,21 +1,11 @@
 steps:
+  # Fetch env file from secret manager
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args: [ '-c', "gcloud secrets versions access latest --secret=BUILD_ENV_FILE --format='get(payload.data)' | tr '_-' '/+' | base64 -d > secret_env_file" ]
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/rutgers-ultimate-website-$COMMIT_SHA-$BUILD_ID', '.' ]
-    secretEnv:
-      - NEXT_PUBLIC_API_KEY
-      - NEXT_PUBLIC_AUTH_DOMAIN
-      - NEXT_PUBLIC_PROJECT_ID
-      - NEXT_PUBLIC_STORAGE_BUCKET
-      - NEXT_PUBLIC_MESSAGING_SENDER_ID
-      - NEXT_PUBLIC_APP_ID
-      - NEXT_PUBLIC_MEASUREMENT_ID
-      - NEXT_PUBLIC_GOOGLE_CLIENT_ID
-      - STRIPE_SECRET_KEY
-      - NEXT_PUBLIC_STRIPE_PUBLIC_KEY
-      - FIREBASE_CLIENT_EMAIL
-      - FIREBASE_PRIVATE_KEY
-      - EASYPOST_API_KEY
+    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/rutgers-ultimate-website-$COMMIT_SHA-$BUILD_ID', '--secret', 'id=env_file,src=secret_env_file,target=/.env','.' ]
   # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'push', 'gcr.io/$PROJECT_ID/rutgers-ultimate-website-$COMMIT_SHA-$BUILD_ID' ]
