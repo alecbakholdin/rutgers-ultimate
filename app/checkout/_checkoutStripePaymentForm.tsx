@@ -3,22 +3,19 @@ import {
   CheckoutPaymentIntentRequest,
   CheckoutPaymentIntentResponse,
   useCheckoutPaymentState,
-} from "../types/checkout";
-import { CartItem } from "../types/userData";
+} from "types/checkout";
 import React, { useEffect } from "react";
 import { useTheme } from "@mui/material";
 import { Elements } from "@stripe/react-stripe-js";
-import { CheckoutCardForm } from "./_checkoutCardForm";
+import { CheckoutCardForm } from "app/checkout/_checkoutCardForm";
 import { loadStripe } from "@stripe/stripe-js";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
 
 export function CheckoutStripePaymentForm({
   checkoutConfig,
-  cart,
 }: {
   checkoutConfig: CheckoutConfig;
-  cart: CartItem[];
 }): React.ReactElement {
   const theme = useTheme();
   const { paymentState, updatePaymentState } = useCheckoutPaymentState();
@@ -79,7 +76,6 @@ export function CheckoutStripePaymentForm({
         >
           <CheckoutCardForm
             clientSecret={clientSecret}
-            cart={cart}
             checkoutConfig={checkoutConfig}
           />
         </Elements>

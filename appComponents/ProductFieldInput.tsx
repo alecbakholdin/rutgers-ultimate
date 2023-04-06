@@ -1,4 +1,3 @@
-"use client";
 import { FormGroup, FormLabel, TextField } from "@mui/material";
 import StringChipList from "appComponents/StringChipList";
 import React from "react";

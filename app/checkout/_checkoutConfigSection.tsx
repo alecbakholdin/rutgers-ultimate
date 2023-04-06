@@ -1,7 +1,8 @@
-import { CheckoutConfig } from "../types/checkout";
-import React, { ChangeEvent, useEffect } from "react";
-import { useUserData2 } from "../types/userData";
+import { CheckoutConfig } from "types/checkout";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { useUserData2 } from "types/userData";
 import {
+  CircularProgress,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -10,8 +11,14 @@ import {
   Radio,
   RadioGroup,
   TextField,
+  Typography,
 } from "@mui/material";
-import { LovelySwitch } from "./LovelySwitch";
+import { LovelySwitch } from "components/LovelySwitch";
+import { currencyFormat } from "util/currency";
+import {
+  getLowestRateShippingCost,
+  validateCheckoutConfigForAddress,
+} from "appUtil/easyPost";
 
 export function CheckoutConfigSection({
   checkoutConfig,
@@ -34,6 +41,29 @@ export function CheckoutConfigSection({
       updateConfig({ email: user.email });
     }
   }, [user]);
+
+  const [shippingCostLoading, setShippingCostLoading] = useState(false);
+  const [shippingCostTimeout, setShippingCostTimeout] = useState<
+    NodeJS.Timeout | undefined
+  >(undefined);
+  const [shippingCost, setShippingCost] = useState(0);
+  useEffect(() => {
+    console.log(checkoutConfig);
+    if (validateCheckoutConfigForAddress(checkoutConfig)) {
+      clearTimeout(shippingCostTimeout);
+      const timeout = setTimeout(async () => {
+        const address = validateCheckoutConfigForAddress(checkoutConfig);
+        if (address) {
+          setShippingCost(await getLowestRateShippingCost(address));
+        }
+        setShippingCostTimeout(undefined);
+      }, 500);
+      setShippingCostTimeout(timeout);
+    } else {
+      clearTimeout(shippingCostTimeout);
+      setShippingCostTimeout(undefined);
+    }
+  }, [checkoutConfig.zipCode]);
 
   return (
     <Grid container rowSpacing={3} spacing={1}>
@@ -69,7 +99,7 @@ export function CheckoutConfigSection({
                 placeholder={"+1 123 555 8888"}
                 value={checkoutConfig.phoneNumber || ""}
                 onChange={textValUpdater("phoneNumber")}
-                autoComplete={"phone-full"}
+                autoComplete={"tel"}
                 fullWidth
                 required
               />
@@ -102,7 +132,7 @@ export function CheckoutConfigSection({
             <FormControlLabel
               value={"delivery"}
               control={<Radio />}
-              label={"Delivery (+$7)"}
+              label={"Delivery ($)"}
             />
           </RadioGroup>
         </FormControl>
@@ -156,6 +186,18 @@ export function CheckoutConfigSection({
                   required
                 />
               </Grid>
+              {Boolean(checkoutConfig.zipCode) && (
+                <Grid item xs={12}>
+                  <Typography color={"lightslategray"} variant={"body2"}>
+                    Estimated delivery cost:
+                    {shippingCostTimeout ? (
+                      <CircularProgress color={"info"} size={10} />
+                    ) : (
+                      currencyFormat(shippingCost)
+                    )}
+                  </Typography>
+                </Grid>
+              )}
             </Grid>
           </FormControl>
         </Grid>

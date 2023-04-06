@@ -112,7 +112,7 @@ export default function ProductCard({
           <FancyCurrency
             amount={price}
             size={18}
-            loading={!userData || loading}
+            loading={(loading && !userData) || loading}
           />
           <Grid item xs={6} container justifyContent={"end"}>
             <Button
