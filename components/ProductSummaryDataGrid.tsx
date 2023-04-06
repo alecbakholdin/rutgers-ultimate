@@ -69,6 +69,7 @@ export default function ProductSummaryDataGrid({
     {
       field: "numberField",
       headerName: "Number",
+      type: "number",
     },
     {
       field: "quantity",
