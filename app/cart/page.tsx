@@ -43,6 +43,7 @@ export default function Cart() {
             i
           ) => (
             <Box
+              key={`cart-${i}`}
               border={"1px solid " + palette.divider}
               padding={3}
               borderRadius={4}
