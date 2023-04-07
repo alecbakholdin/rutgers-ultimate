@@ -1,8 +1,8 @@
 import React from "react";
-import { CartItem } from "types/userData";
 import { Divider, Grid, Typography, useTheme } from "@mui/material";
 import { currencyFormat } from "util/currency";
 import { CheckoutPaymentIntentResponse } from "types/checkout";
+import { NewCartItem } from "types/newCartItem";
 
 function SectionDivider(): React.ReactElement {
   return (
@@ -31,7 +31,7 @@ export default function CostSummary({
   items,
   paymentInfo,
 }: {
-  items: CartItem[];
+  items: NewCartItem[];
   paymentInfo: CheckoutPaymentIntentResponse;
 }): React.ReactElement {
   const { palette, shape } = useTheme();
@@ -52,7 +52,7 @@ export default function CostSummary({
         <BasicCurrencyRow
           key={i}
           title={item.productName}
-          cost={item.totalPrice}
+          cost={item.unitPrice * item.quantity}
         />
       ))}
       {Boolean(paymentInfo.shipping) && (

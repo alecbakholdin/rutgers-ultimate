@@ -2,15 +2,12 @@ import { Product, ProductField } from "types/product";
 import { useState } from "react";
 import { useMySnackbar } from "hooks/useMySnackbar";
 import { useAuth } from "components/AuthProvider";
-import {
-  defaultNewCartItem,
-  NewCartItemFieldValues,
-  userDataCollection,
-} from "types/userData";
+import { userDataCollection } from "types/userData";
 import { objsEqual } from "util/object";
 import { ServerEvent } from "types/event";
 import { remove, update } from "util/array";
 import { doc, updateDoc } from "@firebase/firestore";
+import { defaultNewCartItem, NewCartItemFieldValues } from "types/newCartItem";
 
 export function getDefaultColorField(product: Product) {
   return product.fields?.find((f) => f.type === "color");

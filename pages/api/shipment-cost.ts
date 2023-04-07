@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import EasyPostClient from "@easypost/api";
-import { Address } from "types/order";
-import { ShippingRate } from "appUtil/easyPost";
+import { Address, ShippingRate } from "types/easyPost";
 import { serverAuth, serverDb } from "config/firebaseServerApp";
 import { FIREBASE_AUTH_COOKIE } from "types/serverAuth";
 import { getServerFirestoreConverter } from "config/getServerFirestoreConverter";
@@ -32,7 +31,7 @@ export default async function handler(
   const address = JSON.parse(req.body) as Address;
   const to_address = {
     name: "John Smith",
-    street1: address.address,
+    street1: address.street1,
     city: address.city,
     state: address.state,
     zip: address.zipCode,

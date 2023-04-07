@@ -11,6 +11,7 @@ import { CartItem, useUserData2 } from "types/userData";
 import { currencyFormat } from "util/currency";
 import { useMemo } from "react";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import { Address } from "types/easyPost";
 
 export interface OrderInfo {
   venmo?: string;
@@ -20,13 +21,6 @@ export interface OrderInfo {
   machinePercentage?: number;
   nightshadePercentage?: number;
   comments?: string;
-}
-
-export interface Address {
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
 }
 
 export interface Order {

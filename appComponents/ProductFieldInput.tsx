@@ -1,7 +1,8 @@
-import { FormGroup, FormLabel, TextField } from "@mui/material";
+import { Box, FormGroup, FormLabel, Stack, TextField } from "@mui/material";
 import StringChipList from "appComponents/StringChipList";
 import React from "react";
 import { ProductField } from "types/product";
+import ColorSwatch from "components/ColorSwatch";
 
 export default function ({
   field,
@@ -42,6 +43,24 @@ export default function ({
       }
       required={field.required}
     />
+  ) : field.type === "color" ? (
+    <FormGroup>
+      <FormLabel>
+        {field.name}
+        {field.required ? "*" : " (optional)"}
+      </FormLabel>
+      <Stack direction={"row"}>
+        {field.colors?.map(({ name, hex }) => (
+          <Box
+            key={name}
+            onClick={() => setFieldValue(name)}
+            sx={{ cursor: "pointer" }}
+          >
+            <ColorSwatch hex={hex} selected={name === fieldValue} />
+          </Box>
+        ))}
+      </Stack>
+    </FormGroup>
   ) : (
     <></>
   );

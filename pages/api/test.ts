@@ -1,14 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
-import { NewCartItem, UserData } from "../../types/userData";
+import { UserData } from "types/userData";
 import {
   CheckoutPaymentIntentRequest,
   CheckoutPaymentIntentResponse,
-} from "../../types/checkout";
+} from "types/checkout";
 import { serverAuth, serverDb } from "config/firebaseServerApp";
 import { FIREBASE_AUTH_COOKIE } from "types/serverAuth";
 import { getServerFirestoreConverter } from "config/getServerFirestoreConverter";
+import { NewCartItem } from "types/newCartItem";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2022-11-15",

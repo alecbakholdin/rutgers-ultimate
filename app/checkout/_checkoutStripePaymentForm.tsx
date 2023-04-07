@@ -9,6 +9,7 @@ import { useTheme } from "@mui/material";
 import { Elements } from "@stripe/react-stripe-js";
 import { CheckoutCardForm } from "app/checkout/_checkoutCardForm";
 import { loadStripe } from "@stripe/stripe-js";
+import { useAuth } from "components/AuthProvider";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
 
@@ -17,6 +18,7 @@ export function CheckoutStripePaymentForm({
 }: {
   checkoutConfig: CheckoutConfig;
 }): React.ReactElement {
+  const { userData } = useAuth();
   const theme = useTheme();
   const { paymentState, updatePaymentState } = useCheckoutPaymentState();
   const clientSecret = paymentState.paymentInfo?.clientSecret;
@@ -24,7 +26,6 @@ export function CheckoutStripePaymentForm({
   useEffect(() => {
     updatePaymentState({ intentLoading: true, paymentStatus: "waiting" });
     const intentRequest: CheckoutPaymentIntentRequest = {
-      items: cart,
       deliveryMethod: checkoutConfig.deliveryMethod,
       sendReceipt: checkoutConfig.sendEmailReceipt,
       email: checkoutConfig.email,
@@ -74,10 +75,13 @@ export function CheckoutStripePaymentForm({
           }}
           stripe={stripePromise}
         >
-          <CheckoutCardForm
-            clientSecret={clientSecret}
-            checkoutConfig={checkoutConfig}
-          />
+          {userData?.cart && (
+            <CheckoutCardForm
+              cart={userData?.cart}
+              clientSecret={clientSecret}
+              checkoutConfig={checkoutConfig}
+            />
+          )}
         </Elements>
       )}
     </>
