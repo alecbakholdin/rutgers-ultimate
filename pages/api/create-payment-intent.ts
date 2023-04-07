@@ -1,12 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
-import { CartItem } from "../../types/userData";
+import { UserData } from "types/userData";
 import {
   CheckoutPaymentIntentRequest,
   CheckoutPaymentIntentResponse,
-} from "../../types/checkout";
-import { cartSummary } from "../../types/order";
+} from "types/checkout";
+import { serverAuth, serverDb } from "config/firebaseServerApp";
+import { FIREBASE_AUTH_COOKIE } from "types/serverAuth";
+import { getServerFirestoreConverter } from "config/getServerFirestoreConverter";
+import { NewCartItem } from "types/newCartItem";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2022-11-15",
@@ -16,12 +19,31 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<CheckoutPaymentIntentResponse>
 ) {
-  const { items, deliveryMethod, sendReceipt, email } =
-    req.body as CheckoutPaymentIntentRequest;
-  const subtotal = items.reduce(
-    (prev: number, curr: CartItem) => prev + curr.totalPrice,
+  const idToken = req.cookies[FIREBASE_AUTH_COOKIE];
+  if (!idToken) {
+    res.status(401);
+    return;
+  }
+  const { uid } = await serverAuth.verifyIdToken(idToken);
+  const userDataDoc = await serverDb
+    .doc(`userData/${uid}`)
+    .withConverter(getServerFirestoreConverter<UserData>())
+    .get();
+  if (!userDataDoc.data()) {
+    res.status(403);
+    return;
+  }
+
+  const userData = userDataDoc.data()!;
+  const cart = userData.cart || [];
+  const isTeam = userData.email?.endsWith("rutgers.edu") || userData.isTeam;
+  const subtotal = cart.reduce(
+    (prev: number, curr: NewCartItem) =>
+      prev + (isTeam ? curr.teamUnitPrice : curr.unitPrice) * curr.quantity,
     0
   );
+  const { deliveryMethod, sendReceipt, email } =
+    req.body as CheckoutPaymentIntentRequest;
   const shipping = deliveryMethod === "delivery" ? 7 : 0;
   const processingFee = 0;
   const total = subtotal + shipping + processingFee;
@@ -29,7 +51,6 @@ export default async function handler(
   const paymentIntent = await stripe.paymentIntents.create({
     amount: total * 100,
     currency: "usd",
-    description: cartSummary(items),
     ...(sendReceipt ? { receipt_email: email } : {}),
   });
   if (paymentIntent.client_secret) {

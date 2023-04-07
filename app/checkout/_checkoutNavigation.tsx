@@ -31,12 +31,12 @@ export function CheckoutNavigation({
 
   const handleMoveToPayment = () => {
     const { firstName, lastName, phoneNumber } = checkoutConfig;
-    const { deliveryMethod, address, city, state, zipCode } = checkoutConfig;
+    const { deliveryMethod, street1, city, state, zipCode } = checkoutConfig;
     if (!firstName || !lastName || !phoneNumber) {
       showError("Please fill out all your personal details");
     } else if (
       deliveryMethod === "delivery" &&
-      (!address || !city || !state || !zipCode)
+      (!street1 || !city || !state || !zipCode)
     ) {
       showError("Please fill in all fields for your shipping address");
     } else {

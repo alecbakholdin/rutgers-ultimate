@@ -2,7 +2,7 @@
 import { useAuth } from "components/AuthProvider";
 import React from "react";
 import { Box, Container, Stack, Typography, useTheme } from "@mui/material";
-import { NewCartItem, userDataCollection } from "types/userData";
+import { userDataCollection } from "types/userData";
 import { remove, update } from "util/array";
 import { doc, updateDoc } from "@firebase/firestore";
 import StorageImage from "appComponents/StorageImage";
@@ -10,6 +10,7 @@ import FancyPrice from "appComponents/FancyPrice";
 import NumberSelect from "components/NumberSelect";
 import Link from "next/link";
 import LoadingButton from "components/LoadingButton";
+import { NewCartItem } from "types/newCartItem";
 
 export default function Cart() {
   const { userData, user, isTeam, loading } = useAuth();

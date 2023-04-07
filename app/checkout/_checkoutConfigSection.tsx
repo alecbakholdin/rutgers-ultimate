@@ -18,7 +18,7 @@ import { currencyFormat } from "util/currency";
 import {
   getLowestRateShippingCost,
   validateCheckoutConfigForAddress,
-} from "appUtil/easyPost";
+} from "types/easyPost";
 
 export function CheckoutConfigSection({
   checkoutConfig,
@@ -42,7 +42,6 @@ export function CheckoutConfigSection({
     }
   }, [user]);
 
-  const [shippingCostLoading, setShippingCostLoading] = useState(false);
   const [shippingCostTimeout, setShippingCostTimeout] = useState<
     NodeJS.Timeout | undefined
   >(undefined);
@@ -146,8 +145,8 @@ export function CheckoutConfigSection({
                 <TextField
                   label={"Address"}
                   autoComplete={"street-address address-line-1"}
-                  value={checkoutConfig.address}
-                  onChange={textValUpdater("address")}
+                  value={checkoutConfig.street1}
+                  onChange={textValUpdater("street1")}
                   placeholder={"12345 Main St"}
                   fullWidth
                   required
@@ -189,7 +188,7 @@ export function CheckoutConfigSection({
               {Boolean(checkoutConfig.zipCode) && (
                 <Grid item xs={12}>
                   <Typography color={"lightslategray"} variant={"body2"}>
-                    Estimated delivery cost:
+                    Estimated delivery cost:{" "}
                     {shippingCostTimeout ? (
                       <CircularProgress color={"info"} size={10} />
                     ) : (

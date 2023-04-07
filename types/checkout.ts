@@ -1,11 +1,10 @@
 import { atom, useAtom } from "jotai";
-import { CartItem } from "./userData";
 
 export type CheckoutState = "config" | "payment" | "thank";
 export type CheckoutConfig = {
   deliveryMethod: "pickup" | "delivery";
 
-  address?: string;
+  street1?: string;
   city?: string;
   state?: string;
   zipCode?: string;
@@ -20,7 +19,6 @@ export type CheckoutConfig = {
   sendEmailReceipt: boolean;
 };
 export type CheckoutPaymentIntentRequest = {
-  items: CartItem[];
   deliveryMethod: "pickup" | "delivery";
   sendReceipt: boolean;
   email: string;

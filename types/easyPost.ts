@@ -1,16 +1,22 @@
 import { CheckoutConfig } from "types/checkout";
-import { Address } from "types/order";
 
 export type ShippingRate = {
   shipmentId: string;
   lowestRate: number;
 };
 
+export type Address = {
+  street1: string;
+  city: string;
+  state: string;
+  zipCode: string;
+};
+
 export function validateCheckoutConfigForAddress(
   checkoutConfig: CheckoutConfig
 ): Address | undefined {
   if (
-    !checkoutConfig.address ||
+    !checkoutConfig.street1 ||
     !checkoutConfig.zipCode ||
     !checkoutConfig.state ||
     !checkoutConfig.city
@@ -18,7 +24,7 @@ export function validateCheckoutConfigForAddress(
     return undefined;
 
   return {
-    address: checkoutConfig.address,
+    street1: checkoutConfig.street1,
     city: checkoutConfig.city,
     state: checkoutConfig.state,
     zipCode: checkoutConfig.zipCode,

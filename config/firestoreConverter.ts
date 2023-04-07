@@ -1,6 +1,5 @@
 import {
   DocumentData,
-  DocumentReference,
   FirestoreDataConverter,
   QueryDocumentSnapshot,
   SnapshotOptions,
@@ -21,11 +20,14 @@ function formatObject(obj: any): any {
 }
 
 export function getFirestoreConverter<
-  T extends { id: string; ref?: DocumentReference<T> }
+  T extends { id: string }
 >(): FirestoreDataConverter<T> {
   return {
     toFirestore(modelObject: WithFieldValue<T>): DocumentData {
-      const { id, ref, ...object } = modelObject;
+      const { id, ...object } = modelObject;
+      if ((object as any)["ref"]) {
+        delete (object as any)["ref"];
+      }
       return formatObject(object);
     },
     fromFirestore(
