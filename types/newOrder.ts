@@ -31,4 +31,5 @@ export type NewOrder = {
 
   // product information
   items: NewOrderItem[];
+  eventIds: string[];
 };

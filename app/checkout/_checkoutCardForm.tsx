@@ -10,6 +10,7 @@ import { NewCartItem } from "types/newCartItem";
 import { NewOrder } from "types/newOrder";
 import { newOrderCollection } from "config/clientCollections";
 import { userDataCollection } from "types/userData";
+import { distinctEntries } from "util/array";
 
 const unexpectedErrorMsg = "Unexpected error occurred. Try refreshing the page";
 
@@ -84,6 +85,7 @@ export function CheckoutCardForm({
           imageStoragePath: cartItem.imageStoragePath,
           unitPrice: isTeam ? cartItem.teamUnitPrice : cartItem.unitPrice,
         })),
+        eventIds: distinctEntries(cart.map((cartItem) => cartItem.eventId)),
       };
       if (error) {
         showError(error.message || unexpectedErrorMsg);

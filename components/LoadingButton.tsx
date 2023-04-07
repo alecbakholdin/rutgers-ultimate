@@ -17,7 +17,7 @@ export default function LoadingButton({
   );
 
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ width: "fit-content" }}>
       <Button sx={{ width }} {...buttonProps}>
         {loading ? (
           <CircularProgress color={"inherit"} size={loadingIndicatorSize} />
