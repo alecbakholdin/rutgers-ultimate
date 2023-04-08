@@ -10,7 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import NavBarPageLink, { NavAction } from "app/NavBarPageLink";
+import NavBarPageLink, { NavAction } from "app/(RegularApp)/NavBarPageLink";
 import Box from "@mui/material/Box";
 import { signOut } from "@firebase/auth";
 import { auth } from "config/firebaseApp";

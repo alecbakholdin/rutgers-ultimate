@@ -1,5 +1,5 @@
 import nookies from "nookies";
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { User } from "@firebase/auth";
 import { auth } from "config/firebaseApp";
 import { FIREBASE_AUTH_COOKIE } from "types/serverAuth";
@@ -20,7 +20,13 @@ const AuthContext = createContext<{
   loading: false,
 });
 
-export function AuthProvider({ children }: any) {
+export function AuthProvider({
+  children,
+  redirectOnAuth,
+}: {
+  children?: React.ReactNode;
+  redirectOnAuth?: string | null;
+}) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [userData, firestoreLoading] = useDocumentData(
@@ -36,13 +42,12 @@ export function AuthProvider({ children }: any) {
       } else {
         const token = await authUser.getIdToken();
         setUser(authUser);
-        const oldToken = nookies.get(undefined)[FIREBASE_AUTH_COOKIE];
         nookies.set(undefined, FIREBASE_AUTH_COOKIE, token, { path: "/" });
         const userDataDoc = doc(userDataCollection, authUser.uid);
         if (!(await getDoc(userDataDoc)))
           await setDoc(userDataDoc, newUserData(authUser.uid));
-        if (oldToken && token !== oldToken) {
-          router.refresh();
+        if (redirectOnAuth) {
+          router.push(redirectOnAuth);
         }
       }
       setLoading(false);

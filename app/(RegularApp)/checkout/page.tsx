@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 import { Grid, Typography } from "@mui/material";
 import { CheckoutConfig, CheckoutState } from "types/checkout";
-import { CheckoutStateIndicator } from "app/checkout/_checkoutStateIndicator";
-import { CheckoutConfigSection } from "app/checkout/_checkoutConfigSection";
-import { CheckoutStripePaymentForm } from "app/checkout/_checkoutStripePaymentForm";
-import { CheckoutNavigation } from "app/checkout/_checkoutNavigation";
+import { CheckoutStateIndicator } from "app/(RegularApp)/checkout/_checkoutStateIndicator";
+import { CheckoutConfigSection } from "app/(RegularApp)/checkout/_checkoutConfigSection";
+import { CheckoutStripePaymentForm } from "app/(RegularApp)/checkout/_checkoutStripePaymentForm";
+import { CheckoutNavigation } from "app/(RegularApp)/checkout/_checkoutNavigation";
 
 export default function Index(): React.ReactElement {
   const [checkoutState, setCheckoutState] = useState<CheckoutState>("config");

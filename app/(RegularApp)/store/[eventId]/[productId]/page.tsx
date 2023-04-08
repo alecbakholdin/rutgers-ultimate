@@ -2,7 +2,7 @@ import { serverDb } from "config/firebaseServerApp";
 import { getServerFirestoreConverter } from "config/getServerFirestoreConverter";
 import { Product } from "types/product";
 import { notFound } from "next/navigation";
-import ProductPage from "app/store/[eventId]/[productId]/ProductPage";
+import ProductPage from "app/(RegularApp)/store/[eventId]/[productId]/ProductPage";
 import { Event } from "types/event";
 import { Metadata } from "next";
 

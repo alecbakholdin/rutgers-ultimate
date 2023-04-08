@@ -2,7 +2,7 @@ import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { Box, Grid, useTheme } from "@mui/material";
 import { useMySnackbar } from "hooks/useMySnackbar";
 import React, { useEffect } from "react";
-import CheckoutCostSummary from "app/checkout/_checkoutCostSummary";
+import CheckoutCostSummary from "app/(RegularApp)/checkout/_checkoutCostSummary";
 import { CheckoutConfig, useCheckoutPaymentState } from "types/checkout";
 import { addDoc, doc, updateDoc } from "@firebase/firestore";
 import { useAuth } from "components/AuthProvider";

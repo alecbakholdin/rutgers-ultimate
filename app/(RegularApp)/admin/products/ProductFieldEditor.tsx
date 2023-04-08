@@ -2,7 +2,7 @@ import { Button, Grid, Typography, useTheme } from "@mui/material";
 import React from "react";
 import { defaultField, Product, ProductField } from "types/product";
 import { remove, replace } from "util/array";
-import SingleProductFieldEditor from "app/admin/products/SingleProductFieldEditor";
+import SingleProductFieldEditor from "app/(RegularApp)/admin/products/SingleProductFieldEditor";
 import FieldSection from "appComponents/FieldSection";
 
 export default function ProductFieldEditor({

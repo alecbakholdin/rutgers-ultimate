@@ -7,7 +7,7 @@ import {
 import React, { useEffect } from "react";
 import { useTheme } from "@mui/material";
 import { Elements } from "@stripe/react-stripe-js";
-import { CheckoutCardForm } from "app/checkout/_checkoutCardForm";
+import { CheckoutCardForm } from "app/(RegularApp)/checkout/_checkoutCardForm";
 import { loadStripe } from "@stripe/stripe-js";
 import { useAuth } from "components/AuthProvider";
 

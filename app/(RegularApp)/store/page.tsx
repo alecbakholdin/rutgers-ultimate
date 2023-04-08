@@ -4,7 +4,7 @@ import { ServerEvent } from "types/event";
 import { getServerFirestoreConverter } from "config/getServerFirestoreConverter";
 import { Product } from "types/product";
 import { firestore } from "firebase-admin";
-import Store from "app/store/Store";
+import Store from "app/(RegularApp)/store/Store";
 import QuerySnapshot = firestore.QuerySnapshot;
 
 export default async () => {

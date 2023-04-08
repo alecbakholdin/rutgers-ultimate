@@ -10,10 +10,10 @@ import { isEmptyObject } from "util/object";
 import { deleteObject, ref, uploadBytes } from "@firebase/storage";
 import { storage } from "config/firebaseApp";
 import { useMySnackbar } from "hooks/useMySnackbar";
-import ProductFieldEditor from "app/admin/products/ProductFieldEditor";
+import ProductFieldEditor from "app/(RegularApp)/admin/products/ProductFieldEditor";
 import ProductImageEditor, {
   PendingUploads,
-} from "app/admin/products/ProductImageEditor";
+} from "app/(RegularApp)/admin/products/ProductImageEditor";
 
 export default function ProductWizard() {
   const { showError } = useMySnackbar();
