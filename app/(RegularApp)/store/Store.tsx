@@ -2,7 +2,7 @@
 import { ServerEvent } from "types/event";
 import { Product } from "types/product";
 import { Divider, Grid, Typography } from "@mui/material";
-import ProductCard from "./ProductCard";
+import ProductCard from "app/(RegularApp)/store/ProductCard";
 
 export default function Store({
   events,

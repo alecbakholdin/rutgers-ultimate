@@ -16,7 +16,7 @@ import React from "react";
 import { remove } from "util/array";
 import StringChipList from "appComponents/StringChipList";
 import ListEditorTextField from "appComponents/ListEditorTextField";
-import ColorProductFieldEditor from "app/admin/products/ColorProductFieldEditor";
+import ColorProductFieldEditor from "app/(RegularApp)/admin/products/ColorProductFieldEditor";
 import { LovelySwitch } from "components/LovelySwitch";
 
 export default function SingleProductFieldEditor({
