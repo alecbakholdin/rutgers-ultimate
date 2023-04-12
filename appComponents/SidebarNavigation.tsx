@@ -21,26 +21,23 @@ export default function SidebarNavigation({
   const pathname = usePathname();
   const { palette } = useTheme();
   const baseStyle: SxProps = {
-    color: palette.primary.main,
-    transitionProperty: "backgroundColor",
-    transitionDuration: "0.5s",
+    border: "1px solid transparent",
+    color: palette.secondary.main,
   };
   const selectedStyle: SxProps = {
-    backgroundColor: palette.primary.main,
-    color: palette.secondary.contrastText,
+    borderColor: palette.secondary.main,
   };
 
   return (
-    <Stack spacing={3}>
+    <Stack spacing={3} width={"100%"}>
       <Typography variant={"h4"}>{title}</Typography>
       <Stack direction={"row"} spacing={2} width={"100%"}>
         <Stack spacing={1}>
-          <Typography variant={"h4"}></Typography>
           {pages?.map((page, i) => (
             <Link key={i} href={page.href}>
               <Box
                 width={200}
-                borderRadius={2}
+                borderRadius={1}
                 paddingLeft={2}
                 paddingTop={0.5}
                 paddingBottom={0.5}
