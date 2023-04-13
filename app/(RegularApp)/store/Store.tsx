@@ -3,6 +3,7 @@ import { ServerEvent } from "types/event";
 import { Product } from "types/product";
 import { Divider, Grid, Typography } from "@mui/material";
 import ProductCard from "app/(RegularApp)/store/ProductCard";
+import React from "react";
 
 export default function Store({
   events,
@@ -14,7 +15,7 @@ export default function Store({
   return (
     <Grid container justifyContent={"center"} spacing={1} width={"max-content"}>
       {events.map((event) => (
-        <>
+        <React.Fragment key={event.id}>
           <Grid key={event.id + "-divider"} item xs={12}>
             <Divider>
               <Typography variant={"h5"}>{event.name}</Typography>
@@ -25,7 +26,7 @@ export default function Store({
               <ProductCard product={product} event={event} />
             </Grid>
           ))}
-        </>
+        </React.Fragment>
       ))}
     </Grid>
   );
