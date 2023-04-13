@@ -39,6 +39,7 @@ export function AuthProvider({
       if (!authUser) {
         setUser(null);
         nookies.set(undefined, FIREBASE_AUTH_COOKIE, "", { path: "/" });
+        router.refresh();
       } else {
         const token = await authUser.getIdToken();
         setUser(authUser);

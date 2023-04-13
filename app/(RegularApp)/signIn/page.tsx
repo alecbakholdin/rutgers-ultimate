@@ -2,13 +2,12 @@
 import React from "react";
 import { uiConfig } from "config/firebaseAuthUI";
 import { auth } from "config/firebaseApp";
-import { useRouter } from "next/router";
-import { EmailAuthProvider, sendEmailVerification } from "@firebase/auth";
+import { useSearchParams } from "next/navigation";
 import StyledFirebaseAuth from "app/(RegularApp)/signIn/StyledFirebaseAuth";
 
 export default function SignIn(): React.ReactElement {
-  const router = useRouter();
-  const redirect = router?.query.redirect as string;
+  const searchParams = useSearchParams();
+  const redirect = searchParams?.get("redirect") || "";
 
   return (
     <div style={{ paddingTop: 40 }}>
@@ -18,8 +17,7 @@ export default function SignIn(): React.ReactElement {
           ...(redirect ? { signInSuccessUrl: redirect } : {}),
           callbacks: {
             signInSuccessWithAuthResult(authResult: any): boolean {
-              console.log(JSON.stringify(authResult));
-              const {
+              /*const {
                 emailVerified,
                 additionalUserInfo: { providerId },
               } = authResult;
@@ -30,7 +28,7 @@ export default function SignIn(): React.ReactElement {
                 sendEmailVerification(authResult.user, {
                   url: "https://rutgersultimate.com",
                 });
-              }
+              }*/
               return true;
             },
           },
