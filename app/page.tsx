@@ -1,3 +1,4 @@
+"use client";
 import { Container, Grid, Link, Typography } from "@mui/material";
 import FeedbackForm from "components/FeedbackForm";
 
