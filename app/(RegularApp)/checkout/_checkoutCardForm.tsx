@@ -7,7 +7,7 @@ import { CheckoutConfig, useCheckoutPaymentState } from "types/checkout";
 import { addDoc, doc, updateDoc } from "@firebase/firestore";
 import { useAuth } from "appComponents/AuthProvider";
 import { NewCartItem } from "types/newCartItem";
-import { Order } from "types/order";
+import { Order, OrderItem } from "types/order";
 import { newOrderCollection } from "config/clientCollections";
 import { userDataCollection } from "types/userData";
 import { distinctEntries } from "util/array";
@@ -45,8 +45,8 @@ export function CheckoutCardForm({
           },
         }
       );
-      const newOrder: Order = {
-        id: "",
+
+      const newOrder: Omit<Order, "id"> = {
         uid: userData.id,
         name: checkoutConfig.firstName + " " + checkoutConfig.lastName,
         email: checkoutConfig.email,
@@ -75,16 +75,19 @@ export function CheckoutCardForm({
               pickupLocation: checkoutConfig.pickupLocation,
             }),
 
-        items: cart.map((cartItem) => ({
-          productId: cartItem.productId,
-          productName: cartItem.productName,
-          eventId: cartItem.eventId,
-          eventName: cartItem.eventName,
-          quantity: cartItem.quantity,
-          fields: cartItem.fieldValues,
-          imageStoragePath: cartItem.imageStoragePath,
-          unitPrice: isTeam ? cartItem.teamUnitPrice : cartItem.unitPrice,
-        })),
+        items: cart.map(
+          (cartItem) =>
+            ({
+              productId: cartItem.productId,
+              productName: cartItem.productName,
+              eventId: cartItem.eventId,
+              eventName: cartItem.eventName,
+              quantity: cartItem.quantity,
+              fields: cartItem.fieldValues,
+              imageStoragePath: cartItem.imageStoragePath,
+              unitPrice: isTeam ? cartItem.teamUnitPrice : cartItem.unitPrice,
+            } as any as OrderItem)
+        ),
         eventIds: distinctEntries(cart.map((cartItem) => cartItem.eventId)),
       };
       if (error) {

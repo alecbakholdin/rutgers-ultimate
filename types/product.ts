@@ -1,17 +1,14 @@
 import {
   collection,
   CollectionReference,
-  doc,
   DocumentReference,
   FirestoreError,
-  getDoc,
   query,
   where,
 } from "@firebase/firestore";
 import { firestore } from "config/firebaseApp";
 import { getFirestoreConverter } from "config/firestoreConverter";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import { useEffect, useState } from "react";
 
 export interface ProductColor {
   name: string;
@@ -107,27 +104,4 @@ export function useProductData(
       : undefined;
   const [products, loading, error] = useCollectionData(q, { initialValue: [] });
   return [products!, loading, error];
-}
-
-/**
- * Should only be called once all productIds are known
- * @param productIds
- */
-export function useProductDataOnce(productIds: string[]): Product[] {
-  const [products, setProducts] = useState<Product[]>([]);
-  const updateProducts = async () => {
-    const newProducts: Product[] = [];
-    for (const productId of productIds) {
-      const docRef = await getDoc(doc(productCollection, productId));
-      const data = docRef.data();
-      if (data) {
-        newProducts.push(data);
-      }
-    }
-    setProducts(newProducts);
-  };
-  useEffect(() => {
-    updateProducts().catch(console.error);
-  }, []);
-  return products;
 }

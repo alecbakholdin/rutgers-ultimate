@@ -1,6 +1,9 @@
 import { Address } from "types/easyPost";
 
 export type OrderItem = {
+  id: string;
+  orderId: string | null;
+  uid: string;
   productId: string;
   productName: string;
   eventId: string;

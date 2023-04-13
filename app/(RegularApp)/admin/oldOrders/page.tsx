@@ -17,7 +17,7 @@ import {
   useCollectionData,
   useCollectionDataOnce,
 } from "react-firebase-hooks/firestore";
-import { orderCollection } from "types/oldOrder";
+import { oldOrderCollection } from "types/oldOrder";
 import AdminEventSummary from "app/(RegularApp)/admin/oldOrders/AdminEventSummary";
 import { Event, eventCollection } from "types/event";
 import { query, where } from "@firebase/firestore";
@@ -31,7 +31,10 @@ export default function Page(): React.ReactElement {
   const q = useMemo(
     () =>
       eventId
-        ? query(orderCollection, where("eventIds", "array-contains", eventId))
+        ? query(
+            oldOrderCollection,
+            where("eventIds", "array-contains", eventId)
+          )
         : undefined,
     [eventId]
   );

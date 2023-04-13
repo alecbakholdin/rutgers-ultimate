@@ -1,16 +1,8 @@
-import {
-  collection,
-  DocumentReference,
-  FirestoreError,
-  query,
-  where,
-} from "@firebase/firestore";
+import { collection, DocumentReference } from "@firebase/firestore";
 import { firestore } from "config/firebaseApp";
 import { getFirestoreConverter } from "config/firestoreConverter";
-import { CartItem, useUserData2 } from "types/userData";
+import { CartItem } from "types/userData";
 import { currencyFormat } from "util/currency";
-import { useMemo } from "react";
-import { useCollectionData } from "react-firebase-hooks/firestore";
 import { Address } from "types/easyPost";
 
 export interface OrderInfo {
@@ -52,24 +44,9 @@ export interface OldOrder {
   address?: Address;
 }
 
-export const orderCollection = collection(firestore, "orders").withConverter(
+export const oldOrderCollection = collection(firestore, "orders").withConverter(
   getFirestoreConverter<OldOrder>()
 );
-
-export function useUserOrders(): [
-  OldOrder[],
-  boolean,
-  FirestoreError | undefined | null
-] {
-  const { uid } = useUserData2();
-  const q = useMemo(
-    () => (uid ? query(orderCollection, where("uid", "==", uid)) : undefined),
-    [uid]
-  );
-  const [orders, loading, error] = useCollectionData<OldOrder>(q);
-
-  return [orders ?? [], !uid || loading, error];
-}
 
 export function orderAsStringSummary(order: OldOrder): string {
   return cartSummary(order.cart) + `Total: ${currencyFormat(order.totalCost)}`;

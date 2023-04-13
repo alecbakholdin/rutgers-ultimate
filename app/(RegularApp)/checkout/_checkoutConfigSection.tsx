@@ -1,6 +1,5 @@
 import { CheckoutConfig } from "types/checkout";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { useUserData2 } from "types/userData";
 import {
   CircularProgress,
   FormControl,
@@ -19,6 +18,7 @@ import {
   getLowestRateShippingCost,
   validateCheckoutConfigForAddress,
 } from "types/easyPost";
+import { useAuth } from "appComponents/AuthProvider";
 
 export function CheckoutConfigSection({
   checkoutConfig,
@@ -27,8 +27,7 @@ export function CheckoutConfigSection({
   checkoutConfig: CheckoutConfig;
   setCheckoutConfig: (val: CheckoutConfig) => void;
 }): React.ReactElement {
-  const { user } = useUserData2();
-  const isTeam = Boolean(user?.isTeam);
+  const { isTeam, user } = useAuth();
   const updateConfig = (update: Partial<CheckoutConfig>) => {
     setCheckoutConfig({ ...checkoutConfig, ...update });
   };
