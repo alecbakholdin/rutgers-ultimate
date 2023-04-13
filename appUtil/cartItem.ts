@@ -4,7 +4,7 @@ import { useMySnackbar } from "hooks/useMySnackbar";
 import { useAuth } from "appComponents/AuthProvider";
 import { userDataCollection } from "types/userData";
 import { objsEqual } from "util/object";
-import { ServerEvent } from "types/event";
+import { ServerEvent } from "types/storeEvent";
 import { remove, update } from "util/array";
 import { doc, updateDoc } from "@firebase/firestore";
 import { defaultNewCartItem, NewCartItemFieldValues } from "types/newCartItem";

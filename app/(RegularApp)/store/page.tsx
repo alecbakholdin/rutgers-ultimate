@@ -1,6 +1,6 @@
 import React from "react";
 import { serverDb } from "config/firebaseServerApp";
-import { ServerEvent } from "types/event";
+import { ServerEvent } from "types/storeEvent";
 import { getServerFirestoreConverter } from "config/getServerFirestoreConverter";
 import { Product } from "types/product";
 import { firestore } from "firebase-admin";

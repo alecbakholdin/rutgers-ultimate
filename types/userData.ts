@@ -37,6 +37,13 @@ export function newUserData(uid: string): UserData {
   };
 }
 
+export function determineIfTeam(userData: UserData | undefined): boolean {
+  return Boolean(
+    (userData && userData?.isTeam) ||
+      userData?.email?.endsWith("@scarletmail.rutgers.edu")
+  );
+}
+
 export const userDataCollection = collection(
   firestore,
   "userData"

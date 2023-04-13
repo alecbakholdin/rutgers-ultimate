@@ -11,8 +11,11 @@ import { getFromIndex } from "util/array";
 import { useRouter } from "next/navigation";
 import FancyCurrency from "appComponents/textDisplay/FancyCurrency";
 import ProductFieldInput from "appComponents/ProductFieldInput";
-import { getDefaultColorField, useFieldValuesState } from "appUtil/cartItem";
-import { ServerEvent } from "types/event";
+import { getDefaultColorField } from "appUtil/cartItem";
+import { ServerEvent } from "types/storeEvent";
+import { NewCartItemFieldValues } from "types/newCartItem";
+import { AddToCartRequest, AddToCartResponse } from "app/api/cart/route";
+import { useMySnackbar } from "hooks/useMySnackbar";
 
 const productCardSize = 275;
 
@@ -25,23 +28,22 @@ export default function ProductCard({
 }): React.ReactElement {
   const { palette } = useTheme();
   const { userData, isTeam, loading } = useAuth();
+  const { showSuccess, showError } = useMySnackbar();
   const router = useRouter();
   const productFields: ProductField[] = product.fields || [];
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const colorField = getDefaultColorField(product);
-  const {
-    fieldValues,
-    resetFieldValues,
-    getFieldValue,
-    setFieldValue,
 
-    handleAddToCart,
-    loading: addToCartLoading,
-  } = useFieldValuesState(event, product);
+  const colorField = getDefaultColorField(product);
+  const [addToCartLoading, setAddToCartLoading] = useState(false);
+  const [fields, setFields] = useState<NewCartItemFieldValues>({});
+  const setFieldValue = (field: ProductField, value: any) =>
+    setFields({ ...fields, [field.name]: value });
+  const getFieldValue = (field: ProductField): any => fields[field.name];
+  const resetFieldValues = () => setFields({});
 
   const cardImage =
     product.productImages?.find(
-      (i) => !colorField || i.colorNames.includes(fieldValues[colorField.name])
+      (i) => !colorField || i.colorNames.includes(fields[colorField.name])
     ) || getFromIndex(product.productImages, 0);
   const price = isTeam ? product.teamPrice : product.price;
 
@@ -57,6 +59,27 @@ export default function ProductCard({
         `?color=${getFieldValue(colorField!)}`
       }`
     );
+
+  const handleAddToCart = async (quantity: number) => {
+    setAddToCartLoading(true);
+    const response = await fetch("/api/cart", {
+      method: "PUT",
+      body: JSON.stringify({
+        productId: product.id,
+        eventId: event.id,
+        fields,
+        quantity,
+        imageStoragePath: cardImage?.storagePath,
+      } as AddToCartRequest),
+    }).finally(() => setAddToCartLoading(false));
+
+    const respBody = (await response.json()) as AddToCartResponse;
+    if (response.status >= 400) {
+      showError(respBody?.message);
+    } else {
+      showSuccess(respBody?.message || "Successfully added to cart");
+    }
+  };
 
   return (
     <>

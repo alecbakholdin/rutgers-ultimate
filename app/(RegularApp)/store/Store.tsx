@@ -1,5 +1,5 @@
 "use client";
-import { ServerEvent } from "types/event";
+import { ServerEvent } from "types/storeEvent";
 import { Product } from "types/product";
 import { Divider, Grid, Typography } from "@mui/material";
 import ProductCard from "app/(RegularApp)/store/ProductCard";

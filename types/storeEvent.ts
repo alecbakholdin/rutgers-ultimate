@@ -38,17 +38,17 @@ export type ServerEvent = {
   sizingChartCount: number;
 };
 
-export type Event = ServerEvent & {
-  ref: DocumentReference<Event>;
+export type StoreEvent = ServerEvent & {
+  ref: DocumentReference<StoreEvent>;
 };
 
-export const eventCollection: CollectionReference<Event> = collection(
+export const eventCollection: CollectionReference<StoreEvent> = collection(
   firestore,
   "events"
-).withConverter(getFirestoreConverter<Event>());
+).withConverter(getFirestoreConverter<StoreEvent>());
 
 export function useActiveEventsOnce(): [
-  Event[],
+  StoreEvent[],
   boolean,
   FirestoreError | undefined
 ] {

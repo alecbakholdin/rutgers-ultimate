@@ -19,7 +19,7 @@ import {
 } from "react-firebase-hooks/firestore";
 import { oldOrderCollection } from "types/oldOrder";
 import AdminEventSummary from "app/(RegularApp)/admin/oldOrders/AdminEventSummary";
-import { Event, eventCollection } from "types/event";
+import { eventCollection } from "types/storeEvent";
 import { query, where } from "@firebase/firestore";
 import { Email } from "@mui/icons-material";
 import { useMySnackbar } from "hooks/useMySnackbar";
