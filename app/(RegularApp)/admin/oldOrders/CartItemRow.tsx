@@ -1,10 +1,10 @@
-import { CartItem } from "../types/userData";
+import { CartItem } from "types/userData";
 import React from "react";
 import { Box, Link, Stack, SxProps, Typography } from "@mui/material";
 import { currencyFormat } from "util/currency";
 import NumberSelect from "appComponents/inputs/NumberSelect";
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore";
-import { productCollection } from "../types/product";
+import { productCollection } from "types/product";
 import { doc } from "@firebase/firestore";
 
 function CartItemDetailRow({
