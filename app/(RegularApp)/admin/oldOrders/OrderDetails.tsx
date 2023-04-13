@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Divider, Grid, Stack } from "@mui/material";
-import { Order } from "types/order";
+import { OldOrder } from "types/oldOrder";
 import CartItemRow from "app/(RegularApp)/admin/oldOrders/CartItemRow";
 import Typography from "@mui/material/Typography";
 import { currencyFormat } from "util/currency";
@@ -37,7 +37,7 @@ function OrderSummary({ obj }: { obj: { [_: string]: string } }) {
 export default function OrderDetails({
   order,
 }: {
-  order: Order;
+  order: OldOrder;
 }): React.ReactElement {
   const statusString = order.delivered
     ? "Completed"

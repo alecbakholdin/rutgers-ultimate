@@ -1,15 +1,15 @@
 import React from "react";
-import { Order } from "types/order";
+import { OldOrder } from "types/oldOrder";
 import { Card, CardContent, CardHeader, Grid } from "@mui/material";
 import { currencyFormat } from "util/currency";
 
 export default function AdminEventSummary({
   orders,
 }: {
-  orders: Order[] | undefined;
+  orders: OldOrder[] | undefined;
 }): React.ReactElement {
   orders = orders || [];
-  const sumOfCosts = (arr: Order[]) =>
+  const sumOfCosts = (arr: OldOrder[]) =>
     arr.reduce((prev, curr) => prev + curr.totalCost, 0);
   const expectedMoney = sumOfCosts(orders);
   const collectedMoney = sumOfCosts(orders.filter((o) => o.paid));

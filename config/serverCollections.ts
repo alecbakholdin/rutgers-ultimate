@@ -1,8 +1,8 @@
 import "server-only";
 import { serverDb } from "config/firebaseServerApp";
 import { getServerFirestoreConverter } from "config/getServerFirestoreConverter";
-import { NewOrder } from "types/newOrder";
+import { Order } from "types/order";
 
 export const newOrderServerCollection = serverDb
   .collection("ordersV2")
-  .withConverter(getServerFirestoreConverter<NewOrder>());
+  .withConverter(getServerFirestoreConverter<Order>());

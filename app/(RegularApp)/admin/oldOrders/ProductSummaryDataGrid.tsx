@@ -1,5 +1,5 @@
 import React from "react";
-import { Order } from "types/order";
+import { OldOrder } from "types/oldOrder";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { productCollection } from "types/product";
 import { extractKey, replace } from "util/array";
@@ -11,7 +11,7 @@ import { CheckBox, CheckBoxOutlineBlank } from "@mui/icons-material";
 export default function ProductSummaryDataGrid({
   orders,
 }: {
-  orders: Order[] | undefined;
+  orders: OldOrder[] | undefined;
 }): React.ReactElement {
   const cartItems = (orders || [])
     .map((order) => order.cart.map((item, i) => ({ ...item, ...order, i })))

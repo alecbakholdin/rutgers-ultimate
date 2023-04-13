@@ -7,7 +7,7 @@ import { CheckoutConfig, useCheckoutPaymentState } from "types/checkout";
 import { addDoc, doc, updateDoc } from "@firebase/firestore";
 import { useAuth } from "appComponents/AuthProvider";
 import { NewCartItem } from "types/newCartItem";
-import { NewOrder } from "types/newOrder";
+import { Order } from "types/order";
 import { newOrderCollection } from "config/clientCollections";
 import { userDataCollection } from "types/userData";
 import { distinctEntries } from "util/array";
@@ -45,7 +45,7 @@ export function CheckoutCardForm({
           },
         }
       );
-      const newOrder: NewOrder = {
+      const newOrder: Order = {
         id: "",
         uid: userData.id,
         name: checkoutConfig.firstName + " " + checkoutConfig.lastName,
@@ -70,7 +70,7 @@ export function CheckoutCardForm({
                 state: checkoutConfig.state,
                 zipCode: checkoutConfig.zipCode,
               },
-            } as Partial<NewOrder>)
+            } as Partial<Order>)
           : {
               pickupLocation: checkoutConfig.pickupLocation,
             }),

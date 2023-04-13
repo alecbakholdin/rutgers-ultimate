@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Order, orderAsStringSummary } from "types/order";
+import { OldOrder, orderAsStringSummary } from "types/oldOrder";
 import { useMySnackbar } from "hooks/useMySnackbar";
 import {
   DataGrid,
@@ -24,9 +24,9 @@ import OrderDetails from "app/(RegularApp)/admin/oldOrders/OrderDetails";
 export default function OrdersDataGrid({
   orders,
 }: {
-  orders: Order[] | undefined;
+  orders: OldOrder[] | undefined;
 }): React.ReactElement {
-  const [detailedOrder, setDetailedOrder] = useState<Order | undefined>();
+  const [detailedOrder, setDetailedOrder] = useState<OldOrder | undefined>();
   const handleCloseModal = () => setDetailedOrder(undefined);
 
   const rows = (orders || []).map((order) => ({
@@ -34,12 +34,12 @@ export default function OrdersDataGrid({
     cartString: JSON.stringify(order.cart || ""),
   }));
   const { showSuccess } = useMySnackbar();
-  const getCheckboxColDef = (field: keyof Order): GridColDef => ({
+  const getCheckboxColDef = (field: keyof OldOrder): GridColDef => ({
     field: field,
     headerName: field.charAt(0).toUpperCase() + field.slice(1),
     type: "boolean",
     renderCell: ({ row }) => {
-      const order = row as Order;
+      const order = row as OldOrder;
       return (
         <IconButton
           onClick={async (e) => {
@@ -79,7 +79,7 @@ export default function OrdersDataGrid({
           onClick={async () => {
             await navigator.clipboard.writeText(
               "Any concerns, please text 2013963132\n\n" +
-                orderAsStringSummary(params.row as Order)
+                orderAsStringSummary(params.row as OldOrder)
             );
             showSuccess("Successfully copied to clipboard");
           }}
@@ -95,7 +95,7 @@ export default function OrdersDataGrid({
           key={"details"}
           label={"Details"}
           icon={<OpenInNew />}
-          onClick={() => setDetailedOrder(row as Order)}
+          onClick={() => setDetailedOrder(row as OldOrder)}
         />,
       ],
     } as GridActionsColDef,

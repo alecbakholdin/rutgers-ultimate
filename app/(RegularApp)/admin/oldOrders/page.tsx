@@ -17,7 +17,7 @@ import {
   useCollectionData,
   useCollectionDataOnce,
 } from "react-firebase-hooks/firestore";
-import { orderCollection } from "types/order";
+import { orderCollection } from "types/oldOrder";
 import AdminEventSummary from "app/(RegularApp)/admin/oldOrders/AdminEventSummary";
 import { Event, eventCollection } from "types/event";
 import { query, where } from "@firebase/firestore";
