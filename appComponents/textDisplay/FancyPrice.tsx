@@ -10,15 +10,15 @@ export default function FancyPrice({
   size = 25,
 }: {
   price: number;
-  teamPrice: number;
-  isTeam: boolean;
-  userLoading: boolean;
-  userData: UserData | undefined;
+  teamPrice?: number;
+  isTeam?: boolean;
+  userLoading?: boolean;
+  userData?: UserData | undefined;
   size?: number;
 }) {
   return (
     <FancyCurrency
-      amount={isTeam ? teamPrice : price}
+      amount={isTeam ? teamPrice || price : price}
       size={size}
       loading={(userLoading && !userData) || userLoading}
     />

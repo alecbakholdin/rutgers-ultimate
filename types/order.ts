@@ -12,6 +12,7 @@ export type OrderItem = {
   unitPrice: number;
   imageStoragePath: string;
   fields: { [fieldName: string]: any };
+  fieldCount: number;
 };
 
 export type Order = {
