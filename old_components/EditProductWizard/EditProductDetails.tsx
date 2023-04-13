@@ -10,8 +10,8 @@ import {
 import CurrencyTextField from "./CurrencyTextField";
 import { Product } from "types/product";
 import ListEditor from "components/ListEditor";
-import NumberSelect from "components/NumberSelect";
-import ColorSwatch from "components/ColorSwatch";
+import NumberSelect from "appComponents/inputs/NumberSelect";
+import ColorSwatch from "appComponents/ColorSwatch";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { colorCollection } from "types/color";
 

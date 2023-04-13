@@ -12,10 +12,10 @@ import {
 } from "@mui/material";
 import StorageImage from "appComponents/StorageImage";
 import { getFromIndex } from "util/array";
-import ColorSwatch from "components/ColorSwatch";
+import ColorSwatch from "appComponents/ColorSwatch";
 import { useRouter } from "next/navigation";
-import FancyCurrency from "appComponents/FancyCurrency";
-import { useAuth } from "components/AuthProvider";
+import FancyCurrency from "appComponents/textDisplay/FancyCurrency";
+import { useAuth } from "appComponents/AuthProvider";
 
 export default function ProductPage({
   product,

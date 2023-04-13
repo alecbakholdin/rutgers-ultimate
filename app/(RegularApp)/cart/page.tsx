@@ -1,15 +1,15 @@
 "use client";
-import { useAuth } from "components/AuthProvider";
+import { useAuth } from "appComponents/AuthProvider";
 import React from "react";
 import { Box, Container, Stack, Typography, useTheme } from "@mui/material";
 import { userDataCollection } from "types/userData";
 import { remove, update } from "util/array";
 import { doc, updateDoc } from "@firebase/firestore";
 import StorageImage from "appComponents/StorageImage";
-import FancyPrice from "appComponents/FancyPrice";
-import NumberSelect from "components/NumberSelect";
+import FancyPrice from "appComponents/textDisplay/FancyPrice";
+import NumberSelect from "appComponents/inputs/NumberSelect";
 import Link from "next/link";
-import LoadingButton from "components/LoadingButton";
+import LoadingButton from "appComponents/inputs/LoadingButton";
 import { NewCartItem } from "types/newCartItem";
 
 export default function Cart() {

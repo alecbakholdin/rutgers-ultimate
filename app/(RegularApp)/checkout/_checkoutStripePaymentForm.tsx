@@ -9,7 +9,7 @@ import { useTheme } from "@mui/material";
 import { Elements } from "@stripe/react-stripe-js";
 import { CheckoutCardForm } from "app/(RegularApp)/checkout/_checkoutCardForm";
 import { loadStripe } from "@stripe/stripe-js";
-import { useAuth } from "components/AuthProvider";
+import { useAuth } from "appComponents/AuthProvider";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
 

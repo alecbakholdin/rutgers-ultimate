@@ -19,7 +19,7 @@ import {
 } from "@mui/icons-material";
 import { currencyFormat } from "util/currency";
 import { GridActionsColDef } from "@mui/x-data-grid/models/colDef/gridColDef";
-import OrderDetails from "components/OrderDetails";
+import OrderDetails from "app/(RegularApp)/admin/oldOrders/OrderDetails";
 
 export default function OrdersDataGrid({
   orders,

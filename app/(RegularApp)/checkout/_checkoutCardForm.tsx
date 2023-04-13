@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 import CheckoutCostSummary from "app/(RegularApp)/checkout/_checkoutCostSummary";
 import { CheckoutConfig, useCheckoutPaymentState } from "types/checkout";
 import { addDoc, doc, updateDoc } from "@firebase/firestore";
-import { useAuth } from "components/AuthProvider";
+import { useAuth } from "appComponents/AuthProvider";
 import { NewCartItem } from "types/newCartItem";
 import { NewOrder } from "types/newOrder";
 import { newOrderCollection } from "config/clientCollections";

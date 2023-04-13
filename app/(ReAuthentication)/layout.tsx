@@ -1,6 +1,5 @@
 "use client";
 
-import { AuthProvider } from "components/AuthProvider";
 import React from "react";
 
 export default function RootLayout({

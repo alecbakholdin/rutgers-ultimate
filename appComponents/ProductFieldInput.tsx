@@ -1,8 +1,8 @@
 import { Box, FormGroup, FormLabel, Stack, TextField } from "@mui/material";
-import StringChipList from "appComponents/StringChipList";
+import StringChipList from "appComponents/lists/StringChipList";
 import React from "react";
 import { ProductField } from "types/product";
-import ColorSwatch from "components/ColorSwatch";
+import ColorSwatch from "appComponents/ColorSwatch";
 
 export default function ({
   field,

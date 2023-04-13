@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { feedbackCollection, FeedbackInfo } from "types/feedbackInfo";
 import { useSnackbar } from "notistack";
 import { Card, CardContent, CardHeader, Grid, TextField } from "@mui/material";
-import BetterTextField from "components/BetterTextField";
+import BetterTextField from "appComponents/inputs/BetterTextField";
 import { addDoc } from "@firebase/firestore";
 import StatusButton, { LoadingStatus } from "components/StatusButton";
 

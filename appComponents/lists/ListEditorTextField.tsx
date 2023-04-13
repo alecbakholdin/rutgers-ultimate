@@ -1,5 +1,5 @@
 import { IconButton, Stack } from "@mui/material";
-import BetterTextField from "components/BetterTextField";
+import BetterTextField from "appComponents/inputs/BetterTextField";
 import { Add } from "@mui/icons-material";
 import React, { useState } from "react";
 

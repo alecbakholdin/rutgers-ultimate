@@ -6,7 +6,7 @@ import {
 import React, { useEffect } from "react";
 import { useMySnackbar } from "hooks/useMySnackbar";
 import { Grid, Paper } from "@mui/material";
-import LoadingButton from "components/LoadingButton";
+import LoadingButton from "appComponents/inputs/LoadingButton";
 
 export function CheckoutNavigation({
   checkoutConfig,

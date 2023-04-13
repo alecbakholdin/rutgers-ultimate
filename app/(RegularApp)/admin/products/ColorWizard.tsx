@@ -11,9 +11,9 @@ import {
   Grid,
   IconButton,
 } from "@mui/material";
-import BetterTextField from "components/BetterTextField";
+import BetterTextField from "appComponents/inputs/BetterTextField";
 import { deleteDoc, doc, setDoc } from "@firebase/firestore";
-import ColorSwatch from "components/ColorSwatch";
+import ColorSwatch from "appComponents/ColorSwatch";
 import { Add } from "@mui/icons-material";
 import { useMySnackbar } from "hooks/useMySnackbar";
 

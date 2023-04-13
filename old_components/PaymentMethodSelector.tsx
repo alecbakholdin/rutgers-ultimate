@@ -3,7 +3,7 @@
 import React from "react";
 import { Alert, Card, CardContent, CardHeader, Stack } from "@mui/material";
 import CurrencyTextField from "components/EditProductWizard/CurrencyTextField";
-import BetterTextField from "components/BetterTextField";
+import BetterTextField from "appComponents/inputs/BetterTextField";
 import { useUserData2 } from "types/userData";
 import { OrderInfo } from "types/order";
 

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Grid, SxProps } from "@mui/material";
-import ColorSwatch from "components/ColorSwatch";
+import ColorSwatch from "appComponents/ColorSwatch";
 import { ProductColor } from "types/product";
 import { useColors } from "types/color";
 

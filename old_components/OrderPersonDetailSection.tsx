@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, Grid } from "@mui/material";
-import BetterTextField from "components/BetterTextField";
+import BetterTextField from "appComponents/inputs/BetterTextField";
 import { OrderInfo } from "types/order";
 
 export default function OrderPersonDetailSection({

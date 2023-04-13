@@ -12,13 +12,13 @@ import {
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { Event, eventCollection } from "../types/event";
 import { extractKey } from "util/array";
-import BetterTextField from "./BetterTextField";
+import BetterTextField from "appComponents/inputs/BetterTextField";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { addDoc, updateDoc } from "@firebase/firestore";
 import { deleteDoc } from "@firebase/firestore/lite";
 import ProductSelector from "./ProductSelector";
-import NumberSelect from "./NumberSelect";
+import NumberSelect from "appComponents/inputs/NumberSelect";
 
 export default function EventWizard(): React.ReactElement {
   const [events] = useCollectionData(eventCollection);

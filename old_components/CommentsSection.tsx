@@ -3,7 +3,7 @@
 import React from "react";
 import { OrderInfo } from "types/order";
 import { Card, CardContent, CardHeader } from "@mui/material";
-import BetterTextField from "components/BetterTextField";
+import BetterTextField from "appComponents/inputs/BetterTextField";
 
 export default function CommentsSection({
   orderInfo,

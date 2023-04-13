@@ -15,7 +15,7 @@ import { randomString } from "util/random";
 import { useMySnackbar } from "hooks/useMySnackbar";
 import { Delete } from "@mui/icons-material";
 import StorageImage from "appComponents/StorageImage";
-import StringChipList from "appComponents/StringChipList";
+import StringChipList from "appComponents/lists/StringChipList";
 
 export type PendingUploads = { [storagePath: string]: ArrayBuffer };
 export default function ProductImageEditor({

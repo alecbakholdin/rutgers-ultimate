@@ -13,7 +13,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { LovelySwitch } from "components/LovelySwitch";
+import { LovelySwitch } from "appComponents/inputs/LovelySwitch";
 import { currencyFormat } from "util/currency";
 import {
   getLowestRateShippingCost,

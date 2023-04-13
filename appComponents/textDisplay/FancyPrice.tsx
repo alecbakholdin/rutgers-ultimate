@@ -1,4 +1,4 @@
-import FancyCurrency from "appComponents/FancyCurrency";
+import FancyCurrency from "appComponents/textDisplay/FancyCurrency";
 import { UserData } from "types/userData";
 
 export default function FancyPrice({

@@ -14,10 +14,10 @@ import {
 import { Delete } from "@mui/icons-material";
 import React from "react";
 import { remove } from "util/array";
-import StringChipList from "appComponents/StringChipList";
-import ListEditorTextField from "appComponents/ListEditorTextField";
+import StringChipList from "appComponents/lists/StringChipList";
+import ListEditorTextField from "appComponents/lists/ListEditorTextField";
 import ColorProductFieldEditor from "app/(RegularApp)/admin/products/ColorProductFieldEditor";
-import { LovelySwitch } from "components/LovelySwitch";
+import { LovelySwitch } from "appComponents/inputs/LovelySwitch";
 
 export default function SingleProductFieldEditor({
   field,

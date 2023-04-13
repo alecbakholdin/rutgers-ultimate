@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Divider, Grid, Stack } from "@mui/material";
-import { Order } from "../types/order";
-import CartItemRow from "./CartItemRow";
+import { Order } from "types/order";
+import CartItemRow from "old_components/CartItemRow";
 import Typography from "@mui/material/Typography";
 import { currencyFormat } from "util/currency";
 
