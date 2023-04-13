@@ -1,5 +1,5 @@
 import React from "react";
-import { Order } from "../types/order";
+import { Order } from "types/order";
 import { Card, CardContent, CardHeader, Grid } from "@mui/material";
 import { currencyFormat } from "util/currency";
 

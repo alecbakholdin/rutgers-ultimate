@@ -1,27 +1,33 @@
+"use client";
 import React, { useMemo, useState } from "react";
 import {
   Container,
   FormControl,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
+  Stack,
   Typography,
 } from "@mui/material";
-import OrdersDataGrid from "../../components/OrdersDataGrid";
-import ProductSummaryDataGrid from "../../components/ProductSummaryDataGrid";
+import OrdersDataGrid from "app/(RegularApp)/admin/oldOrders/OrdersDataGrid";
+import ProductSummaryDataGrid from "app/(RegularApp)/admin/oldOrders/ProductSummaryDataGrid";
 import {
   useCollectionData,
   useCollectionDataOnce,
 } from "react-firebase-hooks/firestore";
-import { orderCollection } from "../../types/order";
-import AdminEventSummary from "../../components/AdminEventSummary";
-import { Event, eventCollection } from "../../types/event";
+import { orderCollection } from "types/order";
+import AdminEventSummary from "app/(RegularApp)/admin/oldOrders/AdminEventSummary";
+import { Event, eventCollection } from "types/event";
 import { query, where } from "@firebase/firestore";
+import { Email } from "@mui/icons-material";
+import { useMySnackbar } from "hooks/useMySnackbar";
 
-export default function Orders(): React.ReactElement {
+export default function Page(): React.ReactElement {
   const [events] = useCollectionDataOnce(eventCollection, { initialValue: [] });
   const [eventId, setEventId] = useState("");
+  const { showError, showSuccess } = useMySnackbar();
   const q = useMemo(
     () =>
       eventId
@@ -32,6 +38,19 @@ export default function Orders(): React.ReactElement {
   const [orders] = useCollectionData(q);
   const handleEventChange = (e: SelectChangeEvent) => {
     setEventId(e.target.value as string);
+  };
+
+  const copyEmails = async () => {
+    const emailList = orders
+      ?.filter((order) => order.email)
+      .map((order) => `${order.firstName} ${order.lastName}<${order.email}>`)
+      .join(", ");
+    if (!emailList) {
+      showError("Email list is empty for some reason");
+      return;
+    }
+    await navigator.clipboard.writeText(emailList);
+    showSuccess("Copied emails to clipboard");
   };
 
   return (
@@ -47,6 +66,11 @@ export default function Orders(): React.ReactElement {
           ))}
         </Select>
       </FormControl>
+      <Stack direction={"row"}>
+        <IconButton onClick={copyEmails}>
+          <Email />
+        </IconButton>
+      </Stack>
       <AdminEventSummary orders={orders} />
       <OrdersDataGrid orders={orders} />
       <ProductSummaryDataGrid orders={orders} />

@@ -15,6 +15,7 @@ export default async function ({ children }: { children: ReactNode }) {
       pages={[
         { name: "Products", href: "/admin/products" },
         { name: "Events", href: "/admin/events" },
+        { name: "Old Orders", href: "/admin/oldOrders" },
       ]}
     >
       {children}

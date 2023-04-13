@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Order, orderAsStringSummary } from "../types/order";
-import { useMySnackbar } from "../hooks/useMySnackbar";
+import { Order, orderAsStringSummary } from "types/order";
+import { useMySnackbar } from "hooks/useMySnackbar";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -19,7 +19,7 @@ import {
 } from "@mui/icons-material";
 import { currencyFormat } from "util/currency";
 import { GridActionsColDef } from "@mui/x-data-grid/models/colDef/gridColDef";
-import OrderDetails from "./OrderDetails";
+import OrderDetails from "components/OrderDetails";
 
 export default function OrdersDataGrid({
   orders,
@@ -54,9 +54,9 @@ export default function OrdersDataGrid({
   });
 
   const cols: GridColDef[] = [
-    { field: "firstName", headerName: "First Name", width: 150 },
-    { field: "lastName", headerName: "Last Name", width: 150 },
-    { field: "venmo", headerName: "Venmo", width: 200 },
+    { field: "firstName", headerName: "First Name", minWidth: 150 },
+    { field: "lastName", headerName: "Last Name", minWidth: 150 },
+    { field: "venmo", headerName: "Venmo", minWidth: 200 },
     {
       field: "totalCost",
       headerName: "Cost",
