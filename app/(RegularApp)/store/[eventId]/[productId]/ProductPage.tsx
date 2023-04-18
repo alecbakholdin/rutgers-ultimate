@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Product } from "types/product";
-import { StoreEvent } from "types/storeEvent";
+import { ServerEvent } from "types/storeEvent";
 import {
   Box,
   BoxProps,
@@ -22,7 +22,7 @@ export default function ProductPage({
   initialColor,
 }: {
   product: Product;
-  event: StoreEvent;
+  event: ServerEvent;
   initialColor?: string;
 }) {
   const router = useRouter();
