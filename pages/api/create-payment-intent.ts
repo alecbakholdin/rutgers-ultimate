@@ -1,6 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import Stripe from "stripe";
 import { UserData } from "types/userData";
 import {
   CheckoutPaymentIntentRequest,
@@ -10,10 +9,7 @@ import { serverAuth, serverDb } from "config/firebaseServerApp";
 import { FIREBASE_AUTH_COOKIE } from "types/serverAuth";
 import { getServerFirestoreConverter } from "config/getServerFirestoreConverter";
 import { NewCartItem } from "types/newCartItem";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2022-11-15",
-});
+import { stripeApi } from "appUtil/stripe";
 
 export default async function handler(
   req: NextApiRequest,
@@ -48,7 +44,7 @@ export default async function handler(
   const processingFee = 0;
   const total = subtotal + shipping + processingFee;
 
-  const paymentIntent = await stripe.paymentIntents.create({
+  const paymentIntent = await stripeApi.paymentIntents.create({
     amount: total * 100,
     currency: "usd",
     ...(sendReceipt ? { receipt_email: email } : {}),

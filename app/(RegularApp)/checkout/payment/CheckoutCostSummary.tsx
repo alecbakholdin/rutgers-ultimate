@@ -1,8 +1,9 @@
+"use client";
 import React from "react";
 import { Divider, Grid, Typography, useTheme } from "@mui/material";
 import { currencyFormat } from "util/currency";
-import { CheckoutPaymentIntentResponse } from "types/checkout";
-import { NewCartItem } from "types/newCartItem";
+import { OrderItem } from "types/order";
+import { useCheckout } from "app/(RegularApp)/checkout/CheckoutProvider";
 
 function SectionDivider(): React.ReactElement {
   return (
@@ -29,18 +30,21 @@ function BasicCurrencyRow({ title, cost }: { title: string; cost: number }) {
 
 export default function CostSummary({
   items,
-  paymentInfo,
+  maxWidth = 400,
 }: {
-  items: NewCartItem[];
-  paymentInfo: CheckoutPaymentIntentResponse;
+  items: OrderItem[];
+  maxWidth?: number;
 }): React.ReactElement {
   const { palette, shape } = useTheme();
+  const { price } = useCheckout();
+
   return (
     <Grid
       container
       borderRadius={shape.borderRadius + "px"}
       border={"1px solid " + palette.grey["400"]}
       padding={3}
+      maxWidth={maxWidth}
     >
       <Grid key={"order-summary-title"} item xs={12}>
         <Typography variant={"h5"}>
@@ -48,22 +52,23 @@ export default function CostSummary({
         </Typography>
       </Grid>
       <SectionDivider key={"order-summary-divider"} />
-      {items.map((item, i) => (
+      {items.map((item) => (
         <BasicCurrencyRow
-          key={i}
-          title={item.productName}
+          key={item.id}
+          title={`${item.quantity}x ${item.productName}`}
           cost={item.unitPrice * item.quantity}
         />
       ))}
-      {Boolean(paymentInfo.shipping) && (
-        <>
-          <SectionDivider key={"shipping-divider"} />
-          <BasicCurrencyRow title={"Subtotal"} cost={paymentInfo.subtotal} />
-          <BasicCurrencyRow
-            title={"Shipping & Handling"}
-            cost={paymentInfo.shipping}
-          />
-        </>
+      <SectionDivider />
+      <BasicCurrencyRow title={"Subtotal"} cost={price.subtotal} />
+      {Boolean(price.deliveryCost) && (
+        <BasicCurrencyRow
+          title={"Shipping & Handling"}
+          cost={price.deliveryCost}
+        />
+      )}
+      {Boolean(price.processingFee) && (
+        <BasicCurrencyRow title={"Processing fee"} cost={price.processingFee} />
       )}
       <SectionDivider key={"order-total-divider"} />
       <Grid
@@ -77,7 +82,7 @@ export default function CostSummary({
           Order Total
         </Typography>
         <Typography variant={"h5"} color={"primary"} width={"fit-content"}>
-          {currencyFormat(paymentInfo.total)}
+          {currencyFormat(price.total)}
         </Typography>
       </Grid>
     </Grid>

@@ -82,7 +82,10 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
   }
 
   // check if user is on the team
-  const isTeam = determineIfTeam((await userDataDocPromise).data());
+  const userData = (await userDataDocPromise).data();
+  console.log("userData", userData);
+  const isTeam = determineIfTeam(userData);
+  console.log(isTeam);
 
   const orderItem: Omit<OrderItem, "id"> = {
     orderId: null,
@@ -95,7 +98,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
     quantity,
     imageStoragePath,
     fieldCount: Object.keys(fields).length,
-    unitPrice: isTeam ? product.price : product.teamPrice,
+    unitPrice: isTeam ? product.teamPrice : product.price,
   };
 
   const existingOrderItems = (await existingItemDocPromise).docs;

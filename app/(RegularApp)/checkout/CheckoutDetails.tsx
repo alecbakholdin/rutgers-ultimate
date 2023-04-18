@@ -1,10 +1,12 @@
-import { CheckoutConfig } from "types/checkout";
-import React, { ChangeEvent, useEffect, useState } from "react";
+"use client";
+
+import { OrderDetails } from "types/order";
+import React, { ChangeEvent, useEffect } from "react";
+import { useCheckout } from "app/(RegularApp)/checkout/CheckoutProvider";
 import {
   CircularProgress,
   FormControl,
   FormControlLabel,
-  FormGroup,
   FormLabel,
   Grid,
   Radio,
@@ -12,56 +14,35 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { LovelySwitch } from "appComponents/inputs/LovelySwitch";
 import { currencyFormat } from "util/currency";
-import {
-  getLowestRateShippingCost,
-  validateCheckoutConfigForAddress,
-} from "types/easyPost";
+import { Address } from "types/easyPost";
+import { useShippingCostEstimate } from "hooks/useShippingCostEstimate";
 import { useAuth } from "appComponents/AuthProvider";
 
-export function CheckoutConfigSection({
-  checkoutConfig,
-  setCheckoutConfig,
+export default function CheckoutDetails({
+  defaultDetails,
 }: {
-  checkoutConfig: CheckoutConfig;
-  setCheckoutConfig: (val: CheckoutConfig) => void;
-}): React.ReactElement {
-  const { isTeam, user } = useAuth();
-  const updateConfig = (update: Partial<CheckoutConfig>) => {
-    setCheckoutConfig({ ...checkoutConfig, ...update });
-  };
+  defaultDetails: Partial<OrderDetails>;
+}) {
+  const { isTeam } = useAuth();
+  const { details, setDetails } = useCheckout();
+  useEffect(() => {
+    setDetails({ ...details, ...defaultDetails });
+  }, []);
+  const [shippingCost, shippingCostLoading] = useShippingCostEstimate(details);
+
   const textValUpdater =
-    (key: keyof CheckoutConfig) => (e: ChangeEvent<HTMLInputElement>) =>
-      updateConfig({ [key]: e.target.value });
-
-  useEffect(() => {
-    if (user?.email && !checkoutConfig.email) {
-      updateConfig({ email: user.email });
-    }
-  }, [user]);
-
-  const [shippingCostTimeout, setShippingCostTimeout] = useState<
-    NodeJS.Timeout | undefined
-  >(undefined);
-  const [shippingCost, setShippingCost] = useState(0);
-  useEffect(() => {
-    console.log(checkoutConfig);
-    if (validateCheckoutConfigForAddress(checkoutConfig)) {
-      clearTimeout(shippingCostTimeout);
-      const timeout = setTimeout(async () => {
-        const address = validateCheckoutConfigForAddress(checkoutConfig);
-        if (address) {
-          setShippingCost(await getLowestRateShippingCost(address));
-        }
-        setShippingCostTimeout(undefined);
-      }, 500);
-      setShippingCostTimeout(timeout);
-    } else {
-      clearTimeout(shippingCostTimeout);
-      setShippingCostTimeout(undefined);
-    }
-  }, [checkoutConfig.zipCode]);
+    (field: keyof OrderDetails) => (e: ChangeEvent<HTMLInputElement>) =>
+      setDetails({ ...details, [field]: e.target.value });
+  const addressFieldUpdater =
+    (field: keyof Address) => (e: ChangeEvent<HTMLInputElement>) =>
+      setDetails({
+        ...details,
+        deliveryLocation: {
+          ...details.deliveryLocation,
+          [field]: e.target.value,
+        },
+      });
 
   return (
     <Grid container rowSpacing={3} spacing={1}>
@@ -69,34 +50,23 @@ export function CheckoutConfigSection({
         <FormControl sx={{ width: "100%" }}>
           <FormLabel>Personal Details</FormLabel>
           <Grid container spacing={1} sx={{ paddingTop: 1 }}>
-            <Grid item xs={5}>
+            <Grid item xs={12} md={7}>
               <TextField
-                label={"First Name"}
-                placeholder={"John"}
-                value={checkoutConfig.firstName || ""}
-                onChange={textValUpdater("firstName")}
-                autoComplete={"given-name"}
+                label={"Name"}
+                placeholder={"John Smith"}
+                value={details.name || ""}
+                onChange={textValUpdater("name")}
+                autoComplete={"name"}
                 fullWidth
                 required
               />
             </Grid>
-            <Grid item xs={7}>
-              <TextField
-                label={"Last Name"}
-                placeholder={"Smith"}
-                value={checkoutConfig.lastName || ""}
-                onChange={textValUpdater("lastName")}
-                autoComplete={"family-name"}
-                fullWidth
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} md={5}>
               <TextField
                 label={"Phone Number"}
                 placeholder={"+1 123 555 8888"}
-                value={checkoutConfig.phoneNumber || ""}
-                onChange={textValUpdater("phoneNumber")}
+                value={details.phone || ""}
+                onChange={textValUpdater("phone")}
                 autoComplete={"tel"}
                 fullWidth
                 required
@@ -106,9 +76,11 @@ export function CheckoutConfigSection({
               <TextField
                 label={"Email"}
                 placeholder={"john.smith@example.com"}
-                value={checkoutConfig.email}
-                disabled
+                value={details.email}
+                onChange={textValUpdater("email")}
+                autoComplete={"email"}
                 fullWidth
+                required
               />
             </Grid>
           </Grid>
@@ -119,7 +91,7 @@ export function CheckoutConfigSection({
           <FormLabel>Delivery Method</FormLabel>
           <RadioGroup
             defaultValue={"pickup"}
-            value={checkoutConfig.deliveryMethod}
+            value={details.deliveryMethod}
             onChange={textValUpdater("deliveryMethod")}
           >
             <FormControlLabel
@@ -135,7 +107,7 @@ export function CheckoutConfigSection({
           </RadioGroup>
         </FormControl>
       </Grid>
-      {checkoutConfig.deliveryMethod === "delivery" && (
+      {details.deliveryMethod === "delivery" && (
         <Grid item xs={12} md={9}>
           <FormControl>
             <FormLabel>Shipping Address</FormLabel>
@@ -144,8 +116,8 @@ export function CheckoutConfigSection({
                 <TextField
                   label={"Address"}
                   autoComplete={"street-address address-line-1"}
-                  value={checkoutConfig.street1}
-                  onChange={textValUpdater("street1")}
+                  value={details.deliveryLocation.street1}
+                  onChange={addressFieldUpdater("street1")}
                   placeholder={"12345 Main St"}
                   fullWidth
                   required
@@ -155,8 +127,8 @@ export function CheckoutConfigSection({
                 <TextField
                   label={"City"}
                   autoComplete={"city locality"}
-                  value={checkoutConfig.city || ""}
-                  onChange={textValUpdater("city")}
+                  value={details.deliveryLocation.city || ""}
+                  onChange={addressFieldUpdater("city")}
                   placeholder={"New York City"}
                   fullWidth
                   required
@@ -166,8 +138,8 @@ export function CheckoutConfigSection({
                 <TextField
                   label={"State"}
                   autoComplete={"state province"}
-                  value={checkoutConfig.state || ""}
-                  onChange={textValUpdater("state")}
+                  value={details.deliveryLocation.state || ""}
+                  onChange={addressFieldUpdater("state")}
                   placeholder={"NJ"}
                   fullWidth
                   required
@@ -176,19 +148,22 @@ export function CheckoutConfigSection({
               <Grid item xs={8} md={3}>
                 <TextField
                   label={"ZipCode"}
-                  value={checkoutConfig.zipCode || ""}
-                  onChange={textValUpdater("zipCode")}
+                  value={details.deliveryLocation.zipCode || ""}
+                  onChange={addressFieldUpdater("zipCode")}
                   placeholder={"54321"}
                   autoComplete={"postal-code"}
                   fullWidth
                   required
                 />
               </Grid>
-              {Boolean(checkoutConfig.zipCode) && (
+              {Boolean(
+                details.deliveryMethod === "delivery" &&
+                  details.deliveryLocation.zipCode
+              ) && (
                 <Grid item xs={12}>
                   <Typography color={"lightslategray"} variant={"body2"}>
                     Estimated delivery cost:{" "}
-                    {shippingCostTimeout ? (
+                    {shippingCostLoading ? (
                       <CircularProgress color={"info"} size={10} />
                     ) : (
                       currencyFormat(shippingCost)
@@ -200,13 +175,13 @@ export function CheckoutConfigSection({
           </FormControl>
         </Grid>
       )}
-      {checkoutConfig.deliveryMethod === "pickup" && (
+      {details.deliveryMethod === "pickup" && (
         <Grid item xs={12} md={9}>
           <FormControl>
             <FormLabel>Pickup Location</FormLabel>
             <RadioGroup
               defaultValue={"bid"}
-              value={checkoutConfig.pickupLocation || ""}
+              value={details.pickupLocation || ""}
               onChange={textValUpdater("pickupLocation")}
             >
               <FormControlLabel
@@ -225,24 +200,6 @@ export function CheckoutConfigSection({
           </FormControl>
         </Grid>
       )}
-
-      <Grid item xs={12}>
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <LovelySwitch
-                checked={checkoutConfig.sendEmailReceipt}
-                onChange={() =>
-                  updateConfig({
-                    sendEmailReceipt: !checkoutConfig.sendEmailReceipt,
-                  })
-                }
-              />
-            }
-            label={"Email me a receipt"}
-          />
-        </FormGroup>
-      </Grid>
     </Grid>
   );
 }

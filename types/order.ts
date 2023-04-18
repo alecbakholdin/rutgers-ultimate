@@ -15,25 +15,32 @@ export type OrderItem = {
   fieldCount: number;
 };
 
+export type OrderPrice = {
+  subtotal: number;
+  deliveryCost: number;
+  processingFee: number;
+  total: number;
+};
+
+export type OrderDetails = {
+  name: string;
+  email: string;
+  phone: string;
+  deliveryMethod: "pickup" | "delivery";
+  deliveryLocation: Address;
+  pickupLocation: string;
+};
+
 export type Order = {
   // order metadata
   id: string;
   uid: string;
-  name: string;
-  email: string;
-  phone: string;
   dateCreated: Date;
 
   // payment details
-  total: number;
+  price: OrderPrice;
   stripePaymentId?: string;
 
-  // delivery details
-  deliveryMethod: "delivery" | "pickup";
-  pickupLocation?: string;
-  address?: Address;
-
-  // product information
-  items: OrderItem[];
-  eventIds: string[];
+  // order details
+  details: OrderDetails;
 };
