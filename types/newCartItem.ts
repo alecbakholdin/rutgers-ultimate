@@ -1,4 +1,4 @@
-import { ServerEvent } from "types/event";
+import { ServerEvent } from "types/storeEvent";
 import { Product } from "types/product";
 
 export type NewCartItemFieldValues = { [fieldName: string]: any };

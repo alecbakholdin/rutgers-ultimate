@@ -37,7 +37,6 @@ export default async function handler(
     zip: address.zipCode,
     country: "US",
   };
-  console.log(to_address);
   const shipment = await client.Shipment.create({
     from_address: {
       street1: "68 Central Avenue",
@@ -54,7 +53,6 @@ export default async function handler(
       weight: cart.reduce((prev, curr) => prev + curr.quantity * 8, 0) || 16,
     },
   });
-  console.log(shipment);
   res.json({
     shipmentId: shipment.id,
     lowestRate: Math.min(

@@ -3,7 +3,7 @@ import React from "react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { theme } from "config/theme";
 import { SnackbarProvider } from "notistack";
-import { AuthProvider } from "components/AuthProvider";
+import { AuthProvider } from "appComponents/AuthProvider";
 
 export default function Providers({
   children,

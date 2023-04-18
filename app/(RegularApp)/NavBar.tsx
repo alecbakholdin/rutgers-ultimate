@@ -3,7 +3,7 @@
 import React from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import { useAuth } from "components/AuthProvider";
+import { useAuth } from "appComponents/AuthProvider";
 import Typography from "@mui/material/Typography";
 import { Container, Link, Stack } from "@mui/material";
 import IconButton from "@mui/material/IconButton";

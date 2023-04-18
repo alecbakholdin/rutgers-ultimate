@@ -7,7 +7,11 @@ import {
 function formatObject(obj: any): any {
   if (Array.isArray(obj)) {
     return obj.filter((val) => val !== undefined).map(formatObject);
-  } else if (typeof obj === "object" && !(obj instanceof Date)) {
+  } else if (
+    typeof obj === "object" &&
+    !(obj instanceof Date) &&
+    obj !== null
+  ) {
     return Object.fromEntries(
       Object.entries(obj)
         .filter(([_, value]) => value !== undefined)
@@ -17,15 +21,16 @@ function formatObject(obj: any): any {
   return obj;
 }
 
-export function getServerFirestoreConverter<T>(): FirestoreDataConverter<T> {
+export function getServerFirestoreConverter<T>(): FirestoreDataConverter<
+  Omit<T, "ref">
+> {
   return {
     toFirestore(
-      modelObject: FirebaseFirestore.WithFieldValue<T>
+      modelObject: FirebaseFirestore.WithFieldValue<Omit<T, "ref">>
     ): DocumentData {
-      const { ref, ...object } = modelObject as any;
-      return formatObject(object);
+      return formatObject(modelObject);
     },
-    fromFirestore(snapshot: QueryDocumentSnapshot): T {
+    fromFirestore(snapshot: QueryDocumentSnapshot): Omit<T, "ref"> {
       return {
         ...Object.fromEntries(
           Object.entries(snapshot.data() as any)

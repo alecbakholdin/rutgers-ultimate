@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Product } from "types/product";
-import { Event } from "types/event";
+import { ServerEvent } from "types/storeEvent";
 import {
   Box,
   BoxProps,
@@ -12,10 +12,9 @@ import {
 } from "@mui/material";
 import StorageImage from "appComponents/StorageImage";
 import { getFromIndex } from "util/array";
-import ColorSwatch from "components/ColorSwatch";
+import ColorSwatch from "appComponents/ColorSwatch";
 import { useRouter } from "next/navigation";
-import FancyCurrency from "appComponents/FancyCurrency";
-import { useAuth } from "components/AuthProvider";
+import FancyCurrency from "appComponents/textDisplay/FancyCurrency";
 
 export default function ProductPage({
   product,
@@ -23,18 +22,16 @@ export default function ProductPage({
   initialColor,
 }: {
   product: Product;
-  event: Event;
+  event: ServerEvent;
   initialColor?: string;
 }) {
   const router = useRouter();
   const { palette } = useTheme();
-  const { userData, loading } = useAuth();
   const grey = palette.grey[300];
 
   const [colorField, setColorField] = useState(
     initialColor || getFromIndex(product.colors, 0)?.name || ""
   );
-  const [nameField, setNameField] = useState("");
 
   const colorImages = product.productImages?.filter((p) =>
     p.colorNames?.includes(colorField)

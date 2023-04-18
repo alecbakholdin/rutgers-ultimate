@@ -10,7 +10,7 @@ import {
 import React from "react";
 import { Color, colorCollection } from "types/color";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import ColorSwatch from "components/ColorSwatch";
+import ColorSwatch from "appComponents/ColorSwatch";
 
 const filter = createFilterOptions<Color>();
 

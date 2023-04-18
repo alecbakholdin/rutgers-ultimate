@@ -3,7 +3,7 @@ import { getServerFirestoreConverter } from "config/getServerFirestoreConverter"
 import { Product } from "types/product";
 import { notFound } from "next/navigation";
 import ProductPage from "app/(RegularApp)/store/[eventId]/[productId]/ProductPage";
-import { Event } from "types/event";
+import { StoreEvent } from "types/storeEvent";
 import { Metadata } from "next";
 
 const productCollection = serverDb
@@ -11,7 +11,7 @@ const productCollection = serverDb
   .withConverter(getServerFirestoreConverter<Product>());
 const eventCollection = serverDb
   .collection("events")
-  .withConverter(getServerFirestoreConverter<Event>());
+  .withConverter(getServerFirestoreConverter<StoreEvent>());
 type Props = {
   params: { productId: string; eventId: string };
   searchParams: { color?: string };

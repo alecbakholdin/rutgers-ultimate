@@ -1,95 +1,46 @@
-import {
-  collection,
-  DocumentReference,
-  FirestoreError,
-  query,
-  where,
-} from "@firebase/firestore";
-import { firestore } from "config/firebaseApp";
-import { getFirestoreConverter } from "config/firestoreConverter";
-import { CartItem, useUserData2 } from "types/userData";
-import { currencyFormat } from "util/currency";
-import { useMemo } from "react";
-import { useCollectionData } from "react-firebase-hooks/firestore";
 import { Address } from "types/easyPost";
 
-export interface OrderInfo {
-  venmo?: string;
-  firstName?: string;
-  lastName?: string;
-  phoneNumber?: number;
-  machinePercentage?: number;
-  nightshadePercentage?: number;
-  comments?: string;
-}
-
-export interface Order {
+export type OrderItem = {
   id: string;
-  ref: DocumentReference<Order>;
+  orderId: string | null;
   uid: string;
-  email: string;
-  phoneNumber: string;
-  firstName: string;
-  lastName: string;
-  comments?: string;
-  venmo?: string;
-  machinePercentage?: number;
-  nightshadePercentage?: number;
-  totalCost: number;
-  isTeam: boolean;
-  dateCreated: Date;
-  dateUpdated: Date;
-  cart: CartItem[];
-  eventIds: string[];
+  productId: string;
+  productName: string;
+  eventId: string;
+  eventName: string;
+  quantity: number;
+  unitPrice: number;
+  imageStoragePath: string;
+  fields: { [fieldName: string]: any };
+  fieldCount: number;
+};
 
-  requested: boolean;
-  paid: boolean;
-  delivered: boolean;
+export type OrderPrice = {
+  subtotal: number;
+  deliveryCost: number;
+  processingFee: number;
+  total: number;
+};
+
+export type OrderDetails = {
+  name: string;
+  email: string;
+  phone: string;
+  deliveryMethod: "pickup" | "delivery";
+  deliveryLocation: Address;
+  pickupLocation: string;
+};
+
+export type Order = {
+  // order metadata
+  id: string;
+  uid: string;
+  dateCreated: Date;
+
+  // payment details
+  price: OrderPrice;
   stripePaymentId?: string;
 
-  deliveryMethod: "delivery" | "pickup";
-  pickupLocation?: string;
-  address?: Address;
-}
-
-export const orderCollection = collection(firestore, "orders").withConverter(
-  getFirestoreConverter<Order>()
-);
-
-export function useUserOrders(): [
-  Order[],
-  boolean,
-  FirestoreError | undefined | null
-] {
-  const { uid } = useUserData2();
-  const q = useMemo(
-    () => (uid ? query(orderCollection, where("uid", "==", uid)) : undefined),
-    [uid]
-  );
-  const [orders, loading, error] = useCollectionData<Order>(q);
-
-  return [orders ?? [], !uid || loading, error];
-}
-
-export function orderAsStringSummary(order: Order): string {
-  return cartSummary(order.cart) + `Total: ${currencyFormat(order.totalCost)}`;
-}
-
-export function cartSummary(items: CartItem[]): string {
-  let cartSummary = "";
-
-  for (const item of items) {
-    cartSummary += item.productName + "\n";
-    const attributes = [];
-
-    if (item.size) attributes.push(item.size);
-    if (item.number !== null && item.number !== undefined)
-      attributes.push("number " + item.number);
-    if (item.name) attributes.push(item.name);
-
-    if (attributes.length > 0) cartSummary += attributes.join(", ") + "\n";
-    cartSummary += `${item.quantity} x ${currencyFormat(item.unitPrice)}\n\n`;
-  }
-
-  return cartSummary;
-}
+  // order details
+  details: OrderDetails;
+};

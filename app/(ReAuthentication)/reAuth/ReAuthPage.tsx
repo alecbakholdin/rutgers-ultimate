@@ -1,5 +1,5 @@
 "use client";
-import { AuthProvider } from "components/AuthProvider";
+import { AuthProvider } from "appComponents/AuthProvider";
 
 export default function ReAuthPage({
   redirectOnAuth,
