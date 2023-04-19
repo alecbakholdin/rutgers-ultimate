@@ -1,14 +1,23 @@
 import { authenticateUser, createResponse } from "appUtil/routeUtils";
 import { OrderDetails, OrderItem, OrderPrice } from "types/order";
-import { PaymentIntentMetadata, stripeApi } from "appUtil/stripe";
+import { stripeApi } from "appUtil/stripe";
 import { serverDb } from "config/firebaseServerApp";
 import {
   orderItemServerCollection,
   orderServerCollection,
 } from "config/serverCollections";
+import { hash } from "appUtil/hashing";
+
+export type OrderScaffold = {
+  details: OrderDetails;
+  price: OrderPrice;
+  items: OrderItem[];
+};
 
 export type CreateOrderRequest = {
-  stripePaymentIntentId: string;
+  paymentMethodId: string;
+  orderScaffold: OrderScaffold;
+  signature: string;
 };
 
 export async function POST(req: Request) {
@@ -17,51 +26,60 @@ export async function POST(req: Request) {
   const user = userResp!;
 
   const body: CreateOrderRequest = await req.json();
-  const { stripePaymentIntentId } = body;
-
-  const { status, metadata, amount } = await stripeApi.paymentIntents.retrieve(
-    stripePaymentIntentId
-  );
-  if (status !== "succeeded")
-    return createResponse(500, {
-      message: "Unexpected error. Payment intent in the wrong state",
-    });
-
-  const { orderDetailsBase64, orderItemIdsBase64, orderPriceBase64 } =
-    metadata as PaymentIntentMetadata;
-  const orderDetails = JSON.parse(atob(orderDetailsBase64)) as OrderDetails;
-  const orderPrice = JSON.parse(atob(orderPriceBase64)) as OrderPrice;
-  const orderItemIds = JSON.parse(atob(orderItemIdsBase64)) as string[];
-  if (orderPrice.total !== amount / 100) {
+  const { paymentMethodId, orderScaffold, signature } = body;
+  if (signature !== hash(orderScaffold))
     return createResponse(400, {
-      message: "Something went wrong. Please refresh the page.",
+      message: "Order has been modified. Please refresh and try again",
     });
+
+  const { card } = await stripeApi.paymentMethods.retrieve(paymentMethodId);
+  if (!card)
+    return createResponse(500, {
+      message: "Unsupported payment method",
+    });
+  try {
+    await createOrder(orderScaffold, paymentMethodId, user.uid);
+  } catch (e) {
+    console.error(e);
+    const message =
+      e instanceof Error ? e.message : "Unexpected error occurred.";
+    return createResponse(500, { message });
   }
+
+  return createResponse(201, { message: "Created order successfully" });
+}
+
+async function createOrder(
+  { details, price, items }: OrderScaffold,
+  paymentMethodId: string,
+  uid: string
+) {
+  const { id: stripePaymentId } = await stripeApi.paymentIntents.create({
+    amount: price.total * 100,
+    currency: "usd",
+    confirmation_method: "manual",
+    payment_method: paymentMethodId,
+  });
 
   const newOrder = await orderServerCollection.add({
     id: "",
-    details: orderDetails,
+    details,
+    price,
     dateCreated: new Date(),
-    price: orderPrice,
-    uid: user.uid,
-    stripePaymentId: stripePaymentIntentId,
+    uid,
+    stripePaymentId,
   });
-  const firestoreError = await serverDb
+  await serverDb
     .runTransaction(async (transaction) => {
-      for (const orderItemId of orderItemIds) {
-        transaction.update(orderItemServerCollection.doc(orderItemId), {
+      for (const orderItem of items) {
+        transaction.update(orderItemServerCollection.doc(orderItem.id), {
           orderId: newOrder.id,
         } as Partial<OrderItem>);
       }
+      await stripeApi.paymentIntents.confirm(stripePaymentId);
     })
-    .catch(async () => {
+    .catch(async (e) => {
       await orderServerCollection.doc(newOrder.id).delete();
-      return createResponse(500, {
-        message:
-          "Unexpected error creating order. Please exit this page and contact Alec at +1 (201)-396-3132 as you've already been charged",
-      });
+      throw e;
     });
-  if (firestoreError) return firestoreError;
-
-  return createResponse(201, { message: "Created order successfully" });
 }

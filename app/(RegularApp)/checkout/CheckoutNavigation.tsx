@@ -5,7 +5,10 @@ import { Box, Stack, useTheme } from "@mui/material";
 import LoadingButton from "appComponents/inputs/LoadingButton";
 import Link from "next/link";
 import { CreditCard, SentimentSatisfiedAlt, Tune } from "@mui/icons-material";
-import { useCheckout } from "app/(RegularApp)/checkout/CheckoutProvider";
+import {
+  CheckoutContextType,
+  useCheckout,
+} from "app/(RegularApp)/checkout/CheckoutProvider";
 import { useMySnackbar } from "hooks/useMySnackbar";
 import { useAuth } from "appComponents/AuthProvider";
 import { CreateOrderRequest } from "app/api/orders/route";
@@ -25,37 +28,21 @@ export default function CheckoutNavigation({
       grey: { "400": grey },
     },
   } = useTheme();
-  const { details, stripe, cardElement, clientSecret } = useCheckout();
+  const { details, stripe, cardElement } = useCheckout();
+  const checkoutContext = useCheckout();
   const [paymentLoading, setPaymentLoading] = useState(false);
   const { showError } = useMySnackbar();
   const router = useRouter();
   const { user } = useAuth();
 
   const handleSubmitPayment = async () => {
-    if (!stripe || !cardElement || !clientSecret || !user) {
+    if (!stripe || !cardElement || !details || !user) {
       showError("Unexpected error. Try reloading the page");
       return;
     }
     setPaymentLoading(true);
     try {
-      const { paymentIntent, error } = await stripe.confirmCardPayment(
-        clientSecret,
-        {
-          payment_method: {
-            card: cardElement,
-          },
-        }
-      );
-      if (error) throw new Error(error.message);
-      const resp = await fetch("/api/orders", {
-        method: "POST",
-        body: JSON.stringify({
-          stripePaymentIntentId: paymentIntent.id,
-        } as CreateOrderRequest),
-      });
-      const body = await resp.json();
-      if (resp.status >= 400) throw new Error(body.message);
-
+      await submitPayment(checkoutContext);
       router.push("/checkout/thankYou");
     } catch (e) {
       if (e instanceof Error) {
@@ -118,4 +105,37 @@ export default function CheckoutNavigation({
       </Stack>
     </Stack>
   );
+}
+
+async function submitPayment({
+  stripe,
+  cardElement,
+  details,
+  price,
+  items,
+  signature,
+}: CheckoutContextType) {
+  if (!stripe || !cardElement || !details || !price || !items || !signature)
+    throw new Error("Unexpected error. Try refreshing the page");
+  const { paymentMethod, error } = await stripe.createPaymentMethod({
+    type: "card",
+    card: cardElement,
+  });
+  if (error) throw new Error(error.message);
+
+  const resp = await fetch("/api/orders", {
+    method: "POST",
+    body: JSON.stringify({
+      orderScaffold: {
+        details,
+        price,
+        items,
+      },
+      signature,
+      paymentMethodId: paymentMethod.id,
+    } as CreateOrderRequest),
+  });
+  const body = await resp.json().catch(() => ({}));
+  if (resp.status >= 400)
+    throw new Error(body?.message || "Unexpected error. Please refresh");
 }

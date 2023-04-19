@@ -1,34 +1,35 @@
 "use client";
 import { useCheckout } from "app/(RegularApp)/checkout/CheckoutProvider";
-import { OrderItem, OrderPrice } from "types/order";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useTheme } from "@mui/material";
 import { useEffect } from "react";
 import { CheckoutCardForm } from "app/(RegularApp)/checkout/payment/CheckoutCardForm";
+import { OrderScaffold } from "app/api/orders/route";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
 
 export default function CheckoutPayment({
-  price,
-  items,
-  clientSecret,
+  scaffold: { details, price, items },
+  signature,
 }: {
-  price: OrderPrice;
-  items: OrderItem[];
-  clientSecret: string;
+  scaffold: OrderScaffold;
+  signature: string;
 }) {
   const { palette, typography, spacing, shape } = useTheme();
-  const { setPrice, setClientSecret } = useCheckout();
+  const { updateCheckout } = useCheckout();
   useEffect(() => {
-    setPrice(price);
-    setClientSecret(clientSecret);
+    updateCheckout({
+      price,
+      details,
+      items,
+      signature,
+    });
   }, []);
 
   return (
     <Elements
       options={{
-        clientSecret,
         appearance: {
           theme: "stripe",
           labels: "floating",

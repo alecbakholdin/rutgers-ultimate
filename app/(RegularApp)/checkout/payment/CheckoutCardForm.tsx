@@ -16,18 +16,18 @@ export function CheckoutCardForm({
   const theme = useTheme();
   const elements = useElements();
   const stripe = useStripe();
-  const { setCardElement, setStripe } = useCheckout();
+  const { updateCheckout } = useCheckout();
 
   const cardElement = elements?.getElement(CardElement);
   useEffect(() => {
     if (cardElement) {
-      setCardElement(cardElement);
+      updateCheckout({ cardElement });
     }
   }, [cardElement]);
 
   useEffect(() => {
     if (stripe) {
-      setStripe(stripe);
+      updateCheckout({ stripe });
     }
   }, [stripe]);
 
