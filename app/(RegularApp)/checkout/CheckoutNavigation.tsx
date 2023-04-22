@@ -90,7 +90,7 @@ export default function CheckoutNavigation({
                 query: { orderDetails: btoa(JSON.stringify(details)) },
               }}
             >
-              Next
+              <LoadingButton>Next</LoadingButton>
             </Link>
           )}
           {pathname === "/checkout/payment" && (
