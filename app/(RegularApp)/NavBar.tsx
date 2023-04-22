@@ -26,7 +26,7 @@ function useUserEmail(initialEmail: string | undefined): string | undefined {
   const [email, setEmail] = useState(initialEmail);
 
   useEffect(() => {
-    setEmail(user?.email);
+    setEmail(user?.email || undefined);
   }, [user?.email]);
 
   return email;

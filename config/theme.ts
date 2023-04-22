@@ -16,6 +16,7 @@ export const theme = createTheme({
     info: blueGrey,
   },
   typography: {
+    fontFamily: "Quicksand",
     body2: {
       fontSize: 14,
     },
