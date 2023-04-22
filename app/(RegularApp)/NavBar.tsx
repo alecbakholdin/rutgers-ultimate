@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import { useAuth } from "appComponents/AuthProvider";
@@ -21,14 +21,24 @@ import { ShoppingCart } from "@mui/icons-material";
 import Tooltip from "@mui/material/Tooltip";
 import Avatar from "@mui/material/Avatar";
 
+function useUserEmail(initialEmail: string | undefined): string | undefined {
+  const { user } = useAuth();
+  const [email, setEmail] = useState(initialEmail);
+
+  useEffect(() => {
+    setEmail(user?.email);
+  }, [user?.email]);
+
+  return email;
+}
+
 export default function DesktopNavBar({
   existingUser,
 }: {
   existingUser: DecodedIdToken | undefined;
 }): React.ReactElement {
-  const { user, userData } = useAuth();
-  const loggedIn = Boolean(user || existingUser);
-  const email = user?.email || existingUser?.email;
+  const { userData } = useAuth();
+  const email = useUserEmail(existingUser?.email);
   const path = usePathname();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
@@ -63,19 +73,13 @@ export default function DesktopNavBar({
   ];
 
   const userActions: NavAction[] = [
-    ...(user
+    ...(email
       ? [
           { name: "Sign Out", onClick: () => signOut(auth) },
           { name: "My Orders", href: "/orders" },
         ]
       : []),
-    ...(userData?.isAdmin
-      ? [
-          { name: "Manage Store", href: "/admin/store" },
-          { name: "Manage Products", href: "/admin/products" },
-          { name: "All Orders", href: "/admin/orders" },
-        ]
-      : []),
+    ...(userData?.isAdmin ? [{ name: "Admin", href: "/admin" }] : []),
   ];
 
   return (
@@ -162,7 +166,7 @@ export default function DesktopNavBar({
               </Button>
             ))}
           </Box>
-          <Box sx={{ flexGrow: 0, display: loggedIn ? "block" : "none" }}>
+          <Box sx={{ flexGrow: 0, display: email ? "block" : "none" }}>
             <Stack direction={"row"} alignItems={"center"} spacing={1}>
               <Link href={"/cart"}>
                 <Typography color={"primary.contrastText"}>
@@ -204,7 +208,7 @@ export default function DesktopNavBar({
               ))}
             </Menu>
           </Box>
-          <Box sx={{ display: loggedIn ? "none" : "block" }}>
+          <Box sx={{ display: email ? "none" : "block" }}>
             <NavBarPageLink
               page={{
                 name: "Sign In",
