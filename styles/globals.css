@@ -17,6 +17,10 @@ a {
     box-sizing: border-box;
 }
 
+.sketch-picker {
+    box-shadow: none !important;
+}
+
 /*
 @media (prefers-color-scheme: dark) {
 }
