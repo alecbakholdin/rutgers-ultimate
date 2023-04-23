@@ -25,7 +25,9 @@ export default function CheckoutDetails({
   defaultDetails: Partial<OrderDetails>;
 }) {
   const { isTeam } = useAuth();
-  const { details, setDetails } = useCheckout();
+  const { details, updateCheckout } = useCheckout();
+  const setDetails = (newDetails: OrderDetails) =>
+    updateCheckout({ details: newDetails });
   useEffect(() => {
     setDetails({ ...details, ...defaultDetails });
   }, []);

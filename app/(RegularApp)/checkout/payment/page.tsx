@@ -4,7 +4,8 @@ import { authenticateUser } from "appUtil/routeUtils";
 import { redirect } from "next/navigation";
 import { OrderDetails, OrderPrice } from "types/order";
 import { calculateShippingCost } from "appUtil/easyPostServer";
-import { PaymentIntentMetadata, stripeApi } from "appUtil/stripe";
+import { hash } from "appUtil/hashing";
+import { OrderScaffold } from "app/api/orders/route";
 
 export default async function CheckoutPaymentPage({
   searchParams: { orderDetails },
@@ -37,25 +38,13 @@ export default async function CheckoutPaymentPage({
     processingFee,
     total,
   };
-
-  const paymentIntent = await stripeApi.paymentIntents.create({
-    amount: total * 100,
-    currency: "usd",
-    receipt_email: orderDetailsObj.email,
-
-    metadata: {
-      orderDetailsBase64: orderDetails,
-      orderPriceBase64: btoa(JSON.stringify(price)),
-      orderItemIdsBase64: btoa(JSON.stringify(orderItems.map((o) => o.id))),
-      orderItemsBase64: btoa(JSON.stringify(orderItems)),
-    } as PaymentIntentMetadata,
-  });
+  const orderScaffold: OrderScaffold = {
+    price,
+    details: orderDetailsObj,
+    items: orderItems,
+  };
 
   return (
-    <CheckoutPayment
-      price={price}
-      clientSecret={paymentIntent.client_secret!}
-      items={orderItems}
-    />
+    <CheckoutPayment scaffold={orderScaffold} signature={hash(orderScaffold)} />
   );
 }

@@ -1,17 +1,18 @@
 import React from "react";
-import { styled, Switch } from "@mui/material";
+import { FormControlLabel, FormGroup, styled, Switch } from "@mui/material";
 
-const width = 56;
-const height = 34;
-const size = 18;
-const margin = 8;
+const width = 54;
+const height = 30;
+const size = (height + 2) / 2;
+const margin = (height - size) / 2;
 const borderWidth = 2;
 
 export const LovelySwitch = styled(Switch)(({ theme }) => ({
   width,
   height,
   padding: 0,
-  margin: 8,
+  margin,
+  marginLeft: margin + 4,
   "& .MuiSwitch-switchBase": {
     padding: 0,
     margin,
@@ -47,16 +48,35 @@ export const LovelySwitch = styled(Switch)(({ theme }) => ({
     width: size,
     height: size,
     boxShadow: "none",
-    backgroundColor: theme.palette.grey[600],
+    backgroundColor: theme.palette.grey[500],
     transition: theme.transitions.create(["background-color"]),
   },
   "& .MuiSwitch-track": {
     borderRadius: 40,
     border: `solid`,
-    borderColor: theme.palette.grey[600],
+    borderColor: theme.palette.grey[400],
     borderWidth,
     backgroundColor: theme.palette.grey[50],
     opacity: 1,
     transition: theme.transitions.create(["background-color", "border-color"]),
   },
 }));
+
+export function LovelySwitchWrapper({
+  checked,
+  onChange,
+  label,
+}: {
+  checked?: boolean;
+  onChange?: () => void;
+  label?: string;
+}): React.ReactElement {
+  return (
+    <FormGroup>
+      <FormControlLabel
+        control={<LovelySwitch checked={checked} onChange={onChange} />}
+        label={label}
+      />
+    </FormGroup>
+  );
+}

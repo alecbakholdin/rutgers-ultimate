@@ -1,11 +1,19 @@
 "use client";
 import React, { useState } from "react";
-import { Autocomplete, Grid, Stack, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Grid,
+  InputAdornment,
+  Stack,
+  TextField,
+  TextFieldProps,
+  Typography,
+} from "@mui/material";
 import { defaultProduct, Product, productCollection } from "types/product";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import LoadingButton from "appComponents/inputs/LoadingButton";
 import BetterTextField from "appComponents/inputs/BetterTextField";
-import { doc, updateDoc } from "@firebase/firestore";
+import { addDoc, deleteDoc, doc, getDoc, updateDoc } from "@firebase/firestore";
 import { isEmptyObject } from "util/object";
 import { deleteObject, ref, uploadBytes } from "@firebase/storage";
 import { storage } from "config/firebaseApp";
@@ -16,7 +24,7 @@ import ProductImageEditor, {
 } from "app/(RegularApp)/admin/products/ProductImageEditor";
 
 export default function ProductWizard() {
-  const { showError } = useMySnackbar();
+  const { showError, showSuccess } = useMySnackbar();
   const [products, loading] = useCollectionData(productCollection);
 
   const [product, setProduct] = useState<Product | null>(null);
@@ -37,6 +45,18 @@ export default function ProductWizard() {
     setChanges({});
     setPendingUploads({});
     setPendingDeletions([]);
+  };
+
+  const submitAsyncTask = async (task: () => Promise<any>) => {
+    setSubmitLoading(true);
+    try {
+      return await task();
+    } catch (e) {
+      console.error(e);
+      showError("Unexpected error occurred. Refresh and try again.");
+    } finally {
+      setSubmitLoading(false);
+    }
   };
 
   const handleSubmit = async () => {
@@ -68,6 +88,27 @@ export default function ProductWizard() {
     handleReset();
     setSubmitLoading(false);
   };
+
+  const handleCreateProduct = async () =>
+    submitAsyncTask(async () => {
+      const { id } = await addDoc(productCollection, defaultProduct());
+      const product = await getDoc(doc(productCollection, id));
+      if (!product.exists()) {
+        showError("Unexpected error occurred");
+      } else {
+        handleReset();
+        setProduct(product.data()!);
+      }
+    });
+  const handleDeleteProduct = async () =>
+    submitAsyncTask(async () => {
+      if (!product) return;
+      await deleteDoc(doc(productCollection, product.id));
+      handleReset();
+      setProduct(null);
+      showSuccess("Successfully deleted product");
+    });
+
   const textFieldProps = (label: string, key: keyof Product) => ({
     label,
     value: updatedProduct[key] || "",
@@ -78,13 +119,25 @@ export default function ProductWizard() {
     handlePressControlEnter: handleSubmit,
   });
 
+  const currencyFieldProps: TextFieldProps = {
+    type: "number",
+    InputProps: {
+      startAdornment: (
+        <InputAdornment position={"start"}>
+          <Typography>$</Typography>
+        </InputAdornment>
+      ),
+    },
+  };
+
   return (
     <Stack>
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <Autocomplete
             options={products ?? []}
-            getOptionLabel={(p: Product) => p.name}
+            getOptionLabel={(p: Product) => p.name || p.id}
+            value={product}
             onChange={(e, newValue) => {
               handleReset();
               setProduct(newValue);
@@ -110,6 +163,18 @@ export default function ProductWizard() {
             {...textFieldProps("Description", "description")}
             multiline
             rows={2}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <BetterTextField
+            {...textFieldProps("Price", "price")}
+            {...currencyFieldProps}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <BetterTextField
+            {...textFieldProps("Team Price", "teamPrice")}
+            {...currencyFieldProps}
           />
         </Grid>
         <Grid item xs={12}>
@@ -156,10 +221,21 @@ export default function ProductWizard() {
         </Grid>
         <Grid item flexGrow={1} />
         <Grid item>
-          <LoadingButton variant={"contained"}>New</LoadingButton>
+          <LoadingButton
+            loading={submitLoading}
+            variant={"contained"}
+            onClick={handleCreateProduct}
+          >
+            New
+          </LoadingButton>
         </Grid>
         <Grid item>
-          <LoadingButton variant={"contained"} disabled={!product}>
+          <LoadingButton
+            loading={submitLoading}
+            variant={"contained"}
+            onClick={handleDeleteProduct}
+            disabled={!product}
+          >
             Delete
           </LoadingButton>
         </Grid>

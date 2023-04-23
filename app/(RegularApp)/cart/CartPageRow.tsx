@@ -16,9 +16,13 @@ import { useMySnackbar } from "hooks/useMySnackbar";
 export default function CartPageRow({
   orderItem,
   handleDeleteRowFromUI,
+  hideBorder = false,
+  staticQty = false,
 }: {
   orderItem: OrderItem;
-  handleDeleteRowFromUI: () => void;
+  handleDeleteRowFromUI?: () => void;
+  hideBorder?: boolean;
+  staticQty?: boolean;
 }) {
   const [loading, setLoading] = useState(false);
   const [qtyState, setQtyState] = useState(orderItem.quantity);
@@ -44,7 +48,7 @@ export default function CartPageRow({
     }
     if (quantity) {
       setQtyState(quantity);
-    } else {
+    } else if (handleDeleteRowFromUI) {
       handleDeleteRowFromUI();
     }
   };
@@ -52,8 +56,12 @@ export default function CartPageRow({
   const { productId, productName, fields, imageStoragePath, unitPrice } =
     orderItem;
   return (
-    <Box border={"1px solid " + palette.divider} padding={3} borderRadius={4}>
-      <Stack direction={"row"} width={"100%"}>
+    <Box
+      border={"1px solid " + (hideBorder ? "transparent" : palette.divider)}
+      padding={3}
+      borderRadius={4}
+    >
+      <Stack direction={"row"} width={"100%"} spacing={1}>
         <Box height={150} width={150}>
           <StorageImage storagePath={imageStoragePath} />
         </Box>
@@ -69,17 +77,24 @@ export default function CartPageRow({
               </Typography>
             ))}
         </Stack>
-        <Stack spacing={2} alignSelf={"center"}>
+        <Stack spacing={2} alignSelf={"center"} alignItems={"end"}>
           {loading ? (
             <CircularProgress />
           ) : (
             <>
-              <NumberSelect
-                label={"Qty"}
-                value={qtyState}
-                onChange={(newQty) => handleUpdateQuantity(newQty)}
-                selectProps={{ size: "small" }}
-              />
+              {staticQty ? (
+                <Typography>
+                  <b>Qty: </b>
+                  {qtyState}
+                </Typography>
+              ) : (
+                <NumberSelect
+                  label={"Qty"}
+                  value={qtyState}
+                  onChange={(newQty) => handleUpdateQuantity(newQty)}
+                  selectProps={{ size: "small" }}
+                />
+              )}
               <FancyCurrency
                 amount={unitPrice * qtyState}
                 loading={loading}

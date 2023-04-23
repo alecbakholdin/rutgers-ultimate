@@ -41,6 +41,24 @@ export function remove<T>(arr: T[] | undefined | null, i: number): T[] {
   return [...arr.slice(0, i), ...arr.slice(i + 1)];
 }
 
+export function swap<T>(
+  arr: T[] | undefined | null,
+  i: number,
+  j: number
+): T[] {
+  if (!arr || i === j || i < 0 || j < 0 || i >= arr.length || j >= arr.length)
+    return arr || [];
+  const a = Math.min(i, j);
+  const b = Math.max(i, j);
+  return [
+    ...arr.slice(0, a),
+    arr[b],
+    ...arr.slice(a + 1, b),
+    arr[a],
+    ...arr.slice(b + 1),
+  ];
+}
+
 export function getFromIndex<T>(
   arr: T[] | undefined | null,
   i: number
