@@ -55,8 +55,9 @@ export default function ProductCard({
   const handleNavigation = () =>
     router.push(
       `/store/${event.id}/${product.id}${
-        Boolean(colorField && getFieldValue(colorField)) &&
-        `?color=${getFieldValue(colorField!)}`
+        Boolean(colorField && getFieldValue(colorField))
+          ? `?color=${getFieldValue(colorField!)}`
+          : ""
       }`
     );
 
@@ -132,11 +133,13 @@ export default function ProductCard({
               ))}
             </Grid>
           )}
-          <FancyCurrency
-            amount={price}
-            size={18}
-            loading={(loading && !userData) || loading}
-          />
+          <Grid item xs={6}>
+            <FancyCurrency
+              amount={price}
+              size={18}
+              loading={(loading && !userData) || loading}
+            />
+          </Grid>
           <Grid item xs={6} container justifyContent={"end"}>
             <Button
               variant={"contained"}
