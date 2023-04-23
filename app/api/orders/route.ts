@@ -55,7 +55,7 @@ async function createOrder(
   uid: string
 ) {
   const { id: stripePaymentId } = await stripeApi.paymentIntents.create({
-    amount: price.total * 100,
+    amount: Math.floor(price.total * 100),
     currency: "usd",
     confirmation_method: "manual",
     payment_method: paymentMethodId,

@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
-import { Divider, Grid, Typography, useTheme } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Divider, Grid, Popover, Typography, useTheme } from "@mui/material";
 import { currencyFormat } from "util/currency";
 import { OrderItem } from "types/order";
 import { useCheckout } from "app/(RegularApp)/checkout/CheckoutProvider";
+import CartPageRow from "app/(RegularApp)/cart/CartPageRow";
 
 function SectionDivider(): React.ReactElement {
   return (
@@ -24,6 +25,63 @@ function BasicCurrencyRow({ title, cost }: { title: string; cost: number }) {
       <Grid item xs={4}>
         <Typography textAlign={"right"}>{currencyFormat(cost)}</Typography>
       </Grid>
+    </>
+  );
+}
+
+function ItemCurrencyRow({ item }: { item: OrderItem }) {
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const handleOpen = (e: React.MouseEvent<HTMLElement>) =>
+    setAnchorEl(e.currentTarget);
+  const handleClose = () => setAnchorEl(null);
+
+  const handleMouseMove = (e: MouseEvent) => {
+    const boundingRect = anchorEl?.getBoundingClientRect();
+    if (!boundingRect) return;
+    if (
+      e.x < boundingRect.left ||
+      e.x > boundingRect.right ||
+      e.y < boundingRect.top ||
+      e.y > boundingRect.bottom
+    ) {
+      handleClose();
+    }
+  };
+
+  useEffect(() => {
+    window.removeEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [anchorEl]);
+
+  return (
+    <>
+      <Grid item xs={8} onMouseOver={handleOpen}>
+        <Typography noWrap textOverflow={"ellipsis"}>
+          {item.quantity}x {item.productName}
+        </Typography>
+      </Grid>
+      <Grid item xs={4}>
+        <Typography textAlign={"right"}>
+          {currencyFormat(item.quantity * item.unitPrice)}
+        </Typography>
+      </Grid>
+      <Popover
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+      >
+        <CartPageRow orderItem={item} staticQty hideBorder />
+      </Popover>
     </>
   );
 }
@@ -53,11 +111,7 @@ export default function CostSummary({
       </Grid>
       <SectionDivider key={"order-summary-divider"} />
       {items.map((item) => (
-        <BasicCurrencyRow
-          key={item.id}
-          title={`${item.quantity}x ${item.productName}`}
-          cost={item.unitPrice * item.quantity}
-        />
+        <ItemCurrencyRow key={item.id} item={item} />
       ))}
       <SectionDivider />
       <BasicCurrencyRow title={"Subtotal"} cost={price.subtotal} />

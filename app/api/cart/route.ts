@@ -141,8 +141,10 @@ export async function PATCH(req: NextRequest) {
     return createErrorResponse(404, "Order Item not found");
   if (orderItem.data()!.uid !== user.uid)
     return createErrorResponse(403, "You don't have permission to do that");
+  if (orderItem.data()!.orderId !== null)
+    return createErrorResponse(400, "Item no longer exists");
 
-  if (quantity) {
+  if (quantity > 0) {
     await orderItemServerCollection.doc(orderItem.id).update({ quantity });
     return createResponse(200, "Item quantity updated");
   } else {

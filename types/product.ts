@@ -83,7 +83,7 @@ export const productCollection: CollectionReference<Product> = collection(
 export function defaultProduct(): Product {
   return {
     id: "",
-    name: "",
+    name: "New Product",
     description: "",
     price: 0,
     teamPrice: 0,

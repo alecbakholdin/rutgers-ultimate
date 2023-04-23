@@ -17,14 +17,7 @@ export default function FancyCurrency({
   const lineHeight = lineHeightPercent + "%";
 
   return (
-    <Grid
-      item
-      container
-      xs={6}
-      spacing={0.1}
-      alignItems={"start"}
-      flexWrap={"nowrap"}
-    >
+    <Grid container spacing={0.1} alignItems={"start"} flexWrap={"nowrap"}>
       {loading ? (
         <Grid item>
           <CircularProgress size={10} />
@@ -39,7 +32,15 @@ export default function FancyCurrency({
               fontSize={size}
               lineHeight={lineHeight}
             >
-              ${Math.floor(amount)}
+              $
+              {`${Math.floor(amount)}`
+                .split("")
+                .reverse()
+                .reduce(
+                  (prev, curr) =>
+                    prev.length % 4 === 3 ? curr + "," + prev : curr + prev,
+                  ""
+                )}
             </Typography>
           </Grid>
           <Grid item>
@@ -49,9 +50,9 @@ export default function FancyCurrency({
               fontSize={smallSize}
               lineHeight={lineHeight}
             >
-              {Math.floor(amount % 1)
-                .toPrecision(3)
-                .slice(-2)}
+              {Math.floor((amount * 100) % 100)
+                .toString()
+                .padStart(2, "0")}
             </Typography>
           </Grid>
         </>

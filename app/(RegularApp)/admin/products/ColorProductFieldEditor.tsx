@@ -66,7 +66,7 @@ export default function ColorProductFieldEditor({
       }
       await setDoc(doc(colorCollection, newColorName), {
         hex: newColorHex,
-      });
+      } as unknown);
       updateField({
         colors: [...field.colors, { name: newColorName, hex: newColorHex }],
       });
