@@ -28,6 +28,9 @@ export function defaultProductImage(): ProductImage {
 export type ProductFieldType = "text" | "number" | "options" | "color";
 
 export interface ProductField {
+  custom: boolean;
+  presetName: "name" | "number" | "color" | "size" | "custom" | null;
+
   name: string;
   type: ProductFieldType;
 
@@ -39,7 +42,7 @@ export interface ProductField {
 
   // for color
   colors: ProductColor[];
-  required?: boolean;
+  required: boolean;
 }
 
 export function defaultField(): ProductField {
@@ -49,6 +52,9 @@ export function defaultField(): ProductField {
     maxChars: 0,
     options: [],
     colors: [] as ProductColor[],
+    custom: false,
+    presetName: null,
+    required: false,
   };
 }
 

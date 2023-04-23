@@ -1,7 +1,14 @@
-import { Button, Grid, Typography, useTheme } from "@mui/material";
+import {
+  Button,
+  Divider,
+  Grid,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import React from "react";
 import { defaultField, Product, ProductField } from "types/product";
-import { remove, replace } from "util/array";
+import { remove, replace, swap } from "util/array";
 import SingleProductFieldEditor from "app/(RegularApp)/admin/products/SingleProductFieldEditor";
 import FieldSection from "appComponents/FieldSection";
 
@@ -24,29 +31,31 @@ export default function ProductFieldEditor({
 
   return (
     <FieldSection>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography color={"lightslategrey"} variant={"body1"}>
-            Product Fields
+      <Stack spacing={2}>
+        <Typography color={"lightslategrey"} variant={"body1"}>
+          Product Fields
+        </Typography>
+        {fields.length === 0 ? (
+          <Typography variant={"body2"} color={palette.action.disabled}>
+            This product has no fields
           </Typography>
-        </Grid>
-        {fields.length === 0 && (
-          <Grid item xs={12}>
-            <Typography variant={"body2"} color={palette.action.disabled}>
-              This product has no fields
-            </Typography>
-          </Grid>
+        ) : (
+          <Divider />
         )}
         {fields.map((field, i) => (
-          <Grid item xs={12} key={i} paddingTop={6}>
+          <React.Fragment key={i}>
             <SingleProductFieldEditor
+              key={i}
               field={field}
               updateField={(fieldUpdate) =>
                 updateFields(replace(fields, { ...field, ...fieldUpdate }, i))
               }
               deleteField={() => updateFields(remove(fields, i))}
+              moveUp={() => updateFields(swap(fields, i, i - 1))}
+              moveDown={() => updateFields(swap(fields, i, i + 1))}
             />
-          </Grid>
+            <Divider />
+          </React.Fragment>
         ))}
         <Grid item xs={12}>
           <Button
@@ -59,7 +68,7 @@ export default function ProductFieldEditor({
             New Field
           </Button>
         </Grid>
-      </Grid>
+      </Stack>
     </FieldSection>
   );
 }

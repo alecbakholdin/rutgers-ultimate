@@ -12,7 +12,7 @@ import { Color, colorCollection } from "types/color";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import ColorSwatch from "appComponents/ColorSwatch";
 
-const filter = createFilterOptions<Color>();
+const filterColors = createFilterOptions<Color>();
 
 export default function ColorProductFieldEditor({
   field,
@@ -39,7 +39,7 @@ export default function ColorProductFieldEditor({
           })
         }
         filterOptions={(options: Color[], params) => {
-          const filtered = filter(options, params);
+          const filtered = filterColors(options, params);
 
           if (params.inputValue !== "") {
             filtered.push({
