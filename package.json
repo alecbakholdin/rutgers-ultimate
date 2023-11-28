@@ -40,7 +40,7 @@
     "googleapis": "^111.0.0",
     "jotai": "^2.0.0",
     "md5": "^2.3.0",
-    "next": "^13.2.4-canary.5",
+    "next": "^14.0.3",
     "nookies": "^2.5.2",
     "notistack": "^2.0.8",
     "object-hash": "^3.0.0",

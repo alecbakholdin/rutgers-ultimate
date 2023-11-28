@@ -5,7 +5,6 @@ const nextConfig = {
   images: {
     domains: ["bakholdin.com"],
   },
-  experimental: { appDir: true },
 };
 
 module.exports = nextConfig;
