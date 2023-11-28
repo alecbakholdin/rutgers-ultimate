@@ -1,4 +1,4 @@
-import "/styles/globals.css";
+import "./globals.css";
 
 import React, { ReactNode } from "react";
 import Providers from "app/(RegularApp)/Providers";
