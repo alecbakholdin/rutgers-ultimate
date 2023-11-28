@@ -63,10 +63,6 @@ export default function DesktopNavBar({
 
   const pages: NavAction[] = [
     {
-      name: "Home",
-      href: "/",
-    },
-    {
       name: "Store",
       href: "/store",
     },
