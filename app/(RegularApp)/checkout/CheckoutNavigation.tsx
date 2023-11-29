@@ -97,6 +97,7 @@ export default function CheckoutNavigation({
             <LoadingButton
               onClick={handleSubmitPayment}
               loading={paymentLoading}
+              disabled={paymentLoading}
             >
               Confirm Payment
             </LoadingButton>
